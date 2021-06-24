@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "python.pythonPath": "env\\Scripts\\python.exe",
+  "[proto3]": {
+    "editor.tabSize": 2
+  }
+}

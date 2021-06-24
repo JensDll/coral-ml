@@ -1,4 +1,3 @@
-from google.protobuf import message
 import grpc
 import cv2
 import numpy as np
@@ -6,6 +5,7 @@ from concurrent import futures
 import imutils
 import argparse
 import threading
+import socket
 
 import stream_pb2
 from stream_pb2_grpc import StreamerServicer, add_StreamerServicer_to_server
@@ -34,7 +34,7 @@ class Streamer(StreamerServicer):
 
         def on_rpc_done():
             stop_event.set()
-            print(f"Stop client ({request.client_id})")
+            print(f"Stopping client ({request.client_id})")
 
         context.add_callback(on_rpc_done)
 
@@ -49,6 +49,7 @@ class Streamer(StreamerServicer):
 
 
 def start_server(port: int, camera_idx: int):
+    print(socket.gethostname())
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     streamer = Streamer(camera_idx)
     add_StreamerServicer_to_server(streamer, server)
@@ -60,7 +61,7 @@ def start_server(port: int, camera_idx: int):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="My Script")
+    parser = argparse.ArgumentParser()
     parser.add_argument("--port", "-p", help="The server port.",
                         type=int, default=50051)
     parser.add_argument('--camera_idx', "-i", help='Index of which video source to use.',

@@ -4,4 +4,4 @@ imutils matplotlib grpcio autopep8 grpcio-tools tensorflow pycoral
 
 pip install -U \
 jupyterlab numpy pandas opencv-contrib-python \
-imutils matplotlib grpcio autopep8 grpcio-tools tensorflow
+imutils matplotlib grpcio autopep8 grpcio-tools tensorflow flask gunicorn

@@ -1,5 +1,8 @@
 <template>
-  <img alt="stream" src="http://iot2050-debian:5000/video" />
+  <img alt="stream" :src="src" />
+  <img alt="stream" :src="src" />
+  <img alt="stream" :src="src" />
+  <img alt="stream" :src="src" />
 </template>
 
 <script lang="ts">
@@ -7,6 +10,11 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "App",
+  data() {
+    return {
+      src: "http://localhost:5000/video",
+    };
+  },
 });
 </script>
 

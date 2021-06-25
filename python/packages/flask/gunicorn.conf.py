@@ -1,4 +1,4 @@
 bind = "[::]:5000"
-worker_class = "gthread"
+worker_class = "gevent"
 workers = 4
-threads = 2
+threads = 4

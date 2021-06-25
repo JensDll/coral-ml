@@ -1,14 +1,16 @@
-from flask import Flask, render_template, Response
+from flask import Flask, Response
 from flask.helpers import stream_with_context
 import cv2
+from imutils.video import VideoStream
 import threading
 import cv2utils
+import numpy as np
 
 app = Flask(__name__)
 
 output_frame = None
 lock = threading.Lock()
-cap = cv2.VideoCapture(0)
+# video_stream = None VideoStream(src=0).start()
 
 
 @app.route("/video")
@@ -17,18 +19,21 @@ def video_feed():
 
 
 def read_frames():
-    global output_frame, lock, cap
+    global output_frame, lock
     while True:
-        has_frame, frame = cap.read()
+        # frame = video_stream.read()
         with lock:
-            if has_frame:
-                output_frame = frame.copy()
+            # if frame is not None:
+            output_frame = np.zeros((500, 500, 3), dtype=np.uint8)
 
 
 def generate():
     global output_frame, lock
     while True:
         with lock:
+            if output_frame is None:
+                continue
+
             cv2utils.print_fps(output_frame)
             success, encoded_image = cv2.imencode(".jpg", output_frame)
 

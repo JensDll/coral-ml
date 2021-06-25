@@ -1,7 +1,5 @@
 <template>
-  <img alt="stream" src="http://localhost:5000/video" />
-  <img alt="stream" src="http://localhost:5000/video" />
-  <img alt="stream" src="http://localhost:5000/video" />
+  <img alt="stream" src="http://iot2050-debian:5000/video" />
 </template>
 
 <script lang="ts">

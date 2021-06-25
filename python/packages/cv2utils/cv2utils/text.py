@@ -1,7 +1,6 @@
 import time
 import cv2
 
-
 prev_time = time.time()
 
 
@@ -16,8 +15,7 @@ def print_fps(image):
     cur_time = time.time()
     time_diff = cur_time - prev_time
     fps = 1 / time_diff
-    fps = round(fps, 2)
     prev_time = cur_time
 
-    cv2.putText(image, f"FPS: {fps}", (30, 50), fontFace, fontScale,
+    cv2.putText(image, "FPS: {:.2f}".format(fps), (30, 50), fontFace, fontScale,
                 fontColor, fontThickness, cv2.LINE_AA)

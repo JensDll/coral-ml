@@ -1,4 +1,5 @@
 <template>
+  <h1>Stream</h1>
   <img alt="stream" :src="src" />
   <img alt="stream" :src="src" />
   <img alt="stream" :src="src" />

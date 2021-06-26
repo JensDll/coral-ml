@@ -1,6 +1,29 @@
 version: "3.9"
 
-flask:
+services:
+  flask:
     build:
-        
+      context: "./python"
+      dockerfile: "Dockerfile.Flask"
+      args:
+        path: packages/flask
+    networks:
+      - flask_net
 
+  vue:
+    build: "./vue"
+    networks:
+      - vue_net
+    
+  proxy:
+    build: "./proxy"
+    ports:
+      - 8000:8000
+      - 8001:8001
+    networks:
+      - vue_net
+      - flask_net
+        
+networks:
+  vue_net:
+  flask_net:

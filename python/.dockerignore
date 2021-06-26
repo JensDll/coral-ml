@@ -19,3 +19,4 @@
 **/.pytest_cache
 **/*.hypothesis
 **/*.ipynb
+**/Dockerfile*

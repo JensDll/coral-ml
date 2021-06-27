@@ -13,7 +13,7 @@ export default defineComponent({
   name: "App",
   data() {
     return {
-      src: "http://localhost:5000/video",
+      src: "http://localhost:8001/video",
     };
   },
 });

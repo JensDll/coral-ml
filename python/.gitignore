@@ -139,3 +139,4 @@ cython_debug/
 
 coral/
 all_models/
+**/notebooks/**/data

@@ -1,19 +1,19 @@
 version: "3.9"
 
 services:
-  flask:
+  flask_video:
     build:
       context: "./python"
-      dockerfile: "Dockerfile.Flask"
+      dockerfile: "Dockerfile.Flask.Video"
       args:
-        path: packages/flask
+        path: "packages/flask_video"
     networks:
-      - flask_net
+      - "flask_video_net"
 
   vue:
     build: "./vue"
     networks:
-      - vue_net
+      - "vue_net"
     
   proxy:
     build: "./proxy"
@@ -21,9 +21,9 @@ services:
       - 8000:8000
       - 8001:8001
     networks:
-      - vue_net
-      - flask_net
-        
+      - "vue_net"
+      - "flask_video_net"
+
 networks:
   vue_net:
-  flask_net:
+  flask_video_net:

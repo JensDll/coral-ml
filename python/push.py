@@ -2,30 +2,37 @@ import argparse
 import subprocess
 from itertools import chain
 
-target_paths = {
-    "flask": "packages/flask",
-    "grpc": "packages/grpc"
-}
+REPOSITORY = "jensdll/google-coral-ml"
 
-target_choices = list(target_paths.keys())
+targets = {
+    "flask_video": {
+        "path": "packages/flask_video",
+        "dockerfile": "Dockerfile.Flask.Video"
+    },
+    "grpc": {
+        "path": "packages/grpc",
+        "dockerfile": "nan"
+    }
+}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("target", help="the target package to build",
-                    choices=target_choices)
+                    choices=list(targets.keys()))
 parser.add_argument("--platform", help="platform option which will be passed to buildx",
                     type=str, default="linux/arm64")
 parser.add_argument("--tag", "-t", nargs='+',
                     help="the tags to attach", type=str, default=[])
-
 args = parser.parse_args()
 
-path = target_paths[args.target]
+path = targets[args.target]["path"]
+dockerfile = targets[args.target]["dockerfile"]
+
 tags = chain.from_iterable([
-    ["-t", "jensdll/google-coral-ml:latest"],
-    *[("-t", f"jensdll/google-coral-ml:{tag}") for tag in args.tag]
+    ["-t", f"{REPOSITORY}:latest"],
+    *[("-t", f"{REPOSITORY}:{tag}") for tag in args.tag]
 ])
 
 subprocess.run(["docker", "buildx", "build", "--push",
-                "-f", "Dockerfile.Flask",
+                "-f", dockerfile,
                 "--build-arg", f"path={path}",
                 "--platform", args.platform, *tags, "."])

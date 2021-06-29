@@ -3,5 +3,12 @@
   "python.pythonPath": "env\\Scripts\\python.exe",
   "[proto3]": {
     "editor.tabSize": 2
-  }
+  },
+  "spellright.language": [
+    "en"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex"
+  ]
 }

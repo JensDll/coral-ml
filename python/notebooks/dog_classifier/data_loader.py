@@ -55,11 +55,11 @@ class StanfordDogLoader:
 
     def load(self, val_split=0.2, test_split=0.1, verbose=1):
         class_names = np.array([item.name for item in self.data_dir.glob('*')])
-        count_per_class = [len_iter(pathlib.Path(path).glob("*"))
-                           for path in self.data_dir.glob("*")]
-        norm_class_names = [
-            name.split("-")[1].replace("_", " ") for name in class_names
-        ]
+        count_per_class = np.array([len_iter(pathlib.Path(path).glob("*"))
+                                    for path in self.data_dir.glob("*")])
+        norm_class_names = np.array([
+            "-".join(name.split("-")[1:]).replace("_", " ") for name in class_names
+        ])
 
         self.class_names = class_names
         self.norm_class_names = norm_class_names

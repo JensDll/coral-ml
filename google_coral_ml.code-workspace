@@ -8,7 +8,12 @@
     },
     {
       "path": "proxy"
+    },
+    {
+      "path": "node.socket"
     }
   ],
-  "settings": {}
+  "settings": {
+    "volar.tsPlugin": true
+  }
 }

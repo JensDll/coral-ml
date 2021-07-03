@@ -5,9 +5,9 @@ from itertools import chain
 REPOSITORY = "jensdll/google-coral-ml"
 
 targets = {
-    "flask_video": {
-        "path": "packages/flask_video",
-        "dockerfile": "Dockerfile.Flask.Video"
+    "video": {
+        "path": "packages/video",
+        "dockerfile": "Dockerfile.Video"
     },
     "grpc": {
         "path": "packages/grpc",

@@ -1,5 +1,5 @@
 import zmq from "zeromq"
-import { Server } from "socket.io"
+import { Server, Socket as IOSocket } from "socket.io"
 import { createServer } from "http"
 
 const port = 5555
@@ -18,18 +18,23 @@ const io = new Server(httpServer, {
   },
 })
 
-async function startReading() {
-  for await (const [frame] of sock) {
-    io.emit("video:stream", frame)
+async function startReading(socket: IOSocket, subscriber: zmq.Subscriber) {
+  for await (const [frame] of subscriber) {
+    socket.emit("video:stream", frame)
   }
 }
-
-startReading()
 
 io.on("connection", socket => {
   console.log(`A user connected (${socket.id})`)
 
+  const subscriber = new zmq.Subscriber()
+  subscriber.connect(`tcp://localhost:${port}`)
+  subscriber.subscribe("")
+
+  startReading(socket, subscriber)
+
   socket.on("disconnect", () => {
+    subscriber.close()
     console.log(`A user disconnected (${socket.id})`)
   })
 })

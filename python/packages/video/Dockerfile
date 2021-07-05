@@ -1,0 +1,31 @@
+FROM debian:buster
+
+# add Google repository and common packages
+RUN apt-get update && apt-get install -y curl gnupg udev wget && \
+    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
+    tee /etc/apt/sources.list.d/coral-edgetpu.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-get update && \
+    # https://coral.ai/docs/m2/get-started/#2-install-the-pcie-driver-and-edge-tpu-runtime
+    apt-get install -y libedgetpu1-std && apt-get clean
+
+RUN sh -c "echo 'SUBSYSTEM==\"apex\", MODE=\"0660\", GROUP=\"apex\"' >> /etc/udev/rules.d/65-apex.rules" && \
+    groupadd apex
+
+WORKDIR /app
+
+COPY requirements.txt ./
+
+# install python packages
+RUN apt-get install -y python3 python3-pip python3-pycoral \
+    # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
+    libgl1-mesa-glx && \
+    # update pip
+    python3 -m pip install -U pip && \
+    # install requirements
+    python3 -m pip install -r requirements.txt && \
+    apt-get clean
+
+COPY /src ./src
+
+ENTRYPOINT [ "python3", "src/server.py" ]

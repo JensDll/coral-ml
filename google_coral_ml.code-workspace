@@ -4,13 +4,13 @@
       "path": "python"
     },
     {
-      "path": "vue"
+      "path": "frontend"
     },
     {
-      "path": "proxy"
+      "path": "node-socket"
     },
     {
-      "path": "node.socket"
+      "path": "model-api"
     }
   ],
   "settings": {

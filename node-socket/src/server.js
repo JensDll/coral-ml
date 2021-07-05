@@ -13,15 +13,19 @@ const io = new Server(httpServer, {
         origin: "*",
     },
 });
-async function startReading() {
-    for await (const [frame] of sock) {
-        io.emit("video:stream", frame);
+async function startReading(socket, subscriber) {
+    for await (const [frame] of subscriber) {
+        socket.emit("video:stream", frame);
     }
 }
-startReading();
 io.on("connection", socket => {
     console.log(`A user connected (${socket.id})`);
+    const subscriber = new zmq.Subscriber();
+    subscriber.connect(`tcp://localhost:${port}`);
+    subscriber.subscribe("");
+    startReading(socket, subscriber);
     socket.on("disconnect", () => {
+        subscriber.close();
         console.log(`A user disconnected (${socket.id})`);
     });
 });

@@ -137,7 +137,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Project specific files
 coral/
-all_models/
 **/notebooks/**/data
 my_logs/
+*.tflite
+*.h5

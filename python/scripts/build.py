@@ -18,6 +18,7 @@ parser.add_argument("--platform", help="platform option which will be passed to 
                     type=str, default="linux/arm64")
 parser.add_argument("versions", nargs='+',
                     help="the tags to attach", type=str, default=[])
+parser.add_argument("--push", action="store_true")
 
 args = parser.parse_args()
 
@@ -28,11 +29,14 @@ tags = chain.from_iterable([
     *[("-t", f"{REPOSITORY}:{tag}-{v}") for v in args.versions]
 ])
 
-subprocess.run(["docker", "buildx", "build", "--push",
-                "--platform", args.platform, *tags, f"../{path}"])
+build_context = f"../{path}"
 
-# subprocess.run(["docker", "buildx", "build",
-#                 "--platform", args.platform, "-t", "coral:v10", "--no-cache",
-#                 "--progress", "plain",
-#                 "-o", "type=docker",
-#                 "--no-cache", "--load", f"../{path}"])
+if args.push:
+    subprocess.run(["docker", "buildx", "build", "--push",
+                    "--platform", args.platform, *tags, build_context])
+else:
+    subprocess.run(["docker", "buildx", "build",
+                    "--platform", args.platform, *tags, "--no-cache",
+                    "--progress", "plain",
+                    "-o", "type=docker",
+                    "--no-cache", "--load", build_context])

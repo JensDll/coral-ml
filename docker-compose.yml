@@ -1,1 +1,10 @@
 version: "3.9"
+
+services:
+  db:
+    build:
+      context: db
+      args:
+        SA_PASSWORD: Pwd12345!
+    ports:
+      - 1433:1433

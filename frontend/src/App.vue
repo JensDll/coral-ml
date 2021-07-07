@@ -21,7 +21,7 @@ class Stream {
   socket
 
   constructor() {
-    const socket = io("http://localhost:5000")
+    const socket = io("http://localhost:5500")
     const img = imgRef.value
 
     connecting.value = true

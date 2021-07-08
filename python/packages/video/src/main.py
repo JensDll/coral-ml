@@ -1,30 +1,40 @@
-from modelRepository import ModelRepository
 import zmq
 import cv2
 import simplejpeg
 import argparse
 import traceback
 import sys
-import aiohttp
-import asyncio
+import threading
+import random
+import string
 
 
-async def publish(context: zmq.Context, session: aiohttp.ClientSession, camera_source, args: argparse.Namespace):
+def id_generator(length):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+
+def pipe(context: zmq.Context):
+    a = context.socket(zmq.PAIR)
+    b = context.socket(zmq.PAIR)
+    a.linger = b.linger = 0
+    a.hwm = b.hwm = 1
+    inproc = f"inproc://{id_generator(16)}"
+    a.bind(inproc)
+    b.connect(inproc)
+    return a, b
+
+
+def publisher(context: zmq.Context, peer: zmq.Socket, camera_source, args: argparse.Namespace):
+    global stop_event
+
     address = f"tcp://*:{args.pub_port}"
     publisher = context.socket(zmq.PUB)
     publisher.bind(address)
     print(f"(PUB) Bind to '{address}'")
 
-    address = f"tcp://*:{args.pull_port}"
-    puller = context.socket(zmq.PULL)
-    puller.bind(address)
-    print(f"(PULL) Bind to '{address}'")
-
     poller = zmq.Poller()
-    poller.register(puller, zmq.POLLIN)
+    poller.register(peer, zmq.POLLIN)
     poller.register(publisher, zmq.POLLOUT)
-
-    model_repo = ModelRepository(args.api, session)
 
     while True:
         try:
@@ -32,10 +42,8 @@ async def publish(context: zmq.Context, session: aiohttp.ClientSession, camera_s
         except:
             break
 
-        if puller in items:
-            id = puller.recv()
-            print(f"PULL {id}")
-            await model_repo.get_by_id(id.decode("utf-8"))
+        if peer in items:
+            print("KILL")
 
         if publisher in items:
             has_frame, frame = camera_source.read()
@@ -48,22 +56,42 @@ async def publish(context: zmq.Context, session: aiohttp.ClientSession, camera_s
 
             publisher.send(jpg, copy=False)
 
+    publisher.close()
+    peer.close()
 
-async def main():
+
+def model_manager(context: zmq.Context, kill: zmq.Socket, args: argparse.Namespace):
+    global stop_event
+
+    address = f"tcp://*:{args.rep_port}"
+    receiver = context.socket(zmq.REP)
+    receiver.bind(address)
+    print(f"(REP) Bind to '{address}'")
+
+    while True:
+        msg = receiver.recv()
+        print(msg)
+
+
+def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pub_port", default=5555, type=int)
-    parser.add_argument("--pull_port", default=5556, type=int)
-    parser.add_argument(
-        "--api", help="The address of the TFLite API server", type=str)
+    parser.add_argument("--pub_port", default=5500, type=int)
+    parser.add_argument("--rep_port", default=5600, type=int)
 
     args = parser.parse_args()
 
     context = zmq.Context()
-    session = aiohttp.ClientSession()
     camera_source = cv2.VideoCapture(0)
 
+    kill, peer = pipe(context)
+
+    model_manager_thread = threading.Thread(
+        target=model_manager, args=[context, kill, args])
+    model_manager_thread.daemon = True
+    model_manager_thread.start()
+
     try:
-        await publish(context, session, camera_source, args)
+        publisher(context, peer, camera_source, args)
     except (KeyboardInterrupt, SystemExit):
         print('Exit due to keyboard interrupt')
     except Exception as ex:
@@ -76,5 +104,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    main()

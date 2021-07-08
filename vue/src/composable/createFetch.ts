@@ -1,4 +1,6 @@
 import { reactive } from "vue"
+import fs from "fs"
+import { uriService } from "./uriService"
 
 interface FetchOptions extends RequestInit {
   uri: string
@@ -16,11 +18,11 @@ type StateWithPromise<T> = { state: State<T>; promise: Promise<State<T>> }
 
 type ParsingOptions<T> = {
   json(immediate: true): State<T>
-  json(immediate?: false): StateWithPromise<T>
+  json(immediate?: boolean): StateWithPromise<T>
   blob(immediate: true): State<T>
-  blob(immediate?: false): StateWithPromise<T>
+  blob(immediate?: boolean): StateWithPromise<T>
   text(immediate: true): State<string>
-  text(immediate?: false): StateWithPromise<string>
+  text(immediate?: boolean): StateWithPromise<string>
 }
 
 const makeRequest = async <T>(state: State<T>, options: FetchOptions) => {
@@ -103,9 +105,13 @@ const fetchMethods = <T>(state: State<T>, options: FetchOptions) => ({
 
 const useFetch =
   (baseUri: string) =>
-  <TData>(uri: string) => {
+  <TData>(uri: string, params: Record<string | number, unknown> = {}) => {
     const options: FetchOptions = {
       uri: baseUri + uri
+    }
+
+    if (Object.keys(params).length > 0) {
+      options.uri += `?${uriService.toUrlParams(params)}`
     }
 
     const state = reactive<State<TData>>({

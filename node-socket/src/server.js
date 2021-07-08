@@ -1,32 +1,34 @@
 import zmq from "zeromq";
 import { Server } from "socket.io";
 import { createServer } from "http";
-const subscriberPort = 5555;
-const pushPort = 5556;
-const listen = 5500;
+const subscriberPort = 5500;
+const replyPort = 5600;
+const listen = 6100;
 const httpServer = createServer();
 const io = new Server(httpServer, {
     cors: {
-        origin: "*",
-    },
+        origin: "*"
+    }
 });
-async function startReading(socket, subscriber) {
+async function readVideo(socket, subscriber) {
     for await (const [frame] of subscriber) {
         socket.emit("video:stream", frame);
     }
 }
 io.on("connection", socket => {
-    console.log(`A user connected (${socket.id})`);
+    console.log(`A users connected (${socket.id})`);
     const subscriber = new zmq.Subscriber();
     subscriber.connect(`tcp://localhost:${subscriberPort}`);
     subscriber.subscribe("");
-    const push = new zmq.Push();
-    push.connect(`tcp://localhost:${pushPort}`);
-    push.send("10");
-    startReading(socket, subscriber);
+    const reply = new zmq.Reply();
+    reply.connect(`tcp://localhost:${replyPort}`);
+    readVideo(socket, subscriber);
     socket.on("disconnect", () => {
         subscriber.close();
         console.log(`A user disconnected (${socket.id})`);
+    });
+    socket.on("model:load", model => {
+        console.log(model);
     });
 });
 httpServer.listen(listen);

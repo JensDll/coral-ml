@@ -4,7 +4,7 @@
       "path": "python"
     },
     {
-      "path": "frontend"
+      "path": "vue"
     },
     {
       "path": "node-socket"

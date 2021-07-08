@@ -2,14 +2,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER PROCEDURE [dbo].[spModel_GetById]
+CREATE OR ALTER PROCEDURE [dbo].[spModel_Delete]
   @id int
 AS
 BEGIN
   SET NOCOUNT ON;
 
-  SELECT model
-  FROM dbo.Model
+  DELETE FROM dbo.Model
   WHERE id = @id;
 END
 GO

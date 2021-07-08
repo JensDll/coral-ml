@@ -28,6 +28,14 @@ namespace ModelAPI
         {
             services.AddInfrastructure(Configuration);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("dev", builder =>
+                {
+                    builder.AllowAnyOrigin();
+                });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -44,9 +52,11 @@ namespace ModelAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModelAPI v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("dev");
 
             app.UseAuthorization();
 

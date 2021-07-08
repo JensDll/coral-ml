@@ -10,9 +10,13 @@ namespace Contracts
     {
         public static class Model
         {
-            public const string Save = "spModel_Save";
+            public const string GetAll = "spModel_GetAll";
 
             public const string GetById = "spModel_GetById";
+
+            public const string Create = "spModel_Create";
+
+            public const string Delete = "spModel_Delete";
         }
     }
 }

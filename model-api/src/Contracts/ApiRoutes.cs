@@ -12,9 +12,13 @@ namespace Contracts
 
         public static class Model
         {
+            public const string GetAll = Base + "/model";
+
             public const string GetById = Base + "/model/{id}";
 
-            public const string SaveModel = Base + "/model";
+            public const string Create = Base + "/model";
+
+            public const string Delete = Base + "/model/{id}";
         }
     }
 }

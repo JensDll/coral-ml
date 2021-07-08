@@ -1,4 +1,6 @@
 ﻿using Application.Data.Models;
+using Contracts.Request;
+using Contracts.Response;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,11 +12,13 @@ namespace Application.Data.Repositories
 {
     public interface IModelRepository
     {
+        public Task<EnumerableEnvelopeDto<TFLiteModelGetAllDto>>
+            GetAllAsync(PaginationRequestDto paginationRequest);
 
-        public Task<int> Save(IFormFile model);
+        public Task<byte[]> GetByIdAsync(int id);
 
-        public Task<TFLiteModelModel> GetById(int id);
+        public Task<int> CreateAsync(IFormFile model);
 
-        public Task<byte[]> GetAll();
+        public Task<int> DeleteAsync(int id);
     }
 }

@@ -1,4 +1,4 @@
-import { inject, InjectionKey, reactive, readonly } from "vue"
+import { inject, InjectionKey, reactive, readonly } from 'vue'
 
 type State = {
   navHidden: boolean

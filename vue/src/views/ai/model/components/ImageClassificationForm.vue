@@ -23,14 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { useValidation } from "vue3-form-validation"
-import type { Field } from "vue3-form-validation"
-import VButton from "~/components/base/VButton.vue"
-import FormFileUpload from "~/components/form/FormFileUpload.vue"
-import { minMax } from "~/utils"
+import { useValidation } from 'vue3-form-validation'
+import type { Field } from 'vue3-form-validation'
+import VButton from '~/components/base/VButton.vue'
+import FormFileUpload from '~/components/form/FormFileUpload.vue'
+import { minMax } from '~/utils'
 
 const emit = defineEmits<{
-  (event: "submit", image: File): void
+  (event: 'submit', image: File): void
 }>()
 
 type Data = {
@@ -40,14 +40,14 @@ type Data = {
 const { form, validateFields, resetFields } = useValidation<Data>({
   images: {
     $value: [],
-    $rules: [minMax(1, 1)("Please select exactly one image file")]
+    $rules: [minMax(1, 1)('Please select exactly one image file')]
   }
 })
 
 const handleSubmit = async () => {
   try {
     const { images } = await validateFields()
-    emit("submit", images[0])
+    emit('submit', images[0])
   } catch {}
 }
 </script>

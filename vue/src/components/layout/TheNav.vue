@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from "../../composable"
+import { useStore } from '../../composable'
 
 const store = useStore()
 </script>

@@ -30,14 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import type { PropType } from "vue"
-import { modelRepository } from "~/api"
-import type { TFLiteModelRecord } from "~/api"
-import VButton from "~/components/base/VButton.vue"
-import { DownloadIcon } from "@heroicons/vue/outline"
-import { useDownload, useLoading, useSocketService } from "~/composable"
-import { useRouter } from "vue-router"
+import { computed } from 'vue'
+import type { PropType } from 'vue'
+import { modelRepository } from '~/api'
+import type { TFLiteModelRecord } from '~/api'
+import VButton from '~/components/base/VButton.vue'
+import { DownloadIcon } from '@heroicons/vue/outline'
+import { useDownload, useLoading, useSocketService } from '~/composable'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   model: {
@@ -47,7 +47,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const modelName = computed(() => props.model.modelName.replace(".tflite", ""))
+const modelName = computed(() => props.model.modelName.replace('.tflite', ''))
 
 const socketService = useSocketService()
 
@@ -57,13 +57,13 @@ const [[loading, loadModel]] = useLoading(
 
 async function load() {
   const resp = await loadModel(props.model.id)
-  router.push({ name: "image" })
+  router.push({ name: 'image' })
 }
 
 async function download() {
   const { data } = await modelRepository.download(props.model.id, false).promise
   if (data) {
-    useDownload(data, "model.zip")
+    useDownload(data, 'model.zip')
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue"
+import { ref, Ref } from 'vue'
 
 type AsyncFunction = (...args: any[]) => Promise<any>
 

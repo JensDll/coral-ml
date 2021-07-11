@@ -32,6 +32,7 @@
   "prettier": {
     "semi": false,
     "arrowParens": "avoid",
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "singleQuote": true
   }
 }

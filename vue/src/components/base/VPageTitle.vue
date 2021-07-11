@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeftIcon } from "@heroicons/vue/outline"
+import { ArrowLeftIcon } from '@heroicons/vue/outline'
 
 defineProps({
   title: {
@@ -25,7 +25,7 @@ defineProps({
   }
 })
 
-const emit = defineEmits(["back"])
+const emit = defineEmits(['back'])
 </script>
 
 <style lang="postcss" scoped></style>

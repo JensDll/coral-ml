@@ -45,13 +45,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router"
-import { AcademicCapIcon } from "@heroicons/vue/solid"
-import VLink from "../base/VLink.vue"
+import { useRouter } from 'vue-router'
+import { AcademicCapIcon } from '@heroicons/vue/solid'
+import VLink from '../base/VLink.vue'
 const router = useRouter()
 
 function goHome() {
-  router.push({ name: "landing-page" })
+  router.push({ name: 'landing-page' })
 }
 </script>
 

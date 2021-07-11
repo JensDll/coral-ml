@@ -1,6 +1,6 @@
-import { reactive } from "vue"
-import fs from "fs"
-import { uriService } from "./uriService"
+import { reactive } from 'vue'
+import fs from 'fs'
+import { uriService } from './uriService'
 
 interface FetchOptions extends RequestInit {
   uri: string
@@ -48,7 +48,7 @@ const makeRequest = async <T>(state: State<T>, options: FetchOptions) => {
 const parseRequest = async <T>(
   state: State<T>,
   options: FetchOptions,
-  type: "json" | "blob" | "text"
+  type: 'json' | 'blob' | 'text'
 ) => {
   await makeRequest(state, options)
   if (state.response && state.responseOk) {
@@ -62,7 +62,7 @@ const parsingOptions = <T>(
   options: FetchOptions
 ): ParsingOptions<T> => ({
   json(immediate = false): any {
-    const promise = parseRequest(state, options, "json")
+    const promise = parseRequest(state, options, 'json')
     if (immediate) {
       promise.then()
       return state
@@ -70,7 +70,7 @@ const parsingOptions = <T>(
     return { state, promise }
   },
   text(immediate = false): any {
-    const promise = parseRequest(state, options, "text")
+    const promise = parseRequest(state, options, 'text')
     if (immediate) {
       promise.then()
       return state
@@ -78,7 +78,7 @@ const parsingOptions = <T>(
     return { state, promise }
   },
   blob(immediate = false): any {
-    const promise = parseRequest(state, options, "blob")
+    const promise = parseRequest(state, options, 'blob')
     if (immediate) {
       promise.then()
       return state
@@ -89,21 +89,21 @@ const parsingOptions = <T>(
 
 const fetchMethods = <T>(state: State<T>, options: FetchOptions) => ({
   get() {
-    options.method = "GET"
+    options.method = 'GET'
     return parsingOptions(state, options)
   },
   post(body: any) {
-    options.method = "POST"
+    options.method = 'POST'
     options.body = body
     return parsingOptions(state, options)
   },
   put(body: any) {
-    options.method = "POST"
+    options.method = 'POST'
     options.body = body
     return parsingOptions(state, options)
   },
   delete(body: any) {
-    options.method = "POST"
+    options.method = 'POST'
     options.body = body
     return parsingOptions(state, options)
   }

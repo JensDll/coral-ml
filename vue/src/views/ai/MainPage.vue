@@ -7,9 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import TheHeader from "~/components/layout/TheHeader.vue"
-import TheNav from "~/components/layout/TheNav.vue"
-import TheMain from "~/components/layout/TheMain.vue"
+import TheHeader from '~/components/layout/TheHeader.vue'
+import TheNav from '~/components/layout/TheNav.vue'
+import TheMain from '~/components/layout/TheMain.vue'
 </script>
 
 <style scoped lang="postcss">
@@ -20,15 +20,15 @@ import TheMain from "~/components/layout/TheMain.vue"
   grid-template-rows: auto 1fr;
   grid-template-columns: 16rem 1fr;
   grid-template-areas:
-    "logo header"
-    "main main";
+    'logo header'
+    'main main';
 }
 
 @screen lg {
   .grid-container {
     grid-template-areas:
-      "logo header"
-      "nav main";
+      'logo header'
+      'nav main';
   }
 }
 </style>

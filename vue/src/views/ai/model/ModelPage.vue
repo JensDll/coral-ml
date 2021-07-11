@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { modelRepository } from "~/api"
-import ModelCard from "./components/ModelCard.vue"
-import VButton from "~/components/base/VButton.vue"
-import VPageTitle from "~/components/base/VPageTitle.vue"
+import { modelRepository } from '~/api'
+import ModelCard from './components/ModelCard.vue'
+import VButton from '~/components/base/VButton.vue'
+import VPageTitle from '~/components/base/VPageTitle.vue'
 
 const state = modelRepository.getAll(true)
 </script>

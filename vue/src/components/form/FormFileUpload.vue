@@ -69,9 +69,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import { MinusCircleIcon } from "@heroicons/vue/solid"
-import type { PropType } from "vue"
+import { computed } from 'vue'
+import { MinusCircleIcon } from '@heroicons/vue/solid'
+import type { PropType } from 'vue'
 
 type FileHelper = {
   src: string
@@ -108,7 +108,7 @@ const files = computed<File[]>({
     return props.modelValue
   },
   set(files) {
-    emit("update:modelValue", files)
+    emit('update:modelValue', files)
   }
 })
 
@@ -135,7 +135,7 @@ const unique = (files: File[]) => {
   })
 }
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(['update:modelValue'])
 
 const handleChange = (e: Event) => {
   const input = e.target as HTMLInputElement
@@ -149,6 +149,6 @@ const handleChange = (e: Event) => {
     files.value = unique(files.value)
   }
 
-  input.value = ""
+  input.value = ''
 }
 </script>

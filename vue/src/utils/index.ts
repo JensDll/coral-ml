@@ -1,2 +1,2 @@
-export type { PlainFormData } from "./types"
-export * from "./rules"
+export type { PlainFormData } from './types'
+export * from './rules'

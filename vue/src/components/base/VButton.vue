@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue"
+import type { PropType } from 'vue'
 
 const props = defineProps({
   loading: {
@@ -26,12 +26,12 @@ const props = defineProps({
     type: Boolean
   },
   htmlType: {
-    type: String as PropType<"button" | "submit" | "reset">,
-    default: "button"
+    type: String as PropType<'button' | 'submit' | 'reset'>,
+    default: 'button'
   },
   type: {
-    type: String as PropType<"basic" | "primary" | "secondary" | "danger">,
-    default: "primary"
+    type: String as PropType<'basic' | 'primary' | 'secondary' | 'danger'>,
+    default: 'primary'
   },
   reverse: {
     type: Boolean

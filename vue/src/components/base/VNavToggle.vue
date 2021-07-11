@@ -20,17 +20,17 @@
 </template>
 
 <script setup lang="ts">
-import { MenuAlt2Icon } from "@heroicons/vue/solid"
-import { XIcon } from "@heroicons/vue/solid"
-import { computed } from "@vue/runtime-core"
-import { useRouter } from "vue-router"
-import { useStore } from "../../composable"
+import { MenuAlt2Icon } from '@heroicons/vue/solid'
+import { XIcon } from '@heroicons/vue/solid'
+import { computed } from '@vue/runtime-core'
+import { useRouter } from 'vue-router'
+import { useStore } from '../../composable'
 
 const store = useStore()
 const router = useRouter()
 
 const notLandingPage = computed(() => {
-  return router.currentRoute.value.name !== "landing-page"
+  return router.currentRoute.value.name !== 'landing-page'
 })
 </script>
 

@@ -3,9 +3,9 @@ module.exports = {
   darkMode: false,
   theme: {
     colors: {
-      transparent: "transparent",
-      current: "currentColor",
-      ...require("tailwindcss/colors")
+      transparent: 'transparent',
+      current: 'currentColor',
+      ...require('tailwindcss/colors')
     },
     extend: {
       fontFamily: {

@@ -5,12 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue"
+import type { PropType } from 'vue'
 
 defineProps({
   type: {
-    type: String as PropType<"basic" | "primary" | "danger">,
-    default: "basic"
+    type: String as PropType<'basic' | 'primary' | 'danger'>,
+    default: 'basic'
   }
 })
 </script>

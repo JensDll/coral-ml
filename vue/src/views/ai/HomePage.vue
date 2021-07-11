@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import VPageTitle from "~/components/base/VPageTitle.vue"
+import VPageTitle from '~/components/base/VPageTitle.vue'
 </script>
 
 <style lang="postcss"></style>

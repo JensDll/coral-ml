@@ -1,5 +1,5 @@
-import { useFetch } from "../../composable"
-import { EnumerableEnvelope, Id, PaginationRequest } from "./common"
+import { useFetch } from '../../composable'
+import { EnumerableEnvelope, Id, PaginationRequest } from './common'
 
 export type TFLiteModelRecord = {
   id: number
@@ -12,7 +12,7 @@ export const modelRepository = {
     pagination: PaginationRequest = { pageNumber: 1, pageSize: 100 }
   ) {
     return useFetch<EnumerableEnvelope<TFLiteModelRecord>>(
-      "/model",
+      '/model',
       {},
       pagination
     )
@@ -21,10 +21,10 @@ export const modelRepository = {
   },
   uploadModel<T extends boolean>(model: File, label: File, immediate: T) {
     const formData = new FormData()
-    formData.append("model", model)
-    formData.append("label", label)
+    formData.append('model', model)
+    formData.append('label', label)
 
-    return useFetch<void>("/model").post(formData).text(immediate)
+    return useFetch<void>('/model').post(formData).text(immediate)
   },
   download<T extends boolean>(id: Id, immediate: T) {
     return useFetch<Blob>(`/model/${id}`).get().blob(immediate)

@@ -4,9 +4,9 @@
 </template>
 
 <script setup lang="ts">
-import VPageTitle from "~/components/base/VPageTitle.vue"
-import { useSocketService } from "~/composable/useSocketService"
-import ImageClassificationForm from "./components/ImageClassificationForm.vue"
+import VPageTitle from '~/components/base/VPageTitle.vue'
+import { useSocketService } from '~/composable/useSocketService'
+import ImageClassificationForm from './components/ImageClassificationForm.vue'
 
 const socketService = useSocketService()
 

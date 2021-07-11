@@ -26,11 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import FormFileUpload from "~/components/form/FormFileUpload.vue"
-import VButton from "~/components/base/VButton.vue"
-import { useValidation } from "vue3-form-validation"
-import type { Field } from "vue3-form-validation"
-import type { PlainFormData } from "~/utils"
+import FormFileUpload from '~/components/form/FormFileUpload.vue'
+import VButton from '~/components/base/VButton.vue'
+import { useValidation } from 'vue3-form-validation'
+import type { Field } from 'vue3-form-validation'
+import type { PlainFormData } from '~/utils'
 
 export type FormData = PlainFormData<typeof validateFields>
 
@@ -45,9 +45,9 @@ const { form, validateFields, resetFields } = useValidation<Data>({
       files => {
         if (
           files.length !== 2 ||
-          !files.find(f => f.name.endsWith(".tflite"))
+          !files.find(f => f.name.endsWith('.tflite'))
         ) {
-          return "Please select a model and label file"
+          return 'Please select a model and label file'
         }
       }
     ]
@@ -55,13 +55,13 @@ const { form, validateFields, resetFields } = useValidation<Data>({
 })
 
 const emit = defineEmits<{
-  (event: "submit", formData: FormData): void
+  (event: 'submit', formData: FormData): void
 }>()
 
 const handleSubmit = async () => {
   try {
     const formData = await validateFields()
-    emit("submit", formData)
+    emit('submit', formData)
   } catch {}
 }
 </script>

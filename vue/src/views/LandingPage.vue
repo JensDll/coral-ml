@@ -9,23 +9,16 @@
     <div class="flex flex-col sm:flex-row">
       <v-button
         class="px-6 py-4 font-semibold rounded-xl"
-        @click="goTo('ai-image')"
+        @click="goTo('home')"
       >
-        Classification
-      </v-button>
-      <v-button
-        type="secondary"
-        class="px-6 py-4 mt-4 sm:mt-0 sm:ml-4 font-semibold rounded-xl"
-        @click="goTo('ai-video')"
-      >
-        Video Analysis
+        Getting Started
       </v-button>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import VButton from "../components/common/VButton.vue"
+import VButton from "~/components/base/VButton.vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()

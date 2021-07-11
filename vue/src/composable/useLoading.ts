@@ -12,7 +12,7 @@ export function useLoading<Fs extends readonly AsyncFunction[]>(
     const callback = async (...args: any[]) => {
       loading.value = true
       try {
-        return f(...args)
+        return await f(...args)
       } finally {
         loading.value = false
       }

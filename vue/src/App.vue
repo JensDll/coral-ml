@@ -1,12 +1,12 @@
 <template>
-  <main class="lg:container lg:mx-auto min-h-screen m:px-6">
+  <div class="lg:container lg:mx-auto min-h-screen m:px-6">
     <router-view></router-view>
     <v-nav-toggle class="z-50 fixed bottom-4 right-4"></v-nav-toggle>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-import VNavToggle from "./components/common/VNavToggle.vue"
+import VNavToggle from "./components/base/VNavToggle.vue"
 </script>
 
 <style lang="postcss">

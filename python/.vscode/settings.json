@@ -1,14 +1,12 @@
 {
   "editor.formatOnSave": true,
   "python.pythonPath": "env\\Scripts\\python.exe",
+  "files.exclude": {
+    "**/__pycache__": true
+  },
   "[proto3]": {
     "editor.tabSize": 2
   },
-  "spellright.language": [
-    "en"
-  ],
-  "spellright.documentTypes": [
-    "markdown",
-    "latex"
-  ]
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["markdown", "latex"]
 }

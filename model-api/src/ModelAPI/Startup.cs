@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Infrastructure;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace ModelAPI
 {
@@ -28,11 +29,16 @@ namespace ModelAPI
         {
             services.AddInfrastructure(Configuration);
 
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = int.MaxValue;
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("dev", builder =>
                 {
-                    builder.AllowAnyOrigin();
+                    builder.AllowAnyOrigin().WithExposedHeaders("Location");
                 });
             });
 

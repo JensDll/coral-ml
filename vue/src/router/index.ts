@@ -1,9 +1,16 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
+import { h } from "vue"
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw,
+  RouterView
+} from "vue-router"
 import LandingPage from "../views/LandingPage.vue"
-import MainPage from "../views/MainPage.vue"
-import HomePage from "../views/HomePage.vue"
-import ImagePage from "../views/ImagePage.vue"
-import VideoPage from "../views/VideoPage.vue"
+import MainPage from "../views/ai/MainPage.vue"
+import HomePage from "../views/ai/HomePage.vue"
+import ModelPage from "../views/ai/model/ModelPage.vue"
+import ModelUploadNew from "~/views/ai/model/ModelUploadNew.vue"
+import ModelImagePage from "~/views/ai/model/ModelImagePage.vue"
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,14 +28,25 @@ const routes: RouteRecordRaw[] = [
         component: HomePage
       },
       {
-        path: "video",
-        name: "ai-video",
-        component: VideoPage
+        path: "model",
+        component: { render: () => h(RouterView) },
+        children: [
+          {
+            path: "",
+            name: "model",
+            component: ModelPage
+          },
+          {
+            path: "upload",
+            name: "model-new",
+            component: ModelUploadNew
+          }
+        ]
       },
       {
         path: "image",
-        name: "ai-image",
-        component: ImagePage
+        name: "image",
+        component: ModelImagePage
       }
     ]
   }

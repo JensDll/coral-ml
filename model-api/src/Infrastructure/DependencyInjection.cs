@@ -1,12 +1,11 @@
 ﻿using Application.Data;
 using Application.Data.Repositories;
-using Application.Data.Services;
+using Application.Mapping.Model;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
-using Infrastructure.Data.Services;
+using Infrastructure.Mapping.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 
 namespace Infrastructure
 {
@@ -17,8 +16,11 @@ namespace Infrastructure
             // data access
             services.AddSingleton<IConnectionFactory>
                 (new ConnectionFactory(configuration.GetConnectionString("ModelDb")));
-            services.AddSingleton<IModelRepository, ModelRepository>();
-            services.AddSingleton<IPaginationService, PaginationService>();
+            services.AddSingleton<ITFLiteRecordRepository, TFLiteRecordRepository>();
+
+            // mapping
+            services.AddSingleton<ITFLiteRecordRequestMapper, TFLiteRecordRequestMapper>();
+            services.AddSingleton<ITFLiteRecordResponseMapper, TFLiteRecordResponseMapper>();
         }
     }
 }

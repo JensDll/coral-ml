@@ -4,7 +4,7 @@ type State = {
   navHidden: boolean
 }
 
-export const createStore = () => {
+const createStore = () => {
   const state = reactive<State>({
     navHidden: false
   })
@@ -19,6 +19,8 @@ export const createStore = () => {
   }
 }
 
+export const store = createStore()
+
 export const storeKey: InjectionKey<ReturnType<typeof createStore>> = Symbol()
 
-export const useStore = () => inject(storeKey, createStore())
+export const useStore = () => inject(storeKey) as typeof store

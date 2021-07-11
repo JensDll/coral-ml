@@ -17,12 +17,18 @@ type State<TData> = {
 type StateWithPromise<T> = { state: State<T>; promise: Promise<State<T>> }
 
 type ParsingOptions<T> = {
-  json(immediate: true): State<T>
-  json(immediate?: boolean): StateWithPromise<T>
-  blob(immediate: true): State<T>
-  blob(immediate?: boolean): StateWithPromise<T>
-  text(immediate: true): State<string>
-  text(immediate?: boolean): StateWithPromise<string>
+  json<TImmediate extends boolean>(
+    immediate: TImmediate
+  ): TImmediate extends true ? State<T> : StateWithPromise<T>
+  json(): State<T>
+  blob<TImmediate extends boolean>(
+    immediate: TImmediate
+  ): TImmediate extends true ? State<T> : StateWithPromise<T>
+  blob(): State<T>
+  text<TImmediate extends boolean>(
+    immediate: TImmediate
+  ): TImmediate extends true ? State<string> : StateWithPromise<string>
+  text(): State<string>
 }
 
 const makeRequest = async <T>(state: State<T>, options: FetchOptions) => {
@@ -105,13 +111,18 @@ const fetchMethods = <T>(state: State<T>, options: FetchOptions) => ({
 
 const useFetch =
   (baseUri: string) =>
-  <TData>(uri: string, params: Record<string | number, unknown> = {}) => {
-    const options: FetchOptions = {
-      uri: baseUri + uri
+  <TData>(
+    uri: string,
+    options: RequestInit = {},
+    params: Record<string | number, unknown> = {}
+  ) => {
+    const fetchOptions: FetchOptions = {
+      uri: baseUri + uri,
+      ...options
     }
 
     if (Object.keys(params).length > 0) {
-      options.uri += `?${uriService.toUrlParams(params)}`
+      fetchOptions.uri += `?${uriService.toUrlParams(params)}`
     }
 
     const state = reactive<State<TData>>({
@@ -119,7 +130,7 @@ const useFetch =
       responseOk: false
     })
 
-    return fetchMethods(state, options)
+    return fetchMethods(state, fetchOptions)
   }
 
 export const createFetch = (baseUri: string) => useFetch(baseUri)

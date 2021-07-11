@@ -3,12 +3,13 @@ import { Server, Socket as IOSocket } from "socket.io"
 import { createServer } from "http"
 
 const subscriberPort = 5500
-const replyPort = 5600
+const modelManagerPort = 5600
 
 const listen = 6100
 
 const httpServer = createServer()
 const io = new Server(httpServer, {
+  maxHttpBufferSize: 1e8,
   cors: {
     origin: "*"
   }
@@ -16,7 +17,7 @@ const io = new Server(httpServer, {
 
 async function readVideo(socket: IOSocket, subscriber: zmq.Subscriber) {
   for await (const [frame] of subscriber) {
-    socket.emit("video:stream", frame)
+    socket.emit("video stream", frame)
   }
 }
 
@@ -27,18 +28,29 @@ io.on("connection", socket => {
   subscriber.connect(`tcp://localhost:${subscriberPort}`)
   subscriber.subscribe("")
 
-  const reply = new zmq.Reply()
-  reply.connect(`tcp://localhost:${replyPort}`)
+  const request = new zmq.Request()
+  request.connect(`tcp://localhost:${modelManagerPort}`)
 
   readVideo(socket, subscriber)
+
+  socket.on("load model", async (id, callback) => {
+    console.log(id)
+
+    await request.send(id)
+    await request.receive()
+
+    callback({
+      id
+    })
+  })
+
+  socket.on("image classification", async (image, callback) => {
+    console.log(image)
+  })
 
   socket.on("disconnect", () => {
     subscriber.close()
     console.log(`A user disconnected (${socket.id})`)
-  })
-
-  socket.on("model:load", model => {
-    console.log(model)
   })
 })
 

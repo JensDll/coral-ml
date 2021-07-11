@@ -1,0 +1,34 @@
+<template>
+  <div class="grid-container lg:px-6">
+    <the-header />
+    <the-nav />
+    <the-main />
+  </div>
+</template>
+
+<script setup lang="ts">
+import TheHeader from "~/components/layout/TheHeader.vue"
+import TheNav from "~/components/layout/TheNav.vue"
+import TheMain from "~/components/layout/TheMain.vue"
+</script>
+
+<style scoped lang="postcss">
+.grid-container {
+  display: grid;
+  row-gap: 4rem;
+  height: 100%;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 16rem 1fr;
+  grid-template-areas:
+    "logo header"
+    "main main";
+}
+
+@screen lg {
+  .grid-container {
+    grid-template-areas:
+      "logo header"
+      "nav main";
+  }
+}
+</style>

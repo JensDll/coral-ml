@@ -7,12 +7,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "@heroicons/vue": "^1.0.1",
+    "@heroicons/vue": "^1.0.2",
     "prettier": "^2.3.2",
     "socket.io-client": "^4.1.2",
     "ts-node": "^10.0.0",
-    "vue": "^3.1.4",
-    "vue-router": "^4.0.10"
+    "vue": "3.1.4",
+    "vue-router": "^4.0.10",
+    "vue3-form-validation": "^4.0.4"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

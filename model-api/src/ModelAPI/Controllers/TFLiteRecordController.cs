@@ -25,6 +25,7 @@ namespace ModelAPI.Controllers
         private readonly ITFLiteRecordRepository _tFLiteRecordRepository;
         private readonly ITFLiteRecordRequestMapper _requestMapper;
         private readonly ITFLiteRecordResponseMapper _responseMapper;
+        private readonly ILogger _logger;
 
         public TFLiteRecordController(ITFLiteRecordRepository tFLiteRecordRepository,
             ITFLiteRecordRequestMapper requestMapper,

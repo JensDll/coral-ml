@@ -1,7 +1,7 @@
 import aiohttp
 from aiohttp.client_reqrep import ClientResponse
 import zipfile
-from .api_routes import ApiRoutes
+from .base import RepositoryBase
 import pathlib
 
 
@@ -24,10 +24,14 @@ async def save_zip(resp: ClientResponse, file_path: pathlib.Path, chunk_size=512
             f.write(chunk)
 
 
-async def get_by_id(session: aiohttp.ClientSession, id: int):
-    async with session.get(ApiRoutes.TFLiteRecord.get_by_id(id)) as resp:
-        if resp.ok:
-            file_path = pathlib.Path("model.zip")
-            await save_zip(resp, file_path)
-            return extract_zip(file_path)
-        raise aiohttp.ClientError()
+class RecordRepository(RepositoryBase):
+    def __init__(self, base_uri: str, client: aiohttp.ClientSession) -> None:
+        super().__init__(base_uri, client)
+
+    async def get_by_id(self, id: int):
+        async with self.client.get(f"{self.base_uri}/model/{id}") as resp:
+            if resp.ok:
+                file_path = pathlib.Path("model.zip")
+                await save_zip(resp, file_path)
+                return extract_zip(file_path)
+            raise aiohttp.ClientError()

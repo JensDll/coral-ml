@@ -56,8 +56,10 @@ const [[loading, loadModel]] = useLoading(
 )
 
 async function load() {
-  const resp = await loadModel(props.model.id)
-  router.push({ name: 'image' })
+  const success = await loadModel(props.model.id)
+  if (success) {
+    router.push({ name: 'image' })
+  }
 }
 
 async function download() {

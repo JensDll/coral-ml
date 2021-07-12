@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Http;
+using ModelAPI.Extensions;
+using Serilog;
 
 namespace ModelAPI
 {
@@ -57,6 +60,8 @@ namespace ModelAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModelAPI v1"));
             }
+
+            app.UseSerilogRequestLogging();
 
             //app.UseHttpsRedirection();
 

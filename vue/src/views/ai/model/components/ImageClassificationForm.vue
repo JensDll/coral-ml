@@ -40,7 +40,7 @@ type Data = {
 const { form, validateFields, resetFields } = useValidation<Data>({
   images: {
     $value: [],
-    $rules: [minMax(1, 1)('Please select exactly one image file')]
+    $rules: [minMax(1, 1)('Please select an image')]
   }
 })
 

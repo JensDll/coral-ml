@@ -5,13 +5,14 @@
 
 <script setup lang="ts">
 import VPageTitle from '~/components/base/VPageTitle.vue'
-import { useSocketService } from '~/composable/useSocketService'
+import { useSocketService } from '~/composable'
 import ImageClassificationForm from './components/ImageClassificationForm.vue'
 
 const socketService = useSocketService()
 
 async function handleSubmit(image: File) {
-  await socketService.imageClassification(image)
+  const resp = await socketService.imageClassification(image)
+  console.log(resp)
 }
 </script>
 

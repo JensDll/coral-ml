@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 import { ref, onMounted, Ref } from 'vue'
+import { useImage } from '~/composable'
 
 export class SocketService {
   connected = ref(false)
@@ -35,19 +36,24 @@ export class SocketService {
   }
 
   async loadModel(id: string | number) {
-    return new Promise((resolve, reject) => {
-      this.socket.emit('load model', id, (resp: { id: string }) => {
-        resolve(resp)
+    return new Promise<boolean>((resolve, reject) => {
+      this.socket.emit('load model', id, (success: boolean) => {
+        resolve(success)
       })
     })
   }
 
   async imageClassification(image: File) {
-    const buffer = await image.arrayBuffer()
+    const format = useImage.getFormat(image)
+
     return new Promise((resolve, reject) => {
-      this.socket.emit('image classification', buffer, (resp: any) => {
-        resolve(resp)
-      })
+      this.socket.emit(
+        'image classification',
+        { image, format },
+        (resp: any) => {
+          resolve(resp)
+        }
+      )
     })
   }
 }

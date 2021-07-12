@@ -1,6 +1,5 @@
 import { reactive } from 'vue'
-import fs from 'fs'
-import { uriService } from './uriService'
+import { useUri } from './useUri'
 
 interface FetchOptions extends RequestInit {
   uri: string
@@ -122,7 +121,7 @@ const useFetch =
     }
 
     if (Object.keys(params).length > 0) {
-      fetchOptions.uri += `?${uriService.toUrlParams(params)}`
+      fetchOptions.uri += `?${useUri.toUrlParams(params)}`
     }
 
     const state = reactive<State<TData>>({

@@ -1,7 +1,9 @@
 import random
 import string
 import zmq
-from zmq.asyncio import Context
+import pathlib
+from zmq.asyncio import Context, Socket
+import src.common as common
 
 
 def id_generator(length):
@@ -21,3 +23,12 @@ def pipe(ctx: Context):
 
 def encode_bool(bool: bool):
     return bool.to_bytes(1, "big")
+
+
+async def recv_interpreter(pipe: Socket):
+    model_path: bytes
+    label_path: bytes
+    model_path, label_path = await pipe.recv_multipart()
+    model_path = pathlib.Path(model_path.decode())
+    label_path = pathlib.Path(label_path.decode())
+    return common.interpreter_load(model_path, label_path)

@@ -19,7 +19,8 @@ const io = new Server(httpServer, {
 
 async function readVideo(socket: IOSocket, subscriber: zmq.Subscriber) {
   for await (const [frame] of subscriber) {
-    socket.emit('video stream', frame)
+    console.log(frame)
+    // socket.emit('video stream', frame)
   }
 }
 
@@ -27,7 +28,7 @@ io.on('connection', socket => {
   console.log(`A user connected (${socket.id})`)
 
   const subscriber = new zmq.Subscriber()
-  subscriber.connect(`tcp://localhost:${subscriberPort}`)
+  subscriber.connect(`tcp://192.168.178.54:${subscriberPort}`)
   subscriber.subscribe('')
 
   readVideo(socket, subscriber)

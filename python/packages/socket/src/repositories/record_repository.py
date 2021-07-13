@@ -29,6 +29,7 @@ class RecordRepository(RepositoryBase):
         super().__init__(base_uri, client)
 
     async def get_by_id(self, id: int) -> str:
+        print(f"Loading model with id ({id})")
         async with self.client.get(f"{self.base_uri}/record/{id}") as resp:
             if resp.ok:
                 json = await resp.json()

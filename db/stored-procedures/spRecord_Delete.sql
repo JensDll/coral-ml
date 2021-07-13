@@ -1,0 +1,14 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE OR ALTER PROCEDURE [dbo].[spRecord_Delete]
+  @id int
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  DELETE FROM dbo.Record
+  WHERE id = @id;
+END
+GO

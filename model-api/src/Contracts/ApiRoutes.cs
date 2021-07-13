@@ -10,15 +10,26 @@ namespace Contracts
     {
         private const string Base = "api";
 
-        public static class Model
+        public static class Record
         {
-            public const string GetAll = Base + "/model";
+            public const string GetWithRecordTypeId = Base + "/record/type/{recordTypeId}";
 
-            public const string GetById = Base + "/model/{id}";
+            public const string GetLoaded = Base + "/record/loaded";
 
-            public const string Create = Base + "/model";
+            public const string GetById = Base + "/record/{id}";
 
-            public const string Delete = Base + "/model/{id}";
+            public const string Download = Base + "/record/download/{id}";
+
+            public const string Upload = Base + "/record";
+
+            public const string SetLoaded = Base + "/record/loaded/{id}";
+
+            public const string Delete = Base + "/record/{id}";
+        }
+
+        public static class RecordType
+        {
+            public const string GetAll = Base + "/recordType";
         }
     }
 }

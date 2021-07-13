@@ -1,9 +1,9 @@
 <template>
-  <v-page-title title="Quick Start with Artificial Intelligence"></v-page-title>
+  <v-title title="Quick Start with Artificial Intelligence" />
 </template>
 
 <script setup lang="ts">
-import VPageTitle from '~/components/base/VPageTitle.vue'
+import VTitle from '~/components/base/VTitle.vue'
 </script>
 
 <style lang="postcss"></style>

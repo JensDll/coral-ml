@@ -9,7 +9,7 @@
     <div class="flex flex-col sm:flex-row">
       <v-button
         class="px-6 py-4 font-semibold rounded-xl"
-        @click="goTo('home')"
+        @click="router.push({ name: 'home' })"
       >
         Getting Started
       </v-button>
@@ -22,10 +22,6 @@ import VButton from '~/components/base/VButton.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-function goTo(name: string) {
-  router.push({ name })
-}
 </script>
 
 <style></style>

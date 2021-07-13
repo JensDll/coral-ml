@@ -1,7 +1,7 @@
 import zmq from 'zeromq'
 import { Server, Socket as IOSocket } from 'socket.io'
 import { createServer } from 'http'
-import { loadModel, imageClassification } from './endpoints'
+import { loadModel, classify } from './endpoints'
 
 const subscriberPort = 5500
 const modelManagerPort = 5600
@@ -38,7 +38,7 @@ io.on('connection', socket => {
 
   const classification = new zmq.Request()
   classification.connect(`tcp://localhost:${classificationPort}`)
-  socket.on('image classification', imageClassification(classification))
+  socket.on('image classification', classify(classification))
 
   socket.on('disconnect', () => {
     subscriber.close()

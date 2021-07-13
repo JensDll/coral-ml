@@ -1,2 +1,2 @@
 export { loadModel } from './loadModel'
-export { imageClassification } from './imageClassification'
+export { classify } from './classify'

@@ -1,5 +1,10 @@
 export type EnumerableEnvelope<T> = {
   data: T[]
+  total: number
+}
+
+export type PaginationEnvelope<T> = {
+  data: T[]
   pageNumber: number
   pageSize: number
   total: number

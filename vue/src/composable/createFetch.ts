@@ -15,7 +15,7 @@ type State<TData> = {
 
 type StateWithPromise<T> = { state: State<T>; promise: Promise<State<T>> }
 
-type ParsingOptions<T> = {
+export type ParsingOptions<T> = {
   json<TImmediate extends boolean>(
     immediate: TImmediate
   ): TImmediate extends true ? State<T> : StateWithPromise<T>
@@ -86,38 +86,34 @@ const parsingOptions = <T>(
   }
 })
 
-const fetchMethods = <T>(state: State<T>, options: FetchOptions) => ({
-  get() {
-    options.method = 'GET'
-    return parsingOptions(state, options)
+const fetchMethods = <T>(state: State<T>, fetchOptions: FetchOptions) => ({
+  get(options: RequestInit = {}) {
+    fetchOptions = Object.assign(fetchOptions, options)
+    fetchOptions.method = 'GET'
+    return parsingOptions(state, fetchOptions)
   },
-  post(body: any) {
-    options.method = 'POST'
-    options.body = body
-    return parsingOptions(state, options)
+  post(options: RequestInit = {}) {
+    fetchOptions = Object.assign(fetchOptions, options)
+    fetchOptions.method = 'POST'
+    return parsingOptions(state, fetchOptions)
   },
-  put(body: any) {
-    options.method = 'POST'
-    options.body = body
-    return parsingOptions(state, options)
+  put(options: RequestInit = {}) {
+    fetchOptions = Object.assign(fetchOptions, options)
+    fetchOptions.method = 'PUT'
+    return parsingOptions(state, fetchOptions)
   },
-  delete(body: any) {
-    options.method = 'POST'
-    options.body = body
-    return parsingOptions(state, options)
+  delete(options: RequestInit = {}) {
+    fetchOptions = Object.assign(fetchOptions, options)
+    fetchOptions.method = 'DELETE'
+    return parsingOptions(state, fetchOptions)
   }
 })
 
 const useFetch =
   (baseUri: string) =>
-  <TData>(
-    uri: string,
-    options: RequestInit = {},
-    params: Record<string | number, unknown> = {}
-  ) => {
+  <TData>(uri: string, params: Record<string | number, unknown> = {}) => {
     const fetchOptions: FetchOptions = {
-      uri: baseUri + uri,
-      ...options
+      uri: baseUri + uri
     }
 
     if (Object.keys(params).length > 0) {

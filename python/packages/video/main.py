@@ -1,14 +1,12 @@
 import asyncio
 from asyncio.windows_events import WindowsSelectorEventLoopPolicy
 import pathlib
-from typing import List
+from typing import List, TypedDict
 import zmq
 from zmq.asyncio import Context, Poller
 import cv2
 import simplejpeg
 import argparse
-import traceback
-import sys
 import threading
 import random
 import string
@@ -16,11 +14,9 @@ import aiohttp
 import signal
 import tflite_runtime.interpreter as tflite
 import platform
-import pickle
-
-from zmq.backend import has
 
 import src.coral as coral
+import src.zutils as zutils
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--pub_port", default=5500, type=int)
@@ -30,19 +26,10 @@ parser.add_argument("--api", default="http://localhost:5000/api", type=str)
 args = parser.parse_args()
 
 
-def id_generator(length):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-
-
-def pipe(ctx: Context):
-    a = ctx.socket(zmq.PAIR)
-    b = ctx.socket(zmq.PAIR)
-    a.linger = b.linger = 0
-    a.hwm = b.hwm = 1
-    inproc = f"inproc://{id_generator(16)}"
-    a.bind(inproc)
-    b.connect(inproc)
-    return a, b
+class Message(TypedDict):
+    success: bool
+    errors: List[str]
+    data: any
 
 
 async def publisher(ctx: Context, video_peer: zmq.Socket):
@@ -79,6 +66,7 @@ async def publisher(ctx: Context, video_peer: zmq.Socket):
         if video_peer in items:
             interpreter, label_path = await video_peer.recv_multipart()
             print(label_path)
+            video_peer.send(b"")
 
         has_frame, frame = camera_src.read()
 
@@ -112,8 +100,8 @@ async def classification(ctx: Context, img_peer: zmq.Socket):
     poller.register(reply, zmq.POLLIN)
     poller.register(img_peer, zmq.POLLIN)
 
-    interpreter: tflite.Interpreter
-    labels: List[str]
+    interpreter: tflite.Interpreter = None
+    labels: List[str] = None
 
     await img_peer.send(b"")
 
@@ -129,6 +117,8 @@ async def classification(ctx: Context, img_peer: zmq.Socket):
             print("[CLASSIFICATION] Reset")
 
         if img_peer in items:
+            model_path: bytes
+            label_path: bytes
             model_path, label_path = await img_peer.recv_multipart()
             model_path = pathlib.Path(model_path.decode())
             label_path = pathlib.Path(label_path.decode())
@@ -136,22 +126,34 @@ async def classification(ctx: Context, img_peer: zmq.Socket):
             img_peer.send(b"")
 
         if reply in items:
-            if interpreter == None:
-                await reply.send_string("No model is loaded for this task")
-            else:
-                img_buffer: bytes
-                format: bytes
-                img_buffer, format = await reply.recv_multipart()
-                format = format.decode("utf-8")
+            img_buffer: bytes
+            format: bytes
+            img_buffer, format = await reply.recv_multipart()
 
-                await coral.classification(
+            msg: Message = {
+                "success": True,
+                "errors": [],
+                "data": None
+            }
+
+            if interpreter == None:
+                msg["success"] = False
+                msg["errors"].append("No model is loaded for this task")
+                await reply.send_json(msg)
+            else:
+                format = format.decode()
+
+                results = coral.classification(
                     interpreter=interpreter,
                     labels=labels,
                     img_buffer=img_buffer,
                     format=format
                 )
 
-                await reply.send_string("response")
+                msg["success"] = True
+                msg["data"] = results
+
+                await reply.send_json(msg)
 
 
 async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Socket):
@@ -179,10 +181,11 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
         id = await reply.recv_string()
         success = True
         try:
-            model_path, label_path = await coral.load_model(record_repo, id)
+            (model_path, label_path), record_type = await coral.load_model(record_repo, id)
+            print(record_type)
             await reset.send(b"")
-            label_path = str(label_path).encode()
             model_path = str(model_path).encode()
+            label_path = str(label_path).encode()
 
             model_type = True  # TODO get model type here
 
@@ -191,19 +194,19 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
                 await img_pipe.recv()
             else:
                 await video_pipe.send_multipart([model_path, label_path])
-                await img_pipe.recv()
+                await video_pipe.recv()
         except Exception as e:
             print("Error loading model")
             print(e)
             success = False
-        await reply.send(success.to_bytes(1, "big"))
+        await reply.send(zutils.encode_bool(success))
 
 
 async def main():
     ctx = Context()
 
-    img_pipe, img_peer = pipe(ctx)
-    video_pipe, video_peer = pipe(ctx)
+    img_pipe, img_peer = zutils.pipe(ctx)
+    video_pipe, video_peer = zutils.pipe(ctx)
 
     publisher_thread = threading.Thread(
         target=asyncio.run,

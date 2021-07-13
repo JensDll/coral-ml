@@ -8,9 +8,11 @@ import {
 import LandingPage from '../views/LandingPage.vue'
 import MainPage from '../views/ai/MainPage.vue'
 import HomePage from '../views/ai/HomePage.vue'
-import ModelPage from '../views/ai/model/ModelPage.vue'
-import ModelUploadNew from '~/views/ai/model/ModelUploadNew.vue'
-import ModelImagePage from '~/views/ai/model/ModelImagePage.vue'
+import RecordMain from '../views/ai/record/RecordMain.vue'
+import RecordUpload from '~/views/ai/record/RecordUpload.vue'
+import RecordImage from '~/views/ai/record/RecordImage.vue'
+import RecordOverview from '~/views/ai/record/RecordOverview.vue'
+import RecordVideo from '~/views/ai/record/RecordVideo.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,25 +30,35 @@ const routes: RouteRecordRaw[] = [
         component: HomePage
       },
       {
-        path: 'model',
+        path: 'record',
         component: { render: () => h(RouterView) },
         children: [
           {
             path: '',
-            name: 'model',
-            component: ModelPage
+            name: 'record',
+            component: RecordMain
           },
           {
-            path: 'upload',
-            name: 'model-new',
-            component: ModelUploadNew
+            path: 'upload/:recordTypeId',
+            name: 'record-upload',
+            component: RecordUpload
+          },
+          {
+            path: 'overview/:recordTypeId',
+            name: 'record-overview',
+            component: RecordOverview
           }
         ]
       },
       {
         path: 'image',
         name: 'image',
-        component: ModelImagePage
+        component: RecordImage
+      },
+      {
+        path: 'video',
+        name: 'video',
+        component: RecordVideo
       }
     ]
   }

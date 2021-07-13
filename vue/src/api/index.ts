@@ -1,4 +1,4 @@
 export { SocketService } from './services/socketService'
 
-export { modelRepository } from './repositories/modelRepository'
-export type { TFLiteModelRecord } from './repositories/modelRepository'
+export { recordRepository } from './repositories/recordRepository'
+export type { TFLiteModelRecord } from './repositories/recordRepository'

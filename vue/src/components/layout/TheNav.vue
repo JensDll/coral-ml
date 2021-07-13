@@ -11,7 +11,7 @@
         bottom-0
         left-0
         z-50
-        w-4/5
+        w-8/12
         p-6
         lg:relative lg:p-0 lg:z-0 lg:w-full
       "
@@ -26,13 +26,16 @@
           </h5>
           <router-link
             class="link"
-            :to="{ name: 'model' }"
+            :to="{ name: 'record' }"
             active-class="getting-started-active"
           >
             Manage Models
           </router-link>
           <router-link class="link" :to="{ name: 'image' }">
             Classification
+          </router-link>
+          <router-link class="link" :to="{ name: 'video' }">
+            Video Analysis
           </router-link>
         </li>
       </ul>

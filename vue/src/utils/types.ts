@@ -1,4 +1,4 @@
-type UnPromise<T extends Promise<any>> = T extends Promise<infer TP>
+export type UnPromise<T extends Promise<any>> = T extends Promise<infer TP>
   ? TP
   : never
 

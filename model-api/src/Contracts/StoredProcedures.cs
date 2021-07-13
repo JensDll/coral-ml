@@ -8,17 +8,30 @@ namespace Contracts
 {
     public static class StoredProcedures
     {
-        public static class TFLiteRecord
+        public static class Record
         {
-            public const string Prefix = "spTFLiteRecord_";
+            private const string Prefix = "spRecord_";
 
-            public const string GetAll = Prefix + "GetAll";
+            public const string GetWithRecordTypeId = Prefix + "GetWithRecordTypeId";
 
             public const string GetById = Prefix + "GetById";
 
+            public const string GetLoaded = Prefix + "GetLoaded";
+
+            public const string Download = Prefix + "Download";
+
             public const string Create = Prefix + "Create";
 
+            public const string SetLoaded = Prefix + "SetLoaded";
+
             public const string Delete = Prefix + "Delete";
+        }
+
+        public static class RecordType
+        {
+            private const string Prefix = "spRecordType_";
+
+            public const string GetAll = Prefix + "GetAll";
         }
     }
 }

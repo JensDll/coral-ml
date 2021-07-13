@@ -28,10 +28,21 @@ class RecordRepository(RepositoryBase):
     def __init__(self, base_uri: str, client: aiohttp.ClientSession) -> None:
         super().__init__(base_uri, client)
 
-    async def get_by_id(self, id: int):
-        async with self.client.get(f"{self.base_uri}/model/{id}") as resp:
+    async def get_by_id(self, id: int) -> str:
+        async with self.client.get(f"{self.base_uri}/record/{id}") as resp:
             if resp.ok:
-                file_path = pathlib.Path("model.zip")
+                json = await resp.json()
+                print(json)
+                return json["recordType"]
+
+    async def download(self, id: int):
+        async with self.client.get(f"{self.base_uri}/record/download/{id}") as resp:
+            if resp.ok:
+                file_path = pathlib.Path("record.zip")
                 await save_zip(resp, file_path)
                 return extract_zip(file_path)
             raise aiohttp.ClientError()
+
+    async def set_loaded(self, id: int):
+        async with self.client.put(f"{self.base_uri}/record/loaded/{id}") as resp:
+            await resp.text()

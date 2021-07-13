@@ -11,11 +11,11 @@ const loadModel = (req) => async (id, callback) => {
     callback(toBool(success));
 };
 
-const imageClassification = (request) => async ({ image, format }, callback) => {
+const classify = (request) => async ({ image, format }, callback) => {
     await request.send([image, format]);
-    const resp = await request.receive();
-    console.log(resp);
-    callback(resp);
+    const [results] = await request.receive();
+    const data = JSON.parse(results.toString());
+    callback(data);
 };
 
 const subscriberPort = 5500;
@@ -45,7 +45,7 @@ io.on('connection', socket => {
     socket.on('load model', loadModel(modelManger));
     const classification = new zmq.Request();
     classification.connect(`tcp://localhost:${classificationPort}`);
-    socket.on('image classification', imageClassification(classification));
+    socket.on('image classification', classify(classification));
     socket.on('disconnect', () => {
         subscriber.close();
         console.log(`A user disconnected (${socket.id})`);

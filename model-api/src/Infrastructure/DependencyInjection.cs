@@ -1,9 +1,9 @@
 ﻿using Application.Data;
 using Application.Data.Repositories;
-using Application.Mapping.Model;
+using Application.Mapping.Record;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
-using Infrastructure.Mapping.Model;
+using Infrastructure.Mapping.Record;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,11 +16,11 @@ namespace Infrastructure
             // data access
             services.AddSingleton<IConnectionFactory>
                 (new ConnectionFactory(configuration.GetConnectionString("ModelDb")));
-            services.AddSingleton<ITFLiteRecordRepository, TFLiteRecordRepository>();
+            services.AddSingleton<IRecordRepository, RecordRepository>();
+            services.AddSingleton<IRecordTypeRepository, RecordTypeRepository>();
 
             // mapping
-            services.AddSingleton<ITFLiteRecordRequestMapper, TFLiteRecordRequestMapper>();
-            services.AddSingleton<ITFLiteRecordResponseMapper, TFLiteRecordResponseMapper>();
+            services.AddSingleton<IRecordRequestMapper, RecordRequestMapper>();
         }
     }
 }

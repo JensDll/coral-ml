@@ -1,6 +1,6 @@
-import asyncio
 import zmq
 from zmq.asyncio import Context
+import asyncio
 import argparse
 import threading
 import aiohttp
@@ -69,12 +69,12 @@ async def main():
     img_pipe, img_peer = zutils.pipe(ctx)
     video_pipe, video_peer = zutils.pipe(ctx)
 
-    # publisher_thread = threading.Thread(
-    #     target=asyncio.run,
-    #     args=[endpoints.publisher.start(ctx, video_peer, args)],
-    #     daemon=True
-    # )
-    # publisher_thread.start()
+    publisher_thread = threading.Thread(
+        target=asyncio.run,
+        args=[endpoints.publisher.start(ctx, video_peer, args)],
+        daemon=True
+    )
+    publisher_thread.start()
 
     classification_thread = threading.Thread(
         target=asyncio.run,

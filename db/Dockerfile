@@ -4,6 +4,7 @@ ARG SA_PASSWORD
 ENV ACCEPT_EULA=Y
 
 WORKDIR /tmp
+COPY backup.sql RecordDb.bak ./
 
 USER mssql
 
@@ -11,10 +12,9 @@ USER mssql
 # 2. Create empty database from script
 # 3. Terminate SQL Server
 RUN ( /opt/mssql/bin/sqlservr & ) | grep -q "Service Broker manager has started" \
-    && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /tmp/build.sql \
+    && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /tmp/backup.sql \
     && pkill sqlservr
 
 # final image
 FROM mcr.microsoft.com/mssql/server:2019-latest
-
 COPY --from=build /var/opt/mssql/data /var/opt/mssql/data

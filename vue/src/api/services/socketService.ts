@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client'
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, Ref, onBeforeUnmount } from 'vue'
 import { useImage } from '~/composable'
 
 type MessageEnvelope<T> = {
@@ -24,6 +24,10 @@ export class SocketService {
     this.socket.on('connect', () => {
       console.log(`[Socket] Connected (${this.socket.id})`)
       this.connected.value = true
+    })
+
+    onBeforeUnmount(() => {
+      this.disconnect()
     })
   }
 
@@ -55,18 +59,14 @@ export class SocketService {
     })
   }
 
-  async imageClassification(image: File) {
+  async classify(image: File) {
     const format = useImage.getFormat(image)
 
     return new Promise<MessageEnvelope<ClassificationResult>>(
       (resolve, reject) => {
-        this.socket.emit(
-          'image classification',
-          { image, format },
-          (resp: any) => {
-            resolve(resp)
-          }
-        )
+        this.socket.emit('classify', { image, format }, (resp: any) => {
+          resolve(resp)
+        })
       }
     )
   }

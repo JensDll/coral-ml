@@ -1,0 +1,1 @@
+RESTORE DATABASE [RecordDb] FROM DISK = N'/tmp/RecordDb.bak';

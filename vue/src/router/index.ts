@@ -6,13 +6,13 @@ import {
   RouterView
 } from 'vue-router'
 import LandingPage from '../views/LandingPage.vue'
-import MainPage from '../views/ai/MainPage.vue'
-import HomePage from '../views/ai/HomePage.vue'
-import RecordMain from '../views/ai/record/RecordMain.vue'
-import RecordUpload from '~/views/ai/record/RecordUpload.vue'
-import RecordImage from '~/views/ai/record/RecordImage.vue'
-import RecordOverview from '~/views/ai/record/RecordOverview.vue'
-import RecordVideo from '~/views/ai/record/RecordVideo.vue'
+import MainPage from '../views/MainPage.vue'
+import HomePage from '../views/HomePage.vue'
+import RecordMain from '../views/record/RecordMain.vue'
+import RecordUpload from '~/views/record/RecordUpload.vue'
+import RecordImage from '~/views/record/RecordImage.vue'
+import RecordOverview from '~/views/record/RecordOverview.vue'
+import RecordVideo from '~/views/record/RecordVideo.vue'
 
 const routes: RouteRecordRaw[] = [
   {

@@ -3,8 +3,32 @@ version: "3.9"
 services:
   db:
     build:
-      context: db
+      context: ./db
       args:
-        SA_PASSWORD: Pwd12345!
+        SA_PASSWORD: "${SA_PASSWORD}"
     ports:
-      - 1433:1433
+      - ${DB_PORT}:1433
+  api:
+    build:
+      context: ./record-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings:RecordDb: "Server=host.docker.internal,${DB_PORT};Database=RecordDb;User Id=sa;Password=${SA_PASSWORD}"
+    ports:
+      - 5100:80
+  vue:
+    build: 
+      context: ./vue
+    ports: 
+      - 5200:80
+  socket-proxy:
+    build:
+      context: './socket-proxy'
+    ports: 
+      - 5300:6100
+  streaming:
+    image: ossrs/srs:3
+    ports:
+      - 1935:1935
+      - 1985:1985
+      - 8080:8080

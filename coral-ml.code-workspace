@@ -1,22 +1,19 @@
 {
   "folders": [
     {
-      "path": "python"
-    },
-    {
       "path": "vue"
     },
     {
-      "path": "node-socket"
+      "path": "socket-proxy"
     },
     {
-      "path": "model-api"
+      "path": "record-api"
     },
     {
       "path": "db"
     },
     {
-      "path": "flask"
+      "path": "coral-app"
     }
   ],
   "settings": {

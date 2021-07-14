@@ -1,6 +1,0 @@
-opencv-contrib-python==4.5.2.54
-simplejpeg==1.6.1
-pyzmq==22.1.0
-imageio==2.9.0
-typing-extensions==3.7.4.3
-aiohttp[speedups]

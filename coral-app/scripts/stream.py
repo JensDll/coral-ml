@@ -1,12 +1,11 @@
 import ffmpeg
 
 
-def start_stream(size, fps, pix_fmt):
-    rtmp_url = "http://127.0.0.1:5060"
+def start_stream(size, fps, pix_fmt, publish_uri):
     process = (
         ffmpeg
         .input('pipe:', format='rawvideo', pix_fmt=pix_fmt, s='{}x{}'.format(*size))
-        .output(rtmp_url,
+        .output(publish_uri,
                 vcodec='mpeg1video',
                 preset='veryfast',
                 framerate=fps,

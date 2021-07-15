@@ -28,3 +28,9 @@ services:
       context: ./vue
     ports: 
       - 5100:80
+  coral-app:
+    build: 
+      context: ./coral-app
+    ports:
+      - 7100:7100
+      - 7200:7200

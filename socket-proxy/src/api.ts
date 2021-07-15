@@ -4,8 +4,8 @@ import { Server } from 'socket.io'
 import { loadModel, classify } from './endpoints'
 
 export function apiStart() {
-  const MODL_MANAGER_PORT = 5600
-  const CLASSIFY_PORT = 5700
+  const MODL_MANAGER_PORT = 7100
+  const CLASSIFY_PORT = 7200
 
   const LISTEN = 5050
 

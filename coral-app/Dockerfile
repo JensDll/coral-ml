@@ -25,6 +25,9 @@ RUN apt-get install -y python3 python3-pip python3-tflite-runtime \
     apt-get clean
 
 COPY /src ./src
+COPY /scripts ./scripts
+
+EXPOSE 7100 7200 7300
 
 ENTRYPOINT [ "python3" ]
 CMD [ "main.py" ]

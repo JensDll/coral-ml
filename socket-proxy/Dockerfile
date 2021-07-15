@@ -3,5 +3,8 @@ WORKDIR /app
 COPY . ./
 RUN npm ci && \
   npm run build
-EXPOSE 6100
+# API Port
+# Http MPEG-TS Stream
+# Socket video port
+EXPOSE 5050 5060 8080
 ENTRYPOINT [ "node", "dist/bundle.min.js" ]

@@ -3,5 +3,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "spellright.language": ["en"],
+  "spellright.documentTypes": ["markdown", "latex"]
 }

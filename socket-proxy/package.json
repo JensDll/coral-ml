@@ -15,6 +15,7 @@
     "prettier": "^2.3.2",
     "socket.io": "^4.1.2",
     "typescript": "^4.3.5",
+    "ws": "^7.4.6",
     "zeromq": "^6.0.0-beta.6"
   },
   "prettier": {
@@ -28,6 +29,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
+    "@types/ws": "^7.4.6",
     "rollup": "^2.53.1",
     "rollup-plugin-terser": "^7.0.2"
   }

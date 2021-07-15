@@ -36,21 +36,6 @@ export class SocketService {
     this.socket.disconnect()
   }
 
-  readVideo(imgRef: Ref<HTMLImageElement>) {
-    onMounted(() => {
-      const img = imgRef.value
-
-      let url = ''
-      this.socket.on('video stream', frame => {
-        const uint8Array = new Uint8Array(frame)
-        const blob = new Blob([uint8Array], { type: 'image/jpeg' })
-        URL.revokeObjectURL(url)
-        url = URL.createObjectURL(blob)
-        img.src = url
-      })
-    })
-  }
-
   async loadModel(id: string | number) {
     return new Promise<boolean>((resolve, reject) => {
       this.socket.emit('load model', id, (success: boolean) => {

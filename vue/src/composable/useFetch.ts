@@ -1,3 +1,3 @@
 import { createFetch } from './createFetch'
 
-export const useFetch = createFetch('http://localhost:5000/api')
+export const useFetch = createFetch(import.meta.env.VITE_RECORD_API_URI)

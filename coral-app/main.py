@@ -11,9 +11,8 @@ import src.zutils as zutils
 import src.endpoints as endpoints
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--pub_port", default=5500, type=int)
-parser.add_argument("--manager_port", default=5600, type=int)
-parser.add_argument("--classification_port", default=5700, type=int)
+parser.add_argument("--manager_port", default=7100, type=int)
+parser.add_argument("--classification_port", default=7200, type=int)
 parser.add_argument("--api", default="http://localhost:5000/api", type=str)
 args = parser.parse_args()
 

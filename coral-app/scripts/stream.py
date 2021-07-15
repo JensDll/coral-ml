@@ -2,21 +2,20 @@ import ffmpeg
 
 
 def start_stream(size, fps, pix_fmt):
-    rtmp_url = "rtmp://127.0.0.1:1935/live/coral"
+    rtmp_url = "http://127.0.0.1:5060"
     process = (
         ffmpeg
         .input('pipe:', format='rawvideo', pix_fmt=pix_fmt, s='{}x{}'.format(*size))
         .output(rtmp_url,
-                vcodec='libx264',
-                pix_fmt='yuv420p',
+                vcodec='mpeg1video',
                 preset='veryfast',
                 framerate=fps,
+                s='{}x{}'.format(*size),
                 video_bitrate='1.4M',
                 maxrate='2M',
                 bufsize='2M',
                 segment_time='6',
-                format='flv')
-        .overwrite_output()
+                format="mpegts")
         .run_async(pipe_stdin=True)
     )
     return process

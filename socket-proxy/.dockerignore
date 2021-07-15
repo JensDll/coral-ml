@@ -4,3 +4,4 @@ dist
 
 # files
 Dockerfile*
+bundle.js

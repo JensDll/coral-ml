@@ -21,3 +21,4 @@
 **/*.ipynb
 **/Dockerfile*
 **/__record__
+**/build.py

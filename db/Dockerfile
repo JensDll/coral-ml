@@ -4,7 +4,7 @@ ARG SA_PASSWORD
 ENV ACCEPT_EULA=Y
 
 WORKDIR /tmp
-COPY backup.sql RecordDb.bak ./
+COPY build.sql ./
 
 USER mssql
 
@@ -12,7 +12,7 @@ USER mssql
 # 2. Create empty database from script
 # 3. Terminate SQL Server
 RUN ( /opt/mssql/bin/sqlservr & ) | grep -q "Service Broker manager has started" \
-    && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /tmp/backup.sql \
+    && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /tmp/build.sql \
     && pkill sqlservr
 
 # final image

@@ -15,20 +15,16 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings:RecordDb: "Server=host.docker.internal,${DB_PORT};Database=RecordDb;User Id=sa;Password=${SA_PASSWORD}"
     ports:
-      - 5100:80
+      - 5000:80
+  socket-proxy:
+    build:
+      context: ./socket-proxy
+    ports: 
+      - 5050:5050
+      - 5060:5060
+      - 8080:8080
   vue:
     build: 
       context: ./vue
     ports: 
-      - 5200:80
-  socket-proxy:
-    build:
-      context: './socket-proxy'
-    ports: 
-      - 5300:6100
-  streaming:
-    image: ossrs/srs:3
-    ports:
-      - 1935:1935
-      - 1985:1985
-      - 8080:8080
+      - 5100:80

@@ -1,0 +1,42 @@
+import { createServer } from 'http'
+import WebSocket from 'ws'
+
+export function videoStart() {
+  const SOCKET_PORT = 8080
+  const LISTEN = 5060
+
+  var wss = new WebSocket.Server({
+    port: SOCKET_PORT,
+    perMessageDeflate: false
+  })
+
+  wss.on('connection', (ws, req) => {
+    console.log(`Client connected ${req.socket.remoteAddress}`)
+
+    ws.on('close', () => {
+      console.log(`Client disconnected ${req.socket.remoteAddress}`)
+    })
+  })
+
+  function broadcastData(data: any) {
+    wss.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data)
+      }
+    })
+  }
+
+  const server = createServer((request, response) => {
+    request.on('data', data => {
+      broadcastData(data)
+    })
+  })
+
+  server.headersTimeout = 0
+  server.listen(LISTEN)
+
+  console.log(
+    `Listening for incomming MPEG-TS Stream on http://127.0.0.1:${LISTEN}`
+  )
+  console.log(`Awaiting WebSocket connections on ws://127.0.0.1:${SOCKET_PORT}`)
+}

@@ -32,7 +32,8 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
     process = scripts.stream.start_stream(
         size=size,
         fps=fps,
-        pix_fmt="rgb24")
+        pix_fmt="rgb24",
+        publish_uri=args.publish_uri)
 
     await video_peer.send(b"")
 

@@ -9,7 +9,7 @@ import type { Ref } from 'vue'
 import VTitle from '~/components/base/VTitle.vue'
 
 const videoCanvas = ref() as Ref<HTMLCanvasElement>
-
+console.log(import.meta.env.VITE_VIDEO_URI)
 onMounted(() => {
   const player = new JSMpeg.Player(import.meta.env.VITE_VIDEO_URI, {
     canvas: videoCanvas.value,

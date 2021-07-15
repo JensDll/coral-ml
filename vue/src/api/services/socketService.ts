@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client'
-import { ref, onMounted, Ref, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import { useImage } from '~/composable'
 
 type MessageEnvelope<T> = {
@@ -24,10 +24,6 @@ export class SocketService {
     this.socket.on('connect', () => {
       console.log(`[Socket] Connected (${this.socket.id})`)
       this.connected.value = true
-    })
-
-    onBeforeUnmount(() => {
-      this.disconnect()
     })
   }
 

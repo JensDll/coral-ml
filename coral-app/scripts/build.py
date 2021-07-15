@@ -39,4 +39,4 @@ else:
                     "--platform", args.platform, *tags, "--no-cache",
                     "--progress", "plain",
                     "-o", "type=docker",
-                    "--no-cache", "--load", build_context])
+                    "--no-cache", "--load", "."])

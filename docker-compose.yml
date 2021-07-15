@@ -7,7 +7,7 @@ services:
       args:
         SA_PASSWORD: "${SA_PASSWORD}"
     ports:
-      - ${DB_PORT}:1433
+      - ${DB_PORT}:3306
   api:
     build:
       context: ./record-api

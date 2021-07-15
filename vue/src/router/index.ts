@@ -8,11 +8,14 @@ import {
 import LandingPage from '../views/LandingPage.vue'
 import MainPage from '../views/MainPage.vue'
 import HomePage from '../views/HomePage.vue'
+
 import RecordMain from '../views/record/RecordMain.vue'
-import RecordUpload from '~/views/record/RecordUpload.vue'
-import RecordImage from '~/views/record/RecordImage.vue'
-import RecordOverview from '~/views/record/RecordOverview.vue'
-import RecordVideo from '~/views/record/RecordVideo.vue'
+
+import RecordUpload from '~/views/record/management/RecordUpload.vue'
+import RecordOverview from '~/views/record/management/RecordOverview.vue'
+
+import RecordImage from '~/views/record/ai/RecordImage.vue'
+import RecordVideo from '~/views/record/ai/RecordVideo.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -51,13 +54,13 @@ const routes: RouteRecordRaw[] = [
         ]
       },
       {
-        path: 'image',
-        name: 'image',
+        path: 'image-classification',
+        name: 'image-classification',
         component: RecordImage
       },
       {
-        path: 'video',
-        name: 'video',
+        path: 'object-detection',
+        name: 'object-detection',
         component: RecordVideo
       }
     ]

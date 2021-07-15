@@ -31,11 +31,11 @@
           >
             Manage Models
           </router-link>
-          <router-link class="link" :to="{ name: 'image' }">
+          <router-link class="link" :to="{ name: 'image-classification' }">
             Classification
           </router-link>
-          <router-link class="link" :to="{ name: 'video' }">
-            Video Analysis
+          <router-link class="link" :to="{ name: 'object-detection' }">
+            Object Detection
           </router-link>
         </li>
       </ul>

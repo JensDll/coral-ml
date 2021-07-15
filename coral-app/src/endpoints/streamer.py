@@ -3,6 +3,7 @@ import argparse
 import zmq
 from zmq.asyncio import Context, Poller
 import tflite_runtime.interpreter as tflite
+import logging
 
 import src.detection.detect as detect
 import src.common as common
@@ -30,10 +31,8 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
     labels: dict = None
 
     process = scripts.stream.start_stream(
-        size=size,
-        fps=fps,
-        pix_fmt="rgb24",
-        publish_uri=args.publish_uri)
+        size=size, fps=fps, pix_fmt="rgb24", publish_uri=args.publish_uri
+    )
 
     await video_peer.send(b"")
 
@@ -48,11 +47,11 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
         if reset in items:
             await reset.recv()
             interpreter = None
-            print("[PUBLISHER] Reset")
+            logging.info("[PUBLISHER] Reset")
 
         if video_peer in items:
             interpreter, labels = await zutils.recv_interpreter(video_peer)
-            print("[PUBLISHER] Received Interpreter - Sending response ...")
+            logging.info("[PUBLISHER] Received Interpreter - Sending response ...")
             video_peer.send(b"")
 
         has_frame, frame = cap.read()
@@ -64,15 +63,11 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
 
         if interpreter is not None:
             input_size = common.get_input_size(interpreter)
-            resized = cv2.resize(
-                frame, input_size, interpolation=cv2.INTER_AREA)
+            resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
             inference_time = common.interpreter_invoke(interpreter, resized)
             detections = detect.get_detections(interpreter)
             frame = detect.append_detection_to_img(
-                img=frame,
-                input_size=input_size,
-                detections=detections,
-                labels=labels
+                img=frame, input_size=input_size, detections=detections, labels=labels
             )
 
         common.print_fps(frame, fps_iter)

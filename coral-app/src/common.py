@@ -9,14 +9,14 @@ import time
 import src.repositories as repos
 
 EDGETUP_LIB = {
-    'Linux': 'libedgetpu.so.1',
-    'Darwin': 'libedgetpu.1.dylib',
-    'Windows': 'edgetpu.dll'
+    "Linux": "libedgetpu.so.1",
+    "Darwin": "libedgetpu.1.dylib",
+    "Windows": "edgetpu.dll",
 }[platform.system()]
 
 
 def get_output_tensor(interpreter: tflite.Interpreter, i):
-    tensor_idx = interpreter.get_output_details()[i]['index']
+    tensor_idx = interpreter.get_output_details()[i]["index"]
     return interpreter.get_tensor(tensor_idx)
 
 
@@ -25,7 +25,7 @@ def get_input_detail(interpreter: tflite.Interpreter, key):
 
 
 def get_input_size(interpreter: tflite.Interpreter):
-    _, height, width, _ = get_input_detail(interpreter, 'shape')
+    _, height, width, _ = get_input_detail(interpreter, "shape")
     return width, height
 
 
@@ -38,7 +38,7 @@ def load_labels(label_path: pathlib.Path):
         lines = f.readlines()
     labels = {}
     for row_number, content in enumerate(lines):
-        pair = re.split(r'[:\s]+', content.strip(), maxsplit=1)
+        pair = re.split(r"[:\s]+", content.strip(), maxsplit=1)
         if len(pair) == 2 and pair[0].strip().isdigit():
             labels[int(pair[0])] = pair[1].strip()
         else:
@@ -49,8 +49,7 @@ def load_labels(label_path: pathlib.Path):
 def interpreter_load(model_path: pathlib.Path, label_path: pathlib.Path):
     delegate = tflite.load_delegate(EDGETUP_LIB)
     interpreter = tflite.Interpreter(
-        model_path=str(model_path),
-        experimental_delegates=[delegate]
+        model_path=str(model_path), experimental_delegates=[delegate]
     )
     interpreter.allocate_tensors()
     labels = load_labels(label_path)
@@ -67,12 +66,15 @@ def interpreter_invoke(interpreter: tflite.Interpreter, img: np.ndarray):
 
 
 async def load_model(record_repo: repos.RecordRepository, id):
-    paths, record_type, _ = await asyncio.gather(
-        record_repo.download(id),
-        record_repo.get_by_id(id),
-        record_repo.set_loaded(id)
-    )
-    return paths, record_type
+    success = True
+    try:
+        (model_path, label_path), record_type = await asyncio.gather(
+            record_repo.download(id), record_repo.get_record_type(id)
+        )
+        await record_repo.set_loaded(id)
+    except:
+        success = False
+    return success, model_path, label_path, record_type
 
 
 def fps_iter():
@@ -94,5 +96,13 @@ def print_fps(img: np.ndarray, fps_iter):
     fontColor = (0, 240, 0)
     fontThickness = 1
 
-    cv2.putText(img, "FPS: {:.2f}".format(fps), (30, 30), fontFace, fontScale,
-                fontColor, fontThickness, cv2.LINE_AA)
+    cv2.putText(
+        img,
+        "FPS: {:.2f}".format(fps),
+        (30, 30),
+        fontFace,
+        fontScale,
+        fontColor,
+        fontThickness,
+        cv2.LINE_AA,
+    )

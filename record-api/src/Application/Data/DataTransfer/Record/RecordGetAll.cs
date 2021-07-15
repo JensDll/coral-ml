@@ -16,6 +16,8 @@ namespace Application.Data.DataTransfer.Record
 
         public int RecordTypeId { get; set; }
 
+        public bool Loaded { get; set; }
+
         public string RecordType { get; set; }
     }
 }

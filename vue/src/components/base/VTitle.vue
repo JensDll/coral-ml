@@ -5,7 +5,7 @@
         <ArrowLeftIcon
           v-if="back"
           class="w-6 h-6 mr-4 hover:text-blue-700 cursor-pointer"
-          @click="emit('back')"
+          @click="$emit('back')"
         />
         {{ title }}
       </h1>
@@ -15,20 +15,26 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { ArrowLeftIcon } from '@heroicons/vue/outline'
+import { defineComponent } from '@vue/runtime-core'
 
-defineProps({
-  title: {
-    type: String,
-    required: true
+export default defineComponent({
+  name: 'vtitle',
+  emits: ['back'],
+  components: {
+    ArrowLeftIcon
   },
-  back: {
-    type: Boolean
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    back: {
+      type: Boolean
+    }
   }
 })
-
-const emit = defineEmits(['back'])
 </script>
 
 <style lang="postcss" scoped></style>

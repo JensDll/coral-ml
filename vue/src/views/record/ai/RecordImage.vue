@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import VTitle from '~/components/base/VTitle.vue'
 import { useLoading, useSocketService } from '~/composable'
-import FormClassification from './components/FormClassification.vue'
+import FormClassification from '../components/FormClassification.vue'
 
 const socketService = useSocketService()
 

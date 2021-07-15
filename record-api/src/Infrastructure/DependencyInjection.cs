@@ -15,7 +15,7 @@ namespace Infrastructure
         {
             // data access
             services.AddSingleton<IConnectionFactory>
-                (new ConnectionFactory(configuration.GetConnectionString("RecordDbMaria")));
+                (new ConnectionFactory(configuration.GetConnectionString("RecordDb")));
             services.AddSingleton<IRecordRepository, RecordRepository>();
             services.AddSingleton<IRecordTypeRepository, RecordTypeRepository>();
 

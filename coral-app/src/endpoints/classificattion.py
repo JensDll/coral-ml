@@ -6,6 +6,7 @@ from zmq.asyncio import Context, Poller
 import tflite_runtime.interpreter as tflite
 import src.zutils as zutils
 import src.classification.classify as classify
+import logging
 
 
 class Message(TypedDict):
@@ -18,7 +19,7 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
     reply_addr = f"tcp://*:{args.classification_port}"
     reply = ctx.socket(zmq.REP)
     reply.bind(reply_addr)
-    print(f"[CLASSIFICATION] (REP) Bind to '{reply_addr}'")
+    logging.info(f"[CLASSIFICATION] (REP) Bind to '{reply_addr}'")
 
     reset = ctx.socket(zmq.SUB)
     reset.connect("tcp://localhost:6666")
@@ -43,11 +44,11 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
         if reset in items:
             await reset.recv()
             interpreter = None
-            print("[CLASSIFICATION] Reset")
+            logging.info("[CLASSIFICATION] Reset")
 
         if img_peer in items:
             interpreter, labels = await zutils.recv_interpreter(img_peer)
-            print("[CLASSIFICATION] Received Interpreter - Sending response ...")
+            logging.info("[CLASSIFICATION] Received Interpreter - Sending response ...")
             img_peer.send(b"")
 
         if reply in items:
@@ -55,11 +56,7 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
             format: bytes
             img_buffer, format = await reply.recv_multipart()
 
-            msg: Message = {
-                "success": True,
-                "errors": [],
-                "data": None
-            }
+            msg: Message = {"success": True, "errors": [], "data": None}
 
             if interpreter == None:
                 msg["success"] = False
@@ -72,7 +69,7 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
                     interpreter=interpreter,
                     labels=labels,
                     img_buffer=img_buffer,
-                    format=format
+                    format=format,
                 )
 
                 msg["success"] = True

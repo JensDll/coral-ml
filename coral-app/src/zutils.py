@@ -7,7 +7,7 @@ import src.common as common
 
 
 def id_generator(length):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
 def pipe(ctx: Context):

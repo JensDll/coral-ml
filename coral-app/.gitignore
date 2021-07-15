@@ -143,3 +143,4 @@ coral/
 my_logs/
 *.tflite
 *.h5
+logs

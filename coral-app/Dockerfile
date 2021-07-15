@@ -14,10 +14,10 @@ WORKDIR /app
 # copy entrypoint and requirements
 COPY requirements.txt main.py ./
 
-# install python and the tflite runtime
+# install python, the tflite runtime and other dependencies
 RUN apt-get install -y python3 python3-pip python3-tflite-runtime \
     # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
-    libgl1-mesa-glx
+    libgl1-mesa-glx ffmpeg
 
 # update pip
 RUN python3 -m pip install -U pip

@@ -42,18 +42,15 @@ namespace Infrastructure.Data.Repositories
             parameter.Add("param_total", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             var result = await connection
-                .QueryAsync<string>(StoredProcedures.Record.GetWithRecordTypeId,
+                .QueryAsync<RecordGetAll>(StoredProcedures.Record.GetWithRecordTypeId,
                     param: parameter,
                     commandType: CommandType.StoredProcedure);
 
             int total = parameter.Get<int>("param_total");
 
-            var records = JsonSerializer.Deserialize<IEnumerable<RecordGetAll>>(string.Join("", result),
-                new(JsonSerializerDefaults.Web));
-
             return new PaginationEnvelope<RecordGetAll>
             {
-                Data = records,
+                Data = result,
                 PageNumber = pagination.PageNumber,
                 PageSize = pagination.PageSize,
                 Total = total

@@ -1,1 +1,3 @@
-RESTORE DATABASE [RecordDb] FROM DISK = N'/tmp/RecordDb.bak';
+CREATE DATABASE RecordDb
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;

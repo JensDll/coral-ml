@@ -27,15 +27,12 @@ namespace Infrastructure.Data.Repositories
         {
             using var connection = _connectionFactory.NewConnection;
 
-            var result = await connection.QueryAsync<string>(StoredProcedures.RecordType.GetAll,
+            var result = await connection.QueryAsync<RecordTypeGetAll>(StoredProcedures.RecordType.GetAll,
                 commandType: CommandType.StoredProcedure);
-
-            var modelTypes = JsonSerializer.Deserialize<IEnumerable<RecordTypeGetAll>>(string.Join("", result),
-                new(JsonSerializerDefaults.Web));
 
             return new EnumerableEnevelope<RecordTypeGetAll>
             {
-                Data = modelTypes
+                Data = result
             };
         }
     }

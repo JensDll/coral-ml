@@ -15,26 +15,29 @@
   </button>
 </template>
 
-<script setup lang="ts">
-import type { PropType } from 'vue'
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
 
-const props = defineProps({
-  loading: {
-    type: Boolean
-  },
-  disabled: {
-    type: Boolean
-  },
-  htmlType: {
-    type: String as PropType<'button' | 'submit' | 'reset'>,
-    default: 'button'
-  },
-  type: {
-    type: String as PropType<'basic' | 'primary' | 'secondary' | 'danger'>,
-    default: 'primary'
-  },
-  reverse: {
-    type: Boolean
+export default defineComponent({
+  name: 'vbutton',
+  props: {
+    loading: {
+      type: Boolean
+    },
+    disabled: {
+      type: Boolean
+    },
+    htmlType: {
+      type: String as PropType<'button' | 'submit' | 'reset'>,
+      default: 'button'
+    },
+    type: {
+      type: String as PropType<'basic' | 'primary' | 'secondary' | 'danger'>,
+      default: 'primary'
+    },
+    reverse: {
+      type: Boolean
+    }
   }
 })
 </script>

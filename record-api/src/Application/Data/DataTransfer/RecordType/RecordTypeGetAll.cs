@@ -13,5 +13,7 @@ namespace Application.Data.DataTransfer.RecordType
         public string RecordType { get; set; }
 
         public int Total { get; set; }
+
+        public bool Loaded { get; set; }
     }
 }

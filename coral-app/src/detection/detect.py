@@ -30,8 +30,9 @@ def append_detection_to_img(img, input_size, detections: List[Detection], labels
         label = f"{percent}% {labels[detection['id']]}"
 
         img = cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 0), 2)
-        img = cv2.putText(img, label, (x0, y0 + 30),
-                          cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+        img = cv2.putText(
+            img, label, (x0, y0 + 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2
+        )
 
     return img
 
@@ -50,10 +51,6 @@ def get_detections(interpreter: tflite.Interpreter, score_threshold=0.1):
         ymin, xmin, ymax, xmax = boxes[i]
         bbox = BBox(xmin, ymin, xmax, ymax)
         bbox = bbox.scale(sx, sy).map(int)
-        return {
-            "id": int(class_ids[i]),
-            "score": scores[i],
-            "bbox": bbox
-        }
+        return {"id": int(class_ids[i]), "score": scores[i], "bbox": bbox}
 
     return [make(i) for i in range(count) if scores[i] >= score_threshold]

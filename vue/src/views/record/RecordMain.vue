@@ -7,8 +7,9 @@
       </p>
     </template>
   </v-title>
-  <v-card-grid>
-    <section v-for="{ id, recordType, total } in state.data?.data">
+  <v-loading v-if="state.loading" />
+  <v-card-grid v-else>
+    <section v-for="({ id, recordType, total }, i) in state.data?.data">
       <h3 class="text-xl font-semibold">
         {{ recordType }}
       </h3>
@@ -22,7 +23,10 @@
           @click="
             router.push({
               name: 'record-overview',
-              params: { recordTypeId: id, recordType }
+              params: {
+                recordTypeId: id,
+                recordType
+              }
             })
           "
         >
@@ -46,14 +50,16 @@
 </template>
 
 <script setup lang="ts">
-import VButton from '~/components/base/VButton.vue'
-import VTitle from '~/components/base/VTitle.vue'
-import VCardGrid from '~/components/base/VCardGrid.vue'
-import VLink from '~/components/base/VLink.vue'
 import { recordTypeRepository } from '~/api/repositories/recordTypeRepository'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import VTitle from '~/components/base/VTitle.vue'
+import VButton from '~/components/base/VButton.vue'
+import VCardGrid from '~/components/base/VCardGrid.vue'
+import VLoading from '~/components/base/VLoading.vue'
+import VLink from '~/components/base/VLink.vue'
 
 const router = useRouter()
+const route = useRoute()
 
 const state = recordTypeRepository.getAll(true)
 </script>

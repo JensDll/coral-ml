@@ -6,7 +6,7 @@
         <v-button
           class="px-3 py-1 rounded font-semibold"
           type="secondary"
-          @click="load()"
+          @click="handleLoad()"
           reverse
           :disabled="loading"
         >
@@ -17,6 +17,7 @@
           type="danger"
           reverse
           :disabled="loading"
+          @click="handleDelete()"
         >
           Delete
         </v-button>
@@ -30,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { PropType } from 'vue'
 import { recordRepository } from '~/api'
 import type { Record } from '~/api'
@@ -39,12 +40,25 @@ import { DownloadIcon } from '@heroicons/vue/outline'
 import { useLoading, useSocketService } from '~/composable'
 import { useRouter } from 'vue-router'
 
+const loading = ref(false)
+
 const props = defineProps({
   model: {
     type: Object as PropType<Record>,
     required: true
+  },
+  loaded: {
+    type: Boolean
+  },
+  onLoadLink: {
+    type: String
   }
 })
+
+const emit = defineEmits<{
+  (event: 'load', id: number): void
+  (event: 'delete', id: number): void
+}>()
 
 const router = useRouter()
 const modelName = computed(() =>
@@ -53,16 +67,14 @@ const modelName = computed(() =>
 
 const socketService = useSocketService()
 
-const [[loading, , loadModel]] = useLoading(
-  socketService.loadModel.bind(socketService)
-)
-
-async function load() {
-  const success = await loadModel(props.model.id)
+async function handleLoad() {
+  const success = await socketService.loadModel(props.model.id)
   if (success) {
-    router.push({ name: 'image' })
+    router.push({ name: props.onLoadLink })
   }
 }
+
+function handleDelete() {}
 </script>
 
 <style lang="postcss" scoped></style>

@@ -36,17 +36,17 @@ namespace Infrastructure.Data.Repositories
             (int skip, int take) = pagination.GetSkipTake();
 
             var parameter = new DynamicParameters();
-            parameter.Add(nameof(skip), skip);
-            parameter.Add(nameof(take), take);
-            parameter.Add(nameof(recordTypeId), recordTypeId);
-            parameter.Add("total", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameter.Add("param_skip", skip);
+            parameter.Add("param_take", take);
+            parameter.Add("param_recordTypeId", recordTypeId);
+            parameter.Add("param_total", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             var result = await connection
                 .QueryAsync<string>(StoredProcedures.Record.GetWithRecordTypeId,
                     param: parameter,
                     commandType: CommandType.StoredProcedure);
 
-            int total = parameter.Get<int>("total");
+            int total = parameter.Get<int>("param_total");
 
             var records = JsonSerializer.Deserialize<IEnumerable<RecordGetAll>>(string.Join("", result),
                 new(JsonSerializerDefaults.Web));
@@ -71,7 +71,6 @@ namespace Infrastructure.Data.Repositories
             {
                 return null;
             }
-
             
             var loadedRecord = JsonSerializer
                 .Deserialize<RecordGetLoaded>(string.Join("", result),
@@ -85,7 +84,7 @@ namespace Infrastructure.Data.Repositories
             using var connection = _connectionFactory.NewConnection;
 
             var result = await connection.QueryAsync<string>(StoredProcedures.Record.GetById,
-                param: new { id },
+                param: new { param_id = id },
                 commandType: CommandType.StoredProcedure);
 
             if (!result.Any())
@@ -104,7 +103,7 @@ namespace Infrastructure.Data.Repositories
             using var connection = _connectionFactory.NewConnection;
 
             var zipContent = await connection.QuerySingleOrDefaultAsync<byte[]>(StoredProcedures.Record.Download,
-                param: new { id },
+                param: new { param_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return zipContent;
@@ -115,10 +114,10 @@ namespace Infrastructure.Data.Repositories
             using var connection = _connectionFactory.NewConnection;
 
             var parameter = new DynamicParameters();
-            parameter.Add("modeFilelName", createData.ModelFileName);
-            parameter.Add("labelFileName", createData.LabelFileName);
-            parameter.Add("zipContent", createData.ZipContent);
-            parameter.Add("recordTypeId", createData.RecordTypeId);
+            parameter.Add("param_modelFileName", createData.ModelFileName);
+            parameter.Add("param_LabelFileName", createData.LabelFileName);
+            parameter.Add("param_zipContent", createData.ZipContent);
+            parameter.Add("param_recordTypeId", createData.RecordTypeId);
 
             return await connection.QuerySingleAsync<int>(StoredProcedures.Record.Create,
                 param: parameter,
@@ -130,7 +129,7 @@ namespace Infrastructure.Data.Repositories
             using var connection = _connectionFactory.NewConnection;
 
             return await connection.ExecuteAsync(StoredProcedures.Record.SetLoaded,
-                param: new { recordId },
+                param: new { param_recordId = recordId },
                 commandType: CommandType.StoredProcedure);
         }
 
@@ -139,7 +138,7 @@ namespace Infrastructure.Data.Repositories
             using var connection = _connectionFactory.NewConnection;
 
             return await connection.ExecuteAsync(StoredProcedures.Record.Delete,
-                param: new { id },
+                param: new { param_id = id },
                 commandType: CommandType.StoredProcedure);
         }
     }

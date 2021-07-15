@@ -1,4 +1,5 @@
 ﻿using Application.Data;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,6 +19,6 @@ namespace Infrastructure.Data
             _connectionString = connectionString;
         }
 
-        public IDbConnection NewConnection => new SqlConnection(_connectionString);
+        public IDbConnection NewConnection => new MySqlConnection(_connectionString);
     }
 }

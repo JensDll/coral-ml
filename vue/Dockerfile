@@ -1,9 +1,9 @@
 FROM node:16 as build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN ["npm", "ci"]
+RUN npm ci --only=prod 
 COPY . ./
-RUN ["npm", "run", "build"]
+RUN npm run build
 
 # final image
 FROM nginx:1.21

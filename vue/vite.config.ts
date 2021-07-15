@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  assetsInclude: ['jsmpeg.min.js'],
+  envDir: 'env',
   resolve: {
     alias: {
       '~': path.resolve(__dirname, 'src')

@@ -1,7 +1,7 @@
 FROM node:16 as build
 WORKDIR /app
 COPY . ./
-RUN npm ci && \
+RUN npm ci --only=prod && \
   npm run build
 # API Port
 # Http MPEG-TS Stream

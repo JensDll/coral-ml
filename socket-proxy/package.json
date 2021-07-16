@@ -12,15 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "socket.io": "^4.1.2",
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5",
     "ws": "^7.4.6",
-    "zeromq": "^6.0.0-beta.6",
-    "rollup": "^2.53.1",
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@rollup/plugin-typescript": "^8.2.1",
-    "typescript": "^4.3.5",
-    "rollup-plugin-terser": "^7.0.2"
+    "zeromq": "^6.0.0-beta.6"
   },
   "prettier": {
     "semi": false,
@@ -29,8 +24,12 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "prettier": "^2.3.2",
+    "@rollup/plugin-typescript": "^8.2.1",
     "@types/ws": "^7.4.6",
-    "nodemon": "^2.0.9"
+    "nodemon": "^2.0.9",
+    "prettier": "^2.3.2",
+    "rollup": "^2.53.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.3.5"
   }
 }

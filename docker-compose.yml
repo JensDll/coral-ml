@@ -1,11 +1,11 @@
 version: "3.9"
 
 services:
-  db:
+  mariadb:
     build:
-      context: ./db
-      args:
-        SA_PASSWORD: "${SA_PASSWORD}"
+      context: ./mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: "${ROOT_PASSWORD}"
     ports:
       - ${DB_PORT}:3306
   api:
@@ -13,9 +13,11 @@ services:
       context: ./record-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings:RecordDb: "Server=host.docker.internal,${DB_PORT};Database=RecordDb;User Id=sa;Password=${SA_PASSWORD}"
+      ConnectionStrings:RecordDb: "Server=host.docker.internal,${DB_PORT};Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
     ports:
       - 5000:80
+    depends_on:
+      - mariadb
   socket-proxy:
     build:
       context: ./socket-proxy

@@ -4,10 +4,10 @@ from typing import Any
 
 @dataclasses.dataclass
 class BBox:
-    xmin: Any
-    xmax: Any
     ymin: Any
+    xmin: Any
     ymax: Any
+    xmax: Any
 
     @property
     def width(self):

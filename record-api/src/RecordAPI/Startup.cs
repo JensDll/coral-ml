@@ -41,7 +41,7 @@ namespace ModelAPI
             {
                 options.AddPolicy("dev", builder =>
                 {
-                    builder.AllowAnyOrigin().WithExposedHeaders("Location");
+                    builder.AllowAnyOrigin().AllowAnyMethod().WithExposedHeaders("Location");
                 });
             });
 

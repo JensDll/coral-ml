@@ -14,6 +14,11 @@ type ClassificationResult = {
   inferenceTime: number
 }
 
+export type UpdateVideoRequest = {
+  topK: number
+  threshold: number
+}
+
 export class SocketService {
   connected = ref(false)
   socket: Socket
@@ -51,4 +56,16 @@ export class SocketService {
       }
     )
   }
+
+  async updateVideo(request: UpdateVideoRequest) {
+    return new Promise<void>((resolve, reject) => {
+      this.socket.emit('update video', request, () => {
+        resolve()
+      })
+    })
+  }
 }
+
+export const socketService = new SocketService(
+  import.meta.env.VITE_IO_SOCKET_URI
+)

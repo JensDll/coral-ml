@@ -49,7 +49,7 @@ def get_detections(interpreter: tflite.Interpreter, score_threshold=0.1):
 
     def make(i) -> Detection:
         ymin, xmin, ymax, xmax = boxes[i]
-        bbox = BBox(xmin, ymin, xmax, ymax)
+        bbox = BBox(ymin, xmin, ymax, xmax)
         bbox = bbox.scale(sx, sy).map(int)
         return {"id": int(class_ids[i]), "score": scores[i], "bbox": bbox}
 

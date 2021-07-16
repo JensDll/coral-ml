@@ -5,6 +5,7 @@ export type RecordType = {
   id: number
   recordType: string
   total: number
+  loaded: boolean
 }
 
 export const recordTypeRepository = {

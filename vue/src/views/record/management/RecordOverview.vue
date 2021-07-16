@@ -1,52 +1,75 @@
 <template>
-  <v-title :title="`Models`" @back="router.back()" back>
+  <v-title :title="`Models`" @back="$router.back()" back>
     <template #extra>
       <span class="ml-4 text-lg text-gray-600">{{
-        route.params.recordType
+        $route.params.recordType
       }}</span>
     </template>
   </v-title>
-  <v-loading v-if="state.loading">Loading</v-loading>
-  <v-card-grid v-else>
+  <v-card-grid>
     <record-card
-      v-for="model in state.data?.data"
-      :key="model.id"
-      :model="model"
-      :on-load-link="onLoadLinks[route.params.recordTypeId]"
-      @load="handleLoad"
+      v-for="record in records"
+      :key="record.id"
+      :record="record"
+      :on-load-link="onLoadLink"
       @delete="handleDelete"
     ></record-card>
   </v-card-grid>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+import { recordRepository } from '~/api'
+import type { Record as ApiRecord } from '~/api'
 import RecordCard from '../components/RecordCard.vue'
 import VTitle from '~/components/base/VTitle.vue'
 import VCardGrid from '~/components/base/VCardGrid.vue'
-import VLoading from '~/components/base/VLoading.vue'
-import { recordRepository } from '~/api'
-import { useRoute, useRouter } from 'vue-router'
-import { useSocketService } from '~/composable'
-import { computed } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 
 const onLoadLinks: Record<any, string> = {
   '2': 'image-classification',
   '3': 'object-detection'
 }
 
-const router = useRouter()
-const route = useRoute()
+type Data = {
+  records: ApiRecord[]
+  onLoadLink: string
+}
 
-const state = recordRepository.getWidthRecordTypeId(
-  true,
-  route.params.recordTypeId as string
-)
+export default defineComponent({
+  components: {
+    RecordCard,
+    VTitle,
+    VCardGrid
+  },
+  data(): Data {
+    return {
+      records: [],
+      onLoadLink: ''
+    }
+  },
+  async beforeRouteEnter(to, from, next) {
+    const { data } = await recordRepository.getWidthRecordTypeId(
+      false,
+      to.params.recordTypeId as string
+    ).promise
 
-const socketService = useSocketService()
-
-function handleLoad(id: number) {}
-
-async function handleDelete(id: number) {}
+    next((vm: any) => {
+      vm.records = data?.data
+      vm.onLoadLink = onLoadLinks[to.params.recordTypeId as string]
+    })
+  },
+  methods: {
+    async handleDelete() {
+      const { data } = await recordRepository.getWidthRecordTypeId(
+        false,
+        this.$route.params.recordTypeId as string
+      ).promise
+      if (data?.data) {
+        this.records = data.data
+      }
+    }
+  }
+})
 </script>
 
 <style lang="postcss" scoped></style>

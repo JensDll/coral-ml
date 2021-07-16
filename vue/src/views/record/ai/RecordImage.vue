@@ -5,11 +5,10 @@
 </template>
 
 <script setup lang="ts">
+import { socketService } from '~/api'
 import VTitle from '~/components/base/VTitle.vue'
-import { useLoading, useSocketService } from '~/composable'
+import { useLoading } from '~/composable'
 import FormClassification from '../components/FormClassification.vue'
-
-const socketService = useSocketService()
 
 const [[loading, result, classify]] = useLoading(
   socketService.classify.bind(socketService)

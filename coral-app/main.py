@@ -13,9 +13,12 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--manager_port", default=7100, type=int)
-parser.add_argument("--classification_port", default=7200, type=int)
+parser.add_argument("--classify_port", default=7200, type=int)
+parser.add_argument("--video_port", default=7300, type=int)
+
 parser.add_argument("--publish_uri", default="http://localhost:5060", type=str)
-parser.add_argument("--api", default="http://localhost:5000/api", type=str)
+parser.add_argument("--api_uri", default="http://localhost:5000/api", type=str)
+
 args = parser.parse_args()
 
 log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
@@ -35,13 +38,13 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
     reply.bind(reply_addr)
     logging.info(f"[MODEL MANAGER] (REP) Bind to '{reply_addr}'")
 
-    reset_addr = "tcp://*:6666"
+    reset_addr = "tcp://*:7777"
     reset = ctx.socket(zmq.PUB)
     reset.bind(reset_addr)
     logging.info(f"[MODEL MANAGER] (PUB) Bind to '{reset_addr}'")
 
     client = aiohttp.ClientSession()
-    record_repo = common.repos.RecordRepository(base_uri=args.api, client=client)
+    record_repo = common.repos.RecordRepository(base_uri=args.api_uri, client=client)
 
     await asyncio.gather(img_pipe.recv(), video_pipe.recv())
 
@@ -71,16 +74,16 @@ async def main():
     img_pipe, img_peer = zutils.pipe(ctx)
     video_pipe, video_peer = zutils.pipe(ctx)
 
-    streamer_thread = threading.Thread(
+    video_thread = threading.Thread(
         target=asyncio.run,
-        args=[endpoints.streamer.start(ctx, video_peer, args)],
+        args=[endpoints.video.start(ctx, video_peer, args)],
         daemon=True,
     )
-    streamer_thread.start()
+    video_thread.start()
 
     classification_thread = threading.Thread(
         target=asyncio.run,
-        args=[endpoints.classificattion.start(ctx, img_peer, args)],
+        args=[endpoints.classification.start(ctx, img_peer, args)],
         daemon=True,
     )
     classification_thread.start()
@@ -89,8 +92,8 @@ async def main():
 
     await model_manager(
         ctx,
-        img_pipe=img_pipe,
         video_pipe=video_pipe,
+        img_pipe=img_pipe,
     )
 
 

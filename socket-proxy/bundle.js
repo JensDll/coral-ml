@@ -5,24 +5,31 @@ import WebSocket from 'ws';
 
 const toBool = (data) => !!data.readUInt8(0);
 
-const loadModel = (req) => async (id, callback) => {
+const loadModel = (client) => async (id, callback) => {
     console.log(`Load model with id (${id})`);
-    await req.send(id);
-    const [success] = await req.receive();
+    await client.send(id);
+    const [success] = await client.receive();
     callback(toBool(success));
 };
 
-const classify = (request) => async ({ image, format }, callback) => {
-    await request.send([image, format]);
-    console.log(image);
-    const [results] = await request.receive();
-    const data = JSON.parse(results.toString());
+const classify = (client) => async ({ image, format }, callback) => {
+    await client.send([image, format]);
+    const [result] = await client.receive();
+    const data = JSON.parse(result.toString());
     callback(data);
+};
+
+const updateVideo = (client) => async (data, callback) => {
+    console.log(data);
+    await client.send(JSON.stringify(data));
+    await client.receive();
+    callback();
 };
 
 function apiStart() {
     const MODL_MANAGER_PORT = 7100;
     const CLASSIFY_PORT = 7200;
+    const VIDEO_PORT = 7300;
     const LISTEN = 5050;
     const httpServer = createServer();
     const io = new Server(httpServer, {
@@ -33,15 +40,18 @@ function apiStart() {
     });
     io.on('connection', socket => {
         console.log(`A user connected (${socket.id})`);
-        const reqModelManger = new zmq.Request();
-        reqModelManger.connect(`tcp://localhost:${MODL_MANAGER_PORT}`);
-        socket.on('load model', loadModel(reqModelManger));
-        const reqClassify = new zmq.Request();
-        reqClassify.connect(`tcp://localhost:${CLASSIFY_PORT}`);
-        socket.on('classify', classify(reqClassify));
+        const modelManagerClient = new zmq.Request();
+        modelManagerClient.connect(`tcp://localhost:${MODL_MANAGER_PORT}`);
+        socket.on('load model', loadModel(modelManagerClient));
+        const classifyClient = new zmq.Request();
+        classifyClient.connect(`tcp://localhost:${CLASSIFY_PORT}`);
+        socket.on('classify', classify(classifyClient));
+        const videoClient = new zmq.Request();
+        videoClient.connect(`tcp://localhost:${VIDEO_PORT}`);
+        socket.on('update video', updateVideo(videoClient));
         socket.on('disconnect', () => {
-            reqModelManger.close();
-            reqClassify.close();
+            classifyClient.close();
+            classifyClient.close();
             console.log(`A user disconnected (${socket.id})`);
         });
     });

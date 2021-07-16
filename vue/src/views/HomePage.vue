@@ -1,6 +1,5 @@
 <template>
   <v-title title="Quick Start with Artificial Intelligence" />
-  <v-loading class="w-8 h-8" />
 </template>
 
 <script setup lang="ts">

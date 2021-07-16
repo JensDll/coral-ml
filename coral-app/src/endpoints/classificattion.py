@@ -16,13 +16,13 @@ class Message(TypedDict):
 
 
 async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
-    reply_addr = f"tcp://*:{args.classification_port}"
+    reply_addr = f"tcp://*:{args.classify_port}"
     reply = ctx.socket(zmq.REP)
     reply.bind(reply_addr)
     logging.info(f"[CLASSIFICATION] (REP) Bind to '{reply_addr}'")
 
     reset = ctx.socket(zmq.SUB)
-    reset.connect("tcp://localhost:6666")
+    reset.connect("tcp://localhost:7777")
     reset.setsockopt(zmq.SUBSCRIBE, b"")
 
     poller = Poller()
@@ -65,14 +65,16 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
             else:
                 format = format.decode()
 
-                results = classify.classify(
-                    interpreter=interpreter,
-                    labels=labels,
-                    img_buffer=img_buffer,
-                    format=format,
-                )
-
-                msg["success"] = True
-                msg["data"] = results
+                try:
+                    results = classify.classify(
+                        interpreter=interpreter,
+                        labels=labels,
+                        img_buffer=img_buffer,
+                        format=format,
+                    )
+                    msg["data"] = results
+                    msg["success"] = True
+                except Exception as e:
+                    msg["errors"].append(str(e))
 
                 await reply.send_json(msg)

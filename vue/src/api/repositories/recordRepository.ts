@@ -5,6 +5,7 @@ export type Record = {
   id: number
   modelFileName: string
   labelFileName: string
+  loaded: boolean
   recordTypeId: number
   recordType: string
 }

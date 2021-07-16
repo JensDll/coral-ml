@@ -1,3 +1,4 @@
+from typing_extensions import TypedDict
 import cv2
 import argparse
 import zmq
@@ -11,32 +12,47 @@ import src.zutils as zutils
 import scripts.stream
 
 
+class Message(TypedDict):
+    topK: int
+    threshold: int
+
+
 async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
-    # Subscribe to reset signal
+    # reset signal
     reset = ctx.socket(zmq.SUB)
-    reset.connect("tcp://localhost:6666")
+    reset.connect("tcp://localhost:7777")
     reset.setsockopt(zmq.SUBSCRIBE, b"")
+
+    # general messaging
+    reply_addr = f"tcp://*:{args.video_port}"
+    reply = ctx.socket(zmq.REP)
+    reply.bind(reply_addr)
+    logging.info(f"[VIDEO] (REP) Bind to '{reply_addr}'")
 
     poller = Poller()
     poller.register(reset, zmq.POLLIN)
     poller.register(video_peer, zmq.POLLIN)
+    poller.register(reply, zmq.POLLIN)
 
     cap = cv2.VideoCapture(0)
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    size = (frame_width, frame_height)
-
-    interpreter: tflite.Interpreter = None
-    labels: dict = None
 
     process = scripts.stream.start_stream(
-        size=size, fps=fps, pix_fmt="rgb24", publish_uri=args.publish_uri
+        frame_width=frame_width,
+        frame_height=frame_height,
+        pix_fmt="rgb24",
+        fps=fps,
+        publish_uri=args.publish_uri,
     )
 
-    await video_peer.send(b"")
-
     fps_iter = common.fps_iter()
+    interpreter: tflite.Interpreter = None
+    labels: dict = None
+    msg: Message = {"topK": 1, "threshold": 0.1}
+
+    await video_peer.send(b"")
 
     while True:
         try:
@@ -47,12 +63,16 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
         if reset in items:
             await reset.recv()
             interpreter = None
-            logging.info("[PUBLISHER] Reset")
+            logging.info("[VIDEO] Reset")
 
         if video_peer in items:
             interpreter, labels = await zutils.recv_interpreter(video_peer)
-            logging.info("[PUBLISHER] Received Interpreter - Sending response ...")
+            logging.info("[VIDEO] Received Interpreter - Sending response ...")
             video_peer.send(b"")
+
+        if reply in items:
+            msg: Message = await reply.recv_json()
+            reply.send(b"")
 
         has_frame, frame = cap.read()
 
@@ -65,7 +85,10 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
             input_size = common.get_input_size(interpreter)
             resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
             inference_time = common.interpreter_invoke(interpreter, resized)
-            detections = detect.get_detections(interpreter)
+            print(inference_time)
+            detections = detect.get_detections(
+                interpreter, score_threshold=msg["threshold"]
+            )[: msg["topK"]]
             frame = detect.append_detection_to_img(
                 img=frame, input_size=input_size, detections=detections, labels=labels
             )

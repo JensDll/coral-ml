@@ -1,2 +1,2 @@
-import src.endpoints.classificattion as classificattion
-import src.endpoints.streamer as streamer
+import src.endpoints.classificattion as classification
+import src.endpoints.video as video

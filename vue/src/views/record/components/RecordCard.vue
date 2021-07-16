@@ -1,6 +1,9 @@
 <template>
   <div class="border p-6 rounded-md">
-    <h3 class="break-words font-semibold mb-8">{{ modelName }}</h3>
+    <div class="flex justify-between items-start mb-8">
+      <h3 class="font-semibold break-words w-3/5">{{ modelName }}</h3>
+      <v-badge class="ml-4" v-if="record.loaded">Loaded</v-badge>
+    </div>
     <div class="flex items-center justify-between">
       <div>
         <v-button
@@ -23,7 +26,7 @@
         </v-button>
       </div>
       <download-icon
-        @click="recordRepository.download(model.id)"
+        @click="recordRepository.download(record.id)"
         class="w-6 h-6 hover:text-blue-700 cursor-pointer"
       />
     </div>
@@ -33,17 +36,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { PropType } from 'vue'
-import { recordRepository } from '~/api'
+import { recordRepository, socketService } from '~/api'
 import type { Record } from '~/api'
 import VButton from '~/components/base/VButton.vue'
+import VBadge from '~/components/base/VBadge.vue'
 import { DownloadIcon } from '@heroicons/vue/outline'
-import { useLoading, useSocketService } from '~/composable'
+import { useLoading } from '~/composable'
 import { useRouter } from 'vue-router'
 
 const loading = ref(false)
 
 const props = defineProps({
-  model: {
+  record: {
     type: Object as PropType<Record>,
     required: true
   },
@@ -56,25 +60,25 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  (event: 'load', id: number): void
-  (event: 'delete', id: number): void
+  (event: 'delete'): void
 }>()
 
 const router = useRouter()
 const modelName = computed(() =>
-  props.model.modelFileName.replace('.tflite', '')
+  props.record.modelFileName.replace('.tflite', '')
 )
 
-const socketService = useSocketService()
-
 async function handleLoad() {
-  const success = await socketService.loadModel(props.model.id)
-  if (success) {
-    router.push({ name: props.onLoadLink })
-  }
+  loading.value = true
+  router.push({ name: props.onLoadLink })
+  const success = await socketService.loadModel(props.record.id)
+  loading.value = false
 }
 
-function handleDelete() {}
+async function handleDelete() {
+  await recordRepository.delete(false, props.record.id).promise
+  emit('delete')
+}
 </script>
 
 <style lang="postcss" scoped></style>

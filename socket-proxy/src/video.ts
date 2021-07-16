@@ -12,7 +12,6 @@ export function videoStart() {
 
   wss.on('connection', (ws, req) => {
     console.log(`Client connected ${req.socket.remoteAddress}`)
-
     ws.on('close', () => {
       console.log(`Client disconnected ${req.socket.remoteAddress}`)
     })

@@ -20,16 +20,14 @@ async function handleUpload({ files }: FormData) {
   const model = files[idxModel]
   const label = files[Math.abs(1 - idxModel)]
 
-  const { responseOk } = await recordRepository.upload(
+  router.back()
+
+  await recordRepository.upload(
     false,
     route.params.recordTypeId as string,
     model,
     label
   ).promise
-
-  if (responseOk) {
-    router.back()
-  }
 }
 </script>
 

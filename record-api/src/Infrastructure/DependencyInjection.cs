@@ -6,6 +6,7 @@ using Infrastructure.Data.Repositories;
 using Infrastructure.Mapping.Record;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Infrastructure
 {
@@ -13,9 +14,12 @@ namespace Infrastructure
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            string connectionString = configuration.GetConnectionString("RecordDb");
+
+            Log.Information($"Found connection string: {connectionString}");
+
             // data access
-            services.AddSingleton<IConnectionFactory>
-                (new ConnectionFactory(configuration.GetConnectionString("RecordDb")));
+            services.AddSingleton<IConnectionFactory>(new ConnectionFactory(connectionString));
             services.AddSingleton<IRecordRepository, RecordRepository>();
             services.AddSingleton<IRecordTypeRepository, RecordTypeRepository>();
 

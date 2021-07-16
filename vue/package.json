@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "vite",
     "dev-iot": "vite --mode iot2050",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "jest"
   },

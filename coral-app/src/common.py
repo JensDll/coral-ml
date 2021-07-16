@@ -93,7 +93,7 @@ def print_fps(img: np.ndarray, fps_iter):
 
     fontScale = 1
     fontFace = cv2.FONT_HERSHEY_PLAIN
-    fontColor = (0, 240, 0)
+    fontColor = (0, 245, 0)
     fontThickness = 1
 
     cv2.putText(

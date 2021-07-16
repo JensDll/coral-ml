@@ -1,11 +1,12 @@
 import { createServer } from 'http'
 import zmq from 'zeromq'
 import { Server } from 'socket.io'
-import { loadModel, classify } from './endpoints'
+import { loadModel, classify, updateVideo } from './endpoints'
 
 export function apiStart() {
   const MODL_MANAGER_PORT = 7100
   const CLASSIFY_PORT = 7200
+  const VIDEO_PORT = 7300
 
   const LISTEN = 5050
 
@@ -20,17 +21,21 @@ export function apiStart() {
   io.on('connection', socket => {
     console.log(`A user connected (${socket.id})`)
 
-    const reqModelManger = new zmq.Request()
-    reqModelManger.connect(`tcp://localhost:${MODL_MANAGER_PORT}`)
-    socket.on('load model', loadModel(reqModelManger))
+    const modelManagerClient = new zmq.Request()
+    modelManagerClient.connect(`tcp://localhost:${MODL_MANAGER_PORT}`)
+    socket.on('load model', loadModel(modelManagerClient))
 
-    const reqClassify = new zmq.Request()
-    reqClassify.connect(`tcp://localhost:${CLASSIFY_PORT}`)
-    socket.on('classify', classify(reqClassify))
+    const classifyClient = new zmq.Request()
+    classifyClient.connect(`tcp://localhost:${CLASSIFY_PORT}`)
+    socket.on('classify', classify(classifyClient))
+
+    const videoClient = new zmq.Request()
+    videoClient.connect(`tcp://localhost:${VIDEO_PORT}`)
+    socket.on('update video', updateVideo(videoClient))
 
     socket.on('disconnect', () => {
-      reqModelManger.close()
-      reqClassify.close()
+      classifyClient.close()
+      classifyClient.close()
       console.log(`A user disconnected (${socket.id})`)
     })
   })

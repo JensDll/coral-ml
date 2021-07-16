@@ -13,11 +13,10 @@ type RequestData = {
 }
 
 export const classify =
-  (request: zmq.Request) =>
+  (client: zmq.Request) =>
   async ({ image, format }: RequestData, callback: Listener<Response>) => {
-    await request.send([image, format])
-    console.log(image)
-    const [results] = await request.receive()
-    const data: Response = JSON.parse(results.toString())
+    await client.send([image, format])
+    const [result] = await client.receive()
+    const data: Response = JSON.parse(result.toString())
     callback(data)
   }

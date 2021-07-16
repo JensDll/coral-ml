@@ -10,7 +10,7 @@
       "path": "record-api"
     },
     {
-      "path": "db"
+      "path": "mariadb"
     },
     {
       "path": "coral-app"

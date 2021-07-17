@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing_extensions import Literal
 import aiohttp
 from aiohttp.client_reqrep import ClientResponse
 import zipfile

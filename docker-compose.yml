@@ -13,7 +13,7 @@ services:
       context: ./record-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings:RecordDb: "Server=host.docker.internal,${DB_PORT};Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
+      ConnectionStrings:RecordDb: "Server=172.23.0.2,${DB_PORT};Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
     ports:
       - 5000:80
     depends_on:

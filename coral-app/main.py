@@ -10,6 +10,7 @@ import src.common as common
 import src.zutils as zutils
 import src.endpoints as endpoints
 import time
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--manager_port", default=7100, type=int)
@@ -22,6 +23,9 @@ parser.add_argument("--api_uri", default="http://localhost:5000/api", type=str)
 args = parser.parse_args()
 
 log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
+
+if not os.path.isdir("logs"):
+    os.mkdir("logs")
 
 logging.basicConfig(
     filename=f"logs/{log_id}.log",

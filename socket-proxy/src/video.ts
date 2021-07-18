@@ -28,7 +28,6 @@ export function videoStart(host: string) {
 
   const server = createServer((request, response) => {
     request.on('data', data => {
-      console.log(data)
       broadcastData(data)
     })
   })

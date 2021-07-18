@@ -13,10 +13,11 @@ const loadModel = (client) => async (id, callback) => {
 };
 
 const classify = (client) => async ({ image, format }, callback) => {
-    await client.send([image, format]);
-    const [result] = await client.receive();
-    const data = JSON.parse(result.toString());
-    callback(data);
+    console.log(image);
+    // await client.send([image, format])
+    // const [result] = await client.receive()
+    // const data: Response = JSON.parse(result.toString())
+    callback({ data: 'auiwzvd' });
 };
 
 const updateVideo = (client) => async (data, callback) => {
@@ -35,7 +36,8 @@ function apiStart(host) {
     const io = new Server(httpServer, {
         maxHttpBufferSize: 1e9,
         cors: {
-            origin: '*'
+            origin: '*',
+            preflightContinue: true
         }
     });
     io.on('connection', socket => {
@@ -45,7 +47,7 @@ function apiStart(host) {
         socket.on('load model', loadModel(modelManagerClient));
         const classifyClient = new zmq.Request();
         classifyClient.connect(`tcp://localhost:${CLASSIFY_PORT}`);
-        socket.on('classify', classify(classifyClient));
+        socket.on('classify', classify());
         const videoClient = new zmq.Request();
         videoClient.connect(`tcp://localhost:${VIDEO_PORT}`);
         socket.on('update video', updateVideo(videoClient));
@@ -56,7 +58,7 @@ function apiStart(host) {
         });
     });
     httpServer.listen(LISTEN, host);
-    console.log(`API listening on http://127.0.0.1:${LISTEN}`);
+    console.log(`API listening on http://${host}:${LISTEN}`);
 }
 
 function videoStart(host) {
@@ -87,8 +89,8 @@ function videoStart(host) {
     });
     server.headersTimeout = 0;
     server.listen(LISTEN, host);
-    console.log(`Listening for incomming MPEG-TS Stream on http://127.0.0.1:${LISTEN}`);
-    console.log(`Awaiting WebSocket connections on ws://127.0.0.1:${SOCKET_PORT}`);
+    console.log(`Listening for incomming MPEG-TS Stream on http://${host}:${LISTEN}`);
+    console.log(`Awaiting WebSocket connections on ws://${host}:${SOCKET_PORT}`);
 }
 
 apiStart("localhost");

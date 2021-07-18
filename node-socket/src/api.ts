@@ -42,5 +42,5 @@ export function apiStart(host: string) {
   })
 
   httpServer.listen(LISTEN, host)
-  console.log(`API listening on http://127.0.0.1:${LISTEN}`)
+  console.log(`API listening on http://${host}:${LISTEN}`)
 }

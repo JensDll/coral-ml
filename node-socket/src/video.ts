@@ -36,7 +36,7 @@ export function videoStart(host: string) {
   server.listen(LISTEN, host)
 
   console.log(
-    `Listening for incomming MPEG-TS Stream on http://127.0.0.1:${LISTEN}`
+    `Listening for incomming MPEG-TS Stream on http://${host}:${LISTEN}`
   )
-  console.log(`Awaiting WebSocket connections on ws://127.0.0.1:${SOCKET_PORT}`)
+  console.log(`Awaiting WebSocket connections on ws://${host}:${SOCKET_PORT}`)
 }

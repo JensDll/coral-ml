@@ -6,41 +6,46 @@ services:
       context: ./mariadb
     environment:
       MARIADB_ROOT_PASSWORD: "${ROOT_PASSWORD}"
-    ports:
-      - ${DB_PORT}:3306
     networks:
       - appnet
 
-  recordapi:
+  record-api:
     build:
       context: ./record-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings:RecordDb: "Server=mariadb,${DB_PORT};Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
-    ports:
-      - 8000:80
-    depends_on:
-      - mariadb
+      ConnectionStrings:RecordDb: "Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
     networks:
       - appnet
 
-  nodesocket:
+  node-socket:
     build:
       context: ./node-socket
     networks:
-      - app-net
+      - appnet
 
-  vueapp:
+  vue-app:
     build: 
-      context: ./vue
+      context: ./vue-app
     ports: 
       - 8100:80
     networks:
       - appnet
 
-  coralapp:
+  coral-app:
     build: 
       context: ./coral-app
+    networks:
+      - appnet
+  
+  proxy:
+    build:
+      context: ./proxy
+    ports:
+      - 80:80
+    depends_on:
+      - record-api
+      - node-socket
     networks:
       - appnet
 

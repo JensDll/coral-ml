@@ -17,7 +17,7 @@ parser.add_argument("--manager_port", default=7100, type=int)
 parser.add_argument("--classify_port", default=7200, type=int)
 parser.add_argument("--video_port", default=7300, type=int)
 
-parser.add_argument("--publish_uri", default="http://socket-proxy:5060", type=str)
+parser.add_argument("--publish_uri", default="http://localhost:5060", type=str)
 parser.add_argument("--api_uri", default="http://localhost:5000/api", type=str)
 
 args = parser.parse_args()

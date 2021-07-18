@@ -14,7 +14,8 @@ export function apiStart(host: string) {
   const io = new Server(httpServer, {
     maxHttpBufferSize: 1e9,
     cors: {
-      origin: '*'
+      origin: '*',
+      preflightContinue: true
     }
   })
 

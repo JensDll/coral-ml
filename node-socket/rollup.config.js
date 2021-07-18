@@ -1,6 +1,7 @@
 import { defineConfig } from 'rollup'
 import typescript from '@rollup/plugin-typescript'
 import { terser } from 'rollup-plugin-terser'
+import replace from '@rollup/plugin-replace'
 
 const watchConfig = defineConfig({
   input: 'src/main.ts',
@@ -8,7 +9,12 @@ const watchConfig = defineConfig({
     file: 'bundle.js',
     format: 'esm'
   },
-  plugins: [typescript()]
+  plugins: [
+    typescript(),
+    replace({
+      'process.env.HOST': JSON.stringify('localhost')
+    })
+  ]
 })
 
 const buildConfig = defineConfig({
@@ -17,7 +23,13 @@ const buildConfig = defineConfig({
     file: 'dist/bundle.min.js',
     format: 'esm'
   },
-  plugins: [typescript(), terser()]
+  plugins: [
+    typescript(),
+    terser(),
+    replace({
+      'process.env.HOST': JSON.stringify('node-socket')
+    })
+  ]
 })
 
 export default args => {

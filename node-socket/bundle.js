@@ -26,7 +26,7 @@ const updateVideo = (client) => async (data, callback) => {
     callback();
 };
 
-function apiStart() {
+function apiStart(host) {
     const MODL_MANAGER_PORT = 7100;
     const CLASSIFY_PORT = 7200;
     const VIDEO_PORT = 7300;
@@ -55,15 +55,16 @@ function apiStart() {
             console.log(`A user disconnected (${socket.id})`);
         });
     });
-    httpServer.listen(LISTEN);
+    httpServer.listen(LISTEN, host);
     console.log(`API listening on http://127.0.0.1:${LISTEN}`);
 }
 
-function videoStart() {
+function videoStart(host) {
     const SOCKET_PORT = 8080;
     const LISTEN = 5060;
     var wss = new WebSocket.Server({
         port: SOCKET_PORT,
+        host,
         perMessageDeflate: false
     });
     wss.on('connection', (ws, req) => {
@@ -85,10 +86,10 @@ function videoStart() {
         });
     });
     server.headersTimeout = 0;
-    server.listen(LISTEN);
+    server.listen(LISTEN, host);
     console.log(`Listening for incomming MPEG-TS Stream on http://127.0.0.1:${LISTEN}`);
     console.log(`Awaiting WebSocket connections on ws://127.0.0.1:${SOCKET_PORT}`);
 }
 
-apiStart();
-videoStart();
+apiStart("localhost");
+videoStart("localhost");

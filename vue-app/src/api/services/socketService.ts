@@ -24,7 +24,7 @@ export class SocketService {
   socket: Socket
 
   constructor(address: string) {
-    this.socket = io(address)
+    this.socket = io(address, { path: '/socket-api/' })
 
     this.socket.on('connect', () => {
       console.log(`[Socket] Connected (${this.socket.id})`)

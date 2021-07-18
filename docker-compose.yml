@@ -9,42 +9,41 @@ services:
     ports:
       - ${DB_PORT}:3306
     networks:
-      - app-net
-  api:
+      - appnet
+
+  recordapi:
     build:
       context: ./record-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings:RecordDb: "Server=mariadb,${DB_PORT};Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
     ports:
-      - 5000:80
+      - 8000:80
     depends_on:
       - mariadb
     networks:
-      - app-net
-  socket-proxy:
+      - appnet
+
+  nodesocket:
     build:
-      context: ./socket-proxy
-    # ports: 
-    #   - 5050:5050
-    #   - 5060:5060
-    #   - 8080:8080
+      context: ./node-socket
     networks:
       - app-net
-  vue:
+
+  vueapp:
     build: 
       context: ./vue
     ports: 
-      - 5100:80
+      - 8100:80
     networks:
-      - app-net
-  coral-app:
+      - appnet
+
+  coralapp:
     build: 
       context: ./coral-app
-    ports:
-      - 7100:7100
-      - 7200:7200
+    networks:
+      - appnet
 
 networks:
-  app-net:
+  appnet:
     driver: bridge

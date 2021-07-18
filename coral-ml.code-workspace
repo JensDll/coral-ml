@@ -1,10 +1,10 @@
 {
   "folders": [
     {
-      "path": "vue"
+      "path": "vue-app"
     },
     {
-      "path": "socket-proxy"
+      "path": "node-socket"
     },
     {
       "path": "record-api"

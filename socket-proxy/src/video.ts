@@ -1,12 +1,13 @@
 import { createServer } from 'http'
 import WebSocket from 'ws'
 
-export function videoStart() {
+export function videoStart(host: string) {
   const SOCKET_PORT = 8080
   const LISTEN = 5060
 
   var wss = new WebSocket.Server({
     port: SOCKET_PORT,
+    host,
     perMessageDeflate: false
   })
 
@@ -27,12 +28,13 @@ export function videoStart() {
 
   const server = createServer((request, response) => {
     request.on('data', data => {
+      console.log(data)
       broadcastData(data)
     })
   })
 
   server.headersTimeout = 0
-  server.listen(LISTEN)
+  server.listen(LISTEN, host)
 
   console.log(
     `Listening for incomming MPEG-TS Stream on http://127.0.0.1:${LISTEN}`

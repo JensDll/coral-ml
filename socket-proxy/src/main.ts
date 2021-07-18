@@ -1,5 +1,5 @@
 import { apiStart } from './api'
 import { videoStart } from './video'
 
-apiStart()
-videoStart()
+apiStart('socket-proxy')
+videoStart('socket-proxy')

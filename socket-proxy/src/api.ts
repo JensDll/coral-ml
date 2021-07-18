@@ -3,7 +3,7 @@ import zmq from 'zeromq'
 import { Server } from 'socket.io'
 import { loadModel, classify, updateVideo } from './endpoints'
 
-export function apiStart() {
+export function apiStart(host: string) {
   const MODL_MANAGER_PORT = 7100
   const CLASSIFY_PORT = 7200
   const VIDEO_PORT = 7300
@@ -40,6 +40,6 @@ export function apiStart() {
     })
   })
 
-  httpServer.listen(LISTEN)
+  httpServer.listen(LISTEN, host)
   console.log(`API listening on http://127.0.0.1:${LISTEN}`)
 }

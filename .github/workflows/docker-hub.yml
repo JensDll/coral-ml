@@ -28,4 +28,4 @@ jobs:
         echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
     - name: Build Images
       run: |
-        docker buildx bake --push
+        docker buildx bake -f docker-bake.hcl --push

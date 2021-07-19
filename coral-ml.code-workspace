@@ -1,25 +1,31 @@
 {
   "folders": [
     {
-      "path": "vue-app"
+      "path": "services/vue-app"
     },
     {
-      "path": "node-socket"
+      "path": "services/node-socket"
     },
     {
-      "path": "record-api"
+      "path": "services/record-api"
     },
     {
-      "path": "mariadb"
+      "path": "services/mariadb"
     },
     {
-      "path": "coral-app"
+      "path": "services/coral-app"
     },
     {
-      "path": "proxy"
+      "path": "services/proxy"
+    },
+    {
+      "path": "scripts"
     }
   ],
   "settings": {
-    "volar.tsPlugin": true
+    "volar.tsPlugin": true,
+    "deno.enable": true,
+    "deno.lint": true,
+    "deno.unstable": true
   }
 }

@@ -51,7 +51,7 @@ class RecordRepository(RepositoryBase):
                 raise aiohttp.ClientError()
             except Exception as e:
                 logging.error(f"Error downloading model with id ({id})")
-                logging.error(e)
+                logging.error(str(e))
                 raise e
             finally:
                 file_path.unlink()

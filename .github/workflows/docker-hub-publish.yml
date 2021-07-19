@@ -2,7 +2,8 @@ name: Docker Hub Publish CI
 
 on:
   release:
-    branches: [ master ]
+    types:
+      - "published"
 
 jobs:
   publish-images:
@@ -25,4 +26,4 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     - name: Build and Push Images
       run: |
-        docker buildx bake -f docker-bake.hcl --push
+        docker buildx bake -f docker-bake.hcl --push proxy

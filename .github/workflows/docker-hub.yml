@@ -3,10 +3,9 @@ name: Docker Hub CI
 on:
   release:
     branches: [ master ]
-  push:
 
 jobs:
-  build:
+  publish-images:
     runs-on: ubuntu-latest
     steps:
     - name: Check Out Repo 
@@ -31,6 +30,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - name: Build Images
+    - name: Build and Push Images
       run: |
-        docker buildx bake -f docker-bake.hcl --push proxy
+        docker buildx bake -f docker-bake.hcl --push

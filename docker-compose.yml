@@ -15,6 +15,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings:RecordDb: "Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
+    ports:
+      - 8000:80
     networks:
       - appnet
 
@@ -27,6 +29,8 @@ services:
   vue-app:
     build: 
       context: ./vue-app
+      args:
+        mode: compose
     ports: 
       - 8100:80
     networks:

@@ -26,7 +26,9 @@ export class SocketService {
   constructor(address: string) {
     this.socket = io(
       address,
-      import.meta.env.PROD ? { path: '/socket-api/' } : undefined
+      import.meta.env.MODE !== 'development'
+        ? { path: '/socket-api/' }
+        : undefined
     )
 
     this.socket.on('connect', () => {

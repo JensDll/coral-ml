@@ -75,7 +75,7 @@ function videoStart(host) {
             console.log(`Client disconnected ${req.socket.remoteAddress}`);
         });
     });
-    function broadcastData(data) {
+    async function broadcastData(data) {
         wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(data);
@@ -84,6 +84,7 @@ function videoStart(host) {
     }
     const server = createServer((request, response) => {
         request.on('data', data => {
+            console.log(data);
             broadcastData(data);
         });
     });

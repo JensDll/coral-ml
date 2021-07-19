@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
+
 WORKDIR /source
 
 # copy csproj and restore as distinct layers

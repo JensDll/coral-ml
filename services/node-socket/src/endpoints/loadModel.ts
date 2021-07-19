@@ -8,6 +8,5 @@ export const loadModel =
 
     await client.send(id)
     const [success] = await client.receive()
-
     callback(toBool(success))
   }

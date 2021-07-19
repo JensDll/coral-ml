@@ -11,7 +11,7 @@ services:
 
   record-api:
     build:
-      context: ./record-api
+      context: ./services/record-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings:RecordDb: "Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"

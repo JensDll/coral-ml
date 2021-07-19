@@ -31,4 +31,4 @@ EXPOSE 7000 7100 7200
 
 ENTRYPOINT [ "python3", "main.py", \
     "--publish_uri", "http://node-socket:5060", \
-    "--api_uri", "http://record-api:5060" ]
+    "--api_uri", "http://record-api" ]

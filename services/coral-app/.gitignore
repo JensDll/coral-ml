@@ -138,9 +138,6 @@ dmypy.json
 cython_debug/
 
 # Project specific files
-coral/
-**/notebooks/**/data
-my_logs/
-*.tflite
 *.h5
 logs
+record

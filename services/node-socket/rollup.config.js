@@ -12,7 +12,9 @@ const watchConfig = defineConfig({
   plugins: [
     typescript(),
     replace({
-      'process.env.HOST': JSON.stringify('localhost')
+      'process.env.HOST': JSON.stringify('localhost'),
+      'process.env.CORAL_APP': JSON.stringify('localhost'),
+      preventAssignment: true
     })
   ]
 })
@@ -27,7 +29,9 @@ const buildConfig = defineConfig({
     typescript(),
     terser(),
     replace({
-      'process.env.HOST': JSON.stringify('node-socket')
+      'process.env.HOST': JSON.stringify('node-socket'),
+      'process.env.CORAL_APP': JSON.stringify('coral-app'),
+      preventAssignment: true
     })
   ]
 })

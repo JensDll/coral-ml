@@ -18,6 +18,9 @@
     {
       "path": "services/proxy"
     },
+    {
+      "path": ".github"
+    }
   ],
   "settings": {
     "volar.tsPlugin": true

@@ -26,4 +26,4 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     - name: Build and Push Images
       run: |
-        docker buildx bake -f docker-bake.hcl --push proxy
+        docker buildx bake -f docker-bake.hcl --push

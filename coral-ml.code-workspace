@@ -18,14 +18,8 @@
     {
       "path": "services/proxy"
     },
-    {
-      "path": "scripts"
-    }
   ],
   "settings": {
-    "volar.tsPlugin": true,
-    "deno.enable": true,
-    "deno.lint": true,
-    "deno.unstable": true
+    "volar.tsPlugin": true
   }
 }

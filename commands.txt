@@ -1,0 +1,19 @@
+docker network create -d bridge appnet
+
+########## Database ##########
+docker run -e MARIADB_ROOT_PASSWORD="Pwd12345!" -d --rm --net appnet --name mariadb jensdll/coral-ml:mariadb-latest
+
+########## Node Socket ##########
+docker run --rm -d --net appnet --name node-socket jensdll/coral-ml:node-socket-latest
+
+########## Record API ##########
+docker run -e ConnectionStrings:RecordDb='Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=Pwd12345!;' --rm -d --net appnet --name record-api jensdll/coral-ml:record-api-latest
+
+########## Vue App ##########
+docker run --rm -d -p 8000:80 --net appnet --name vue-app jensdll/coral-ml:vue-app-latest
+
+########## Coral App ##########
+docker run --device /dev/video0 --device /dev/apex_0 --rm --net appnet -d --name coral-app jensdll/coral-ml:coral-app-latest
+
+########## Proxy ##########
+docker run --rm -d --net appnet -p 80:80 --name proxy jensdll/coral-ml:proxy-latest

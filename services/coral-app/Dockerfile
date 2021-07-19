@@ -22,13 +22,12 @@ RUN apt-get install -y python3 python3-pip python3-tflite-runtime \
 # update pip
 RUN python3 -m pip install -U pip
 # install requirements
-RUN python3 -m pip install -r requirements.txt && \
-    apt-get clean
+RUN python3 -m pip install -r requirements.txt && apt-get clean
 
 COPY /src ./src
 COPY /scripts ./scripts
 
-EXPOSE 7100 7200
+EXPOSE 7000 7100 7200
 
 ENTRYPOINT [ "python3", "main.py", \
     "--publish_uri", "http://node-socket:5060", \

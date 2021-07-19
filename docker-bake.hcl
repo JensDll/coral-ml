@@ -25,7 +25,7 @@ target "mariadb" {
 }
 
 target "record-api" {
-    context = "services/mariadb"
+    context = "services/record-api"
     tags = [
       "${REPOSITORY}:record-api-latest"
     ]

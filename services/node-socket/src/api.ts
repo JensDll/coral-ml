@@ -4,9 +4,9 @@ import { Server } from 'socket.io'
 import { loadModel, classify, updateVideo } from './endpoints'
 
 export function apiStart(host: string) {
-  const MODL_MANAGER_PORT = 7100
-  const CLASSIFY_PORT = 7200
-  const VIDEO_PORT = 7300
+  const MODL_MANAGER_PORT = 7000
+  const CLASSIFY_PORT = 7100
+  const VIDEO_PORT = 7200
 
   const LISTEN = 5050
 
@@ -23,15 +23,15 @@ export function apiStart(host: string) {
     console.log(`A user connected (${socket.id})`)
 
     const modelManagerClient = new zmq.Request()
-    modelManagerClient.connect(`tcp://localhost:${MODL_MANAGER_PORT}`)
+    modelManagerClient.connect(`tcp://coral-app:${MODL_MANAGER_PORT}`)
     socket.on('load model', loadModel(modelManagerClient))
 
     const classifyClient = new zmq.Request()
-    classifyClient.connect(`tcp://localhost:${CLASSIFY_PORT}`)
+    classifyClient.connect(`tcp://coral-app:${CLASSIFY_PORT}`)
     socket.on('classify', classify(classifyClient))
 
     const videoClient = new zmq.Request()
-    videoClient.connect(`tcp://localhost:${VIDEO_PORT}`)
+    videoClient.connect(`tcp://coral-app:${VIDEO_PORT}`)
     socket.on('update video', updateVideo(videoClient))
 
     socket.on('disconnect', () => {

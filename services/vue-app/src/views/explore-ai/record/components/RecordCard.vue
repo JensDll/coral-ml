@@ -77,7 +77,7 @@ const modelName = computed(() =>
 async function handleLoad() {
   loading.value = true
   recordStore.loadingRecord = true
-  router.push({ name: window.onLoadLinks[props.record.recordTypeId] })
+  router.push({ name: window.onLoadLinks[props.record.recordType] })
   const success = await socketService.loadModel(props.record.id)
   if (success) {
     await recordRepository.loadLoaded()

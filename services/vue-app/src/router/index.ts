@@ -9,13 +9,13 @@ import LandingPage from '../views/LandingPage.vue'
 import MainPage from '../views/MainPage.vue'
 import HomePage from '../views/HomePage.vue'
 
-import RecordMain from '../views/record/RecordMain.vue'
+import RecordUpload from '~/views/explore-ai/record/UploadPage.vue'
+import RecordOverview from '~/views/explore-ai/record/OverviewPage.vue'
 
-import RecordUpload from '~/views/record/management/RecordUpload.vue'
-import RecordOverview from '~/views/record/management/RecordOverview.vue'
+import ImageClassification from '~/views/explore-ai/ImageClassification.vue'
+import ObjectDetection from '~/views/explore-ai/ObjectDetection.vue'
 
-import RecordImage from '~/views/record/ai/RecordImage.vue'
-import RecordVideo from '~/views/record/ai/RecordVideo.vue'
+import RecordMain from '../views/explore-ai/record/MainPage.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
     component: LandingPage
   },
   {
-    path: '/ai',
+    path: '/explore-ai',
     component: MainPage,
     children: [
       {
@@ -56,12 +56,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'image-classification',
         name: 'image-classification',
-        component: RecordImage
+        component: ImageClassification
       },
       {
         path: 'object-detection',
         name: 'object-detection',
-        component: RecordVideo
+        component: ObjectDetection
       }
     ]
   }

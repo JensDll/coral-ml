@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { AcademicCapIcon } from '@heroicons/vue/solid'
-import VLink from '../base/VLink.vue'
+import VLink from '../base/BaseLink.vue'
 const router = useRouter()
 
 function goHome() {

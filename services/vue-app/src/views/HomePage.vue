@@ -1,10 +1,9 @@
 <template>
-  <v-title title="Quick Start with Artificial Intelligence" />
+  <base-title title="Quick Start with Artificial Intelligence" />
 </template>
 
 <script setup lang="ts">
-import VTitle from '~/components/base/VTitle.vue'
-import VLoading from '~/components/base/VLoading.vue'
+import BaseTitle from '~/components/base/BaseTitle.vue'
 </script>
 
 <style lang="postcss"></style>

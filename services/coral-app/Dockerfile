@@ -29,6 +29,6 @@ COPY /scripts ./scripts
 
 EXPOSE 7000 7100 7200
 
-ENTRYPOINT [ "python3", "main.py", \
-    "--publish_uri", "http://node-socket:5060", \
-    "--api_uri", "http://record-api/api" ]
+ENTRYPOINT [ "python3", "main.py" ]
+CMD [ "--publish_uri", "http://node-socket:5060", "--api_uri", "http://record-api/api" ]
+

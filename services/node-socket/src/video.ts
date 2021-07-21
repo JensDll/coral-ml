@@ -32,7 +32,6 @@ export function videoStart(host: string) {
     })
   })
 
-  server.headersTimeout = 0
   server.listen(LISTEN, host)
 
   console.log(

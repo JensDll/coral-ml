@@ -27,12 +27,14 @@ log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
 if not os.path.isdir("logs"):
     os.mkdir("logs")
 
+fileHanlder = logging.FileHandler(filename=f"logs/{log_id}.log")
+streamHandler = logging.StreamHandler()
+
 logging.basicConfig(
-    filename=f"logs/{log_id}.log",
-    filemode="w",
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%d/%m/%Y %H:%M:%S",
+    handlers=[fileHanlder, streamHandler],
 )
 
 
@@ -56,20 +58,19 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
 
     while True:
         id = await reply.recv_string()
-        success, model_path, label_path, record_type = await common.load_model(
-            record_repo, id
-        )
-        if success:
+        result = await common.load_model(record_repo, id)
+        time.sleep(2)
+        if result["success"]:
             reset.send(b"")
-            model_path = str(model_path).encode()
-            label_path = str(label_path).encode()
-            if record_type == "Object Detection":
+            model_path = str(result["model_path"]).encode()
+            label_path = str(result["label_path"]).encode()
+            if result["record_type"] == "Object Detection":
                 await video_pipe.send_multipart([model_path, label_path])
                 await video_pipe.recv()
             else:
                 await img_pipe.send_multipart([model_path, label_path])
                 await img_pipe.recv()
-        await reply.send(zutils.encode_bool(success))
+        await reply.send(zutils.encode_bool(result["success"]))
 
 
 async def main():

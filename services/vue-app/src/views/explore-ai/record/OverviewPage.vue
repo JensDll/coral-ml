@@ -1,12 +1,12 @@
 <template>
-  <v-title :title="`Models`" @back="$router.back()" back>
+  <base-title :title="`Models`" @back="$router.back()" back>
     <template #extra>
       <span class="ml-4 text-lg text-gray-600">{{
         $route.params.recordType
       }}</span>
     </template>
-  </v-title>
-  <v-card-grid>
+  </base-title>
+  <base-card-grid class="gap-12">
     <record-card
       v-for="record in records"
       :key="record.id"
@@ -14,15 +14,15 @@
       :on-load-link="onLoadLink"
       @delete="handleDelete"
     ></record-card>
-  </v-card-grid>
+  </base-card-grid>
 </template>
 
 <script lang="ts">
 import { recordRepository } from '~/api'
 import type { Record as ApiRecord } from '~/api'
-import RecordCard from '../components/RecordCard.vue'
-import VTitle from '~/components/base/VTitle.vue'
-import VCardGrid from '~/components/base/VCardGrid.vue'
+import RecordCard from './components/RecordCard.vue'
+import BaseTitle from '~/components/base/BaseTitle.vue'
+import BaseCardGrid from '~/components/base/BaseCardGrid.vue'
 import { defineComponent } from 'vue'
 
 const onLoadLinks: Record<any, string> = {
@@ -38,8 +38,8 @@ type Data = {
 export default defineComponent({
   components: {
     RecordCard,
-    VTitle,
-    VCardGrid
+    BaseTitle,
+    BaseCardGrid
   },
   data(): Data {
     return {

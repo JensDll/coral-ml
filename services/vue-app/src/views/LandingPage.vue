@@ -7,18 +7,18 @@
       Powered by SIMATIC Industrial PC and Coral Edge TPU
     </p>
     <div class="flex flex-col sm:flex-row">
-      <v-button
+      <base-button
         class="px-6 py-4 font-semibold rounded-xl"
         @click="router.push({ name: 'home' })"
       >
         Getting Started
-      </v-button>
+      </base-button>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import VButton from '~/components/base/VButton.vue'
+import BaseButton from '~/components/base/BaseButton.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

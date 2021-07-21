@@ -56,10 +56,9 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
             format: bytes
             img_buffer, format = await reply.recv_multipart()
 
-            msg: Message = {"success": True, "errors": [], "data": None}
+            msg: Message = {"success": False, "errors": [], "data": None}
 
             if interpreter == None:
-                msg["success"] = False
                 msg["errors"].append("No model is loaded for this task")
                 await reply.send_json(msg)
             else:

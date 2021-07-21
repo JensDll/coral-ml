@@ -85,7 +85,6 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
             input_size = common.get_input_size(interpreter)
             resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
             inference_time = common.interpreter_invoke(interpreter, resized)
-            print(inference_time)
             detections = detect.get_detections(
                 interpreter, score_threshold=msg["threshold"]
             )[: msg["topK"]]

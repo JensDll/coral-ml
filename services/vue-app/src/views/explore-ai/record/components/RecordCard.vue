@@ -2,7 +2,10 @@
   <div class="border p-6 rounded-md">
     <div class="flex justify-between items-start mb-8">
       <h3 class="font-semibold break-words w-3/5">{{ modelName }}</h3>
-      <v-badge class="ml-4" v-if="record.loaded">Loaded</v-badge>
+      <div class="ml-8 flex items-center">
+        <v-badge v-if="record.loaded">Loaded</v-badge>
+        <loading-icon v-if="loading" class="w-4 mr-1 h-4 ml-4" />
+      </div>
     </div>
     <div class="flex items-center justify-between">
       <div>
@@ -26,8 +29,9 @@
         </v-button>
       </div>
       <download-icon
-        @click="recordRepository.download(record.id)"
+        @click="handleDownload()"
         class="w-6 h-6 hover:text-blue-700 cursor-pointer"
+        :class="{ 'opacity-40': loading }"
       />
     </div>
   </div>
@@ -38,11 +42,11 @@ import { computed, ref } from 'vue'
 import type { PropType } from 'vue'
 import { recordRepository, socketService } from '~/api'
 import type { Record } from '~/api'
-import VButton from '~/components/base/VButton.vue'
-import VBadge from '~/components/base/VBadge.vue'
+import VButton from '~/components/base/BaseButton.vue'
+import VBadge from '~/components/base/BaseBadge.vue'
 import { DownloadIcon } from '@heroicons/vue/outline'
-import { useLoading } from '~/composable'
 import { useRouter } from 'vue-router'
+import LoadingIcon from '~/components/icons/LoadingIcon.vue'
 
 const loading = ref(false)
 
@@ -76,8 +80,16 @@ async function handleLoad() {
 }
 
 async function handleDelete() {
+  loading.value = true
   await recordRepository.delete(false, props.record.id).promise
   emit('delete')
+  loading.value = false
+}
+
+async function handleDownload() {
+  loading.value = true
+  await recordRepository.download(props.record.id)
+  loading.value = false
 }
 </script>
 

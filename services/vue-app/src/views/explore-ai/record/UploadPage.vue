@@ -2,13 +2,13 @@
   <v-title title="Upload a new Model" @back="$router.back()" back />
   <p>A Coral Edge TPU model consists of a label and model file.</p>
   <p>Select both in the form field below and press upload.</p>
-  <form-record-upload @submit="handleUpload" class="mt-8" />
+  <record-upload-form @submit="handleUpload" class="mt-8" />
 </template>
 
 <script setup lang="ts">
-import VTitle from '~/components/base/VTitle.vue'
-import FormRecordUpload from '../components/FormRecordUpload.vue'
-import type { FormData } from '../components/FormRecordUpload.vue'
+import VTitle from '~/components/base/BaseTitle.vue'
+import RecordUploadForm from './components/RecordUploadForm.vue'
+import type { FormData } from './components/RecordUploadForm.vue'
 import { recordRepository } from '~/api'
 import { useRouter, useRoute } from 'vue-router'
 

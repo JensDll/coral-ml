@@ -9,32 +9,26 @@
         v-model.number="formData.topK"
         id="top-k"
       />
-      <div class="flex text-white font-semibold cursor-pointer">
-        <div class="bg-blue-500 pl-6 pr-3 py-2 rounded-tl-xl rounded-bl-xl">
-          <minus-icon class="w-5 h-5" />
-        </div>
-        <div class="bg-blue-500 pr-6 pl-3 py-2 rounded-tr-xl rounded-br-xl">
-          <plus-icon class="w-5 h-5" />
-        </div>
-      </div>
     </div>
   </form>
-  <canvas ref="videoCanvas" class="rounded-lg w-4/6" v-show="!loading"></canvas>
+  <canvas
+    ref="videoCanvas"
+    class="rounded-lg w-full lg:w-5/6 2xl:w-1/2 mt-8"
+    v-show="!loading"
+  ></canvas>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import VTitle from '~/components/base/VTitle.vue'
-import VLoading from '~/components/base/VLoading.vue'
+import VTitle from '~/components/base/BaseTitle.vue'
 import type { UpdateVideoRequest } from '~/api'
 import { socketService } from '~/api'
-import { PlusIcon, MinusIcon } from '@heroicons/vue/solid'
 
 const videoCanvas = ref() as Ref<HTMLCanvasElement>
 const loading = ref(true)
 const formData: UpdateVideoRequest = reactive({
-  topK: 5,
+  topK: 1,
   threshold: 0.1
 })
 

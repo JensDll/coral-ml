@@ -12,13 +12,11 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, publish_uri):
         .output(
             publish_uri,
             vcodec="mpeg1video",
-            preset="veryfast",
+            preset="ultrafast",
             framerate=fps,
-            video_bitrate="1.4M",
-            maxrate="2M",
-            bufsize="2M",
-            segment_time="6",
+            s=f"{int(frame_width * 0.8)}x{int(frame_height * 0.8)}",
             format="mpegts",
+            loglevel="quiet",
         )
         .run_async(pipe_stdin=True)
     )

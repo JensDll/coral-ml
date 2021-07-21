@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { useValidation } from 'vue3-form-validation'
 import type { Field } from 'vue3-form-validation'
-import VButton from '~/components/base/VButton.vue'
+import VButton from '~/components/base/BaseButton.vue'
 import FormFileUpload from '~/components/form/FormFileUpload.vue'
 import { minMax } from '~/utils'
 

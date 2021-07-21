@@ -2,11 +2,13 @@ import asyncio
 import pathlib
 import platform
 import re
+from typing_extensions import TypedDict
 import tflite_runtime.interpreter as tflite
 import numpy as np
 import cv2
 import time
 import src.repositories as repos
+import logging
 
 EDGETUP_LIB = {
     "Linux": "libedgetpu.so.1",
@@ -17,7 +19,7 @@ EDGETUP_LIB = {
 
 def get_output_tensor(interpreter: tflite.Interpreter, i):
     tensor_idx = interpreter.get_output_details()[i]["index"]
-    return interpreter.get_tensor(tensor_idx)
+    return interpreter.tensor(tensor_idx)()
 
 
 def get_input_detail(interpreter: tflite.Interpreter, key):
@@ -65,16 +67,35 @@ def interpreter_invoke(interpreter: tflite.Interpreter, img: np.ndarray):
     return (time.perf_counter() - start) * 1000
 
 
+class LoadModelResult(TypedDict):
+    success: str
+    model_path: str
+    label_path: str
+    record_type: str
+
+
 async def load_model(record_repo: repos.RecordRepository, id):
-    success = True
+    result: LoadModelResult = {
+        "success": True,
+        "model_path": None,
+        "label_path": None,
+        "record_type": None,
+    }
+
     try:
         (model_path, label_path), record_type = await asyncio.gather(
             record_repo.download(id), record_repo.get_record_type(id)
         )
         await record_repo.set_loaded(id)
-    except:
-        success = False
-    return success, model_path, label_path, record_type
+
+        result["model_path"] = model_path
+        result["label_path"] = label_path
+        result["record_type"] = record_type
+    except Exception as e:
+        logging.error(str(e))
+        result["success"] = False
+
+    return result
 
 
 def fps_iter():

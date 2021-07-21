@@ -12,9 +12,9 @@
       justify-center
       lg:hidden
     "
-    @click="store.actions.toggleNav()"
+    @click="navStore.toggleNav()"
   >
-    <MenuAlt2Icon class="text-white w-8 h-8" v-if="store.state.navHidden" />
+    <MenuAlt2Icon class="text-white w-8 h-8" v-if="navStore.navHidden" />
     <XIcon v-else class="text-white w-8 h-8" />
   </div>
 </template>
@@ -24,9 +24,8 @@ import { MenuAlt2Icon } from '@heroicons/vue/solid'
 import { XIcon } from '@heroicons/vue/solid'
 import { computed } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
-import { useStore } from '../../composable'
-
-const store = useStore()
+import { useNavStore } from '~/store'
+const navStore = useNavStore()
 const router = useRouter()
 
 const notLandingPage = computed(() => {

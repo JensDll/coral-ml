@@ -15,4 +15,6 @@ export type PaginationRequest = {
   pageSize: number
 }
 
+export type RecordType = 'Image Classification' | 'Object Detection'
+
 export type Id = number | string

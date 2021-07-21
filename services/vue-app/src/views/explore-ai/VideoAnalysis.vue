@@ -1,11 +1,23 @@
 <template>
-  <v-title title="Video Analysis"></v-title>
-  <form class="w-1/2">
+  <div class="flex items-end mb-4">
+    <base-title title="Video Analysis" />
+    <base-badge class="ml-4" v-if="recordStore.loadingRecord" loading>
+      Loading Model
+    </base-badge>
+    <base-badge class="ml-4" v-else-if="recordLoaded">Loaded</base-badge>
+  </div>
+  <p v-if="recordLoaded && !recordStore.loadingRecord">
+    {{ recordStore.loadedModelFileName }}
+  </p>
+  <form v-if="recordLoaded" class="w-1/2 mt-8">
     <div>
-      <label class="block" for="top-k">Show top k results</label>
+      <label class="block font-semibold mb-2 rounded-md" for="top-k">
+        Show top k Results
+      </label>
       <input
         type="number"
         class="border py-2 px-4"
+        min="0"
         v-model.number="formData.topK"
         id="top-k"
       />
@@ -14,17 +26,21 @@
   <canvas
     ref="videoCanvas"
     class="rounded-lg w-full lg:w-5/6 2xl:w-1/2 mt-8"
-    v-show="!loading"
+    v-show="!loading && !recordStore.loadingRecord"
   ></canvas>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import VTitle from '~/components/base/BaseTitle.vue'
+import BaseTitle from '~/components/base/BaseTitle.vue'
+import BaseBadge from '~/components/base/BaseBadge.vue'
+
 import type { UpdateVideoRequest } from '~/api'
 import { socketService } from '~/api'
+import { useRecordStore } from '~/store/recordStore'
 
+const recordStore = useRecordStore()
 const videoCanvas = ref() as Ref<HTMLCanvasElement>
 const loading = ref(true)
 const formData: UpdateVideoRequest = reactive({
@@ -32,8 +48,11 @@ const formData: UpdateVideoRequest = reactive({
   threshold: 0.1
 })
 
+const recordLoaded = computed(() => {
+  return recordStore.loadedType === 'video'
+})
+
 watch(formData, formData => {
-  console.log(formData)
   socketService.updateVideo(formData)
 })
 

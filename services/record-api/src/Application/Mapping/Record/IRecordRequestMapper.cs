@@ -10,6 +10,6 @@ namespace Application.Mapping.Record
     {
         Pagination MapPaginationRequest(PaginationRequestDto paginationRequestDto);
 
-        Task<RecordCreate> MapCreateRequestAsync(int modelTypeId, IFormFile model, IFormFile label);
+        Task<RecordCreate> MapCreateRequestAsync(int recordTypeId, IFormFile model, IFormFile label);
     }
 }

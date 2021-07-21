@@ -42,7 +42,7 @@ export class SocketService {
     this.socket.disconnect()
   }
 
-  async loadModel(id: string | number) {
+  loadModel(id: number) {
     return new Promise<boolean>((resolve, reject) => {
       this.socket.emit('load model', id, (success: boolean) => {
         resolve(success)
@@ -55,9 +55,13 @@ export class SocketService {
 
     return new Promise<MessageEnvelope<ClassificationResult>>(
       (resolve, reject) => {
-        this.socket.emit('classify', { image, format }, (resp: any) => {
-          resolve(resp)
-        })
+        this.socket.emit(
+          'classify',
+          { image, format },
+          (resp: MessageEnvelope<ClassificationResult>) => {
+            resolve(resp)
+          }
+        )
       }
     )
   }

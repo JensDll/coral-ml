@@ -1,5 +1,7 @@
 <template>
-  <base-title title="Quick Start with Artificial Intelligence" />
+  <div class="mb-8">
+    <base-title title="Quick Start with Artificial Intelligence" />
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <nav
-      v-if="!store.state.navHidden"
+      v-if="!navStore.navHidden"
       v-bind="$attrs"
       class="
         nav
@@ -34,8 +34,8 @@
           <router-link class="link" :to="{ name: 'image-classification' }">
             Classification
           </router-link>
-          <router-link class="link" :to="{ name: 'object-detection' }">
-            Object Detection
+          <router-link class="link" :to="{ name: 'video-analysis' }">
+            Video Analysis
           </router-link>
         </li>
       </ul>
@@ -43,17 +43,17 @@
   </transition>
   <transition name="fade">
     <div
-      v-if="!store.state.navHidden"
+      v-if="!navStore.navHidden"
       class="fixed bg-black inset-0 z-40 bg-opacity-25 lg:hidden"
-      @click="store.actions.toggleNav()"
+      @click="navStore.toggleNav()"
     ></div>
   </transition>
 </template>
 
 <script setup lang="ts">
-import { useStore } from '../../composable'
+import { useNavStore } from '~/store'
 
-const store = useStore()
+const navStore = useNavStore()
 </script>
 
 <style lang="postcss" scoped>

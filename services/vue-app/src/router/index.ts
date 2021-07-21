@@ -13,7 +13,7 @@ import RecordUpload from '~/views/explore-ai/record/UploadPage.vue'
 import RecordOverview from '~/views/explore-ai/record/OverviewPage.vue'
 
 import ImageClassification from '~/views/explore-ai/ImageClassification.vue'
-import ObjectDetection from '~/views/explore-ai/ObjectDetection.vue'
+import VideoAnalysis from '~/views/explore-ai/VideoAnalysis.vue'
 
 import RecordMain from '../views/explore-ai/record/MainPage.vue'
 
@@ -59,9 +59,9 @@ const routes: RouteRecordRaw[] = [
         component: ImageClassification
       },
       {
-        path: 'object-detection',
-        name: 'object-detection',
-        component: ObjectDetection
+        path: 'video-analysis',
+        name: 'video-analysis',
+        component: VideoAnalysis
       }
     ]
   }

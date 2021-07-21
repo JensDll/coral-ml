@@ -26,7 +26,7 @@ namespace Contracts.Request
         public int PageSize
         {
             get => pageSize;
-            set => pageSize = value > 200 ? 200 : value;
+            set => pageSize = value;
         }
     }
 }

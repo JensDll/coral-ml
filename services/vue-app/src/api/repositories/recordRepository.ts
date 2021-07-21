@@ -1,33 +1,52 @@
+import { useRecordStore } from '~/store/recordStore'
 import { useDownload, useFetch } from '../../composable'
-import { PaginationEnvelope, Id, PaginationRequest } from './common'
+import { PaginationEnvelope, Id, PaginationRequest, RecordType } from './common'
 
-export type Record = {
+export type ApiRecord = {
   id: number
   modelFileName: string
   labelFileName: string
   loaded: boolean
   recordTypeId: number
-  recordType: string
+  recordType: RecordType
 }
 
 export const recordRepository = {
-  getWidthRecordTypeId<T extends boolean>(
-    immediate: T,
+  async loadWithRecordTypeId(
     recordTypeId: Id,
-    pagination: PaginationRequest = { pageNumber: 1, pageSize: 100 }
+    pagination: PaginationRequest = { pageNumber: 1, pageSize: 200 }
   ) {
-    return useFetch<PaginationEnvelope<Record>>(
+    const { data, responseOk } = await useFetch<PaginationEnvelope<ApiRecord>>(
       `/record/type/${recordTypeId}`,
       pagination
     )
       .get()
-      .json(immediate)
+      .json(false).promise
+
+    if (responseOk && data) {
+      const recordStore = useRecordStore()
+      recordStore.$patch({
+        records: data.data,
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+        total: data.total
+      })
+    }
   },
-  getLoaded<T extends boolean>(immediate: T) {
-    return useFetch<Record>('/record/loaded').get().json(immediate)
+  async loadLoaded() {
+    const { data, responseOk } = await useFetch<ApiRecord>('/record/loaded')
+      .get()
+      .json(false).promise
+
+    if (responseOk) {
+      const recordStore = useRecordStore()
+      recordStore.$patch({
+        loadedRecord: data
+      })
+    }
   },
   getById<T extends boolean>(immediate: T, id: Id) {
-    return useFetch<Record>(`/record/${id}`).get().json(immediate)
+    return useFetch<ApiRecord>(`/record/${id}`).get().json(immediate)
   },
   async download(id: Id) {
     const { data } = await useFetch<Blob>(`/record/download/${id}`)
@@ -40,12 +59,12 @@ export const recordRepository = {
   },
   upload<T extends boolean>(
     immediate: T,
-    modelTypeId: Id,
+    recordTypeId: Id,
     model: File,
     label: File
   ) {
     const formData = new FormData()
-    formData.append('modelTypeId', modelTypeId.toString())
+    formData.append('recordTypeId', recordTypeId.toString())
     formData.append('model', model)
     formData.append('label', label)
 

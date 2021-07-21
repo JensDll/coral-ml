@@ -96,9 +96,9 @@ namespace ModelAPI.Controllers
 
         [HttpPost(ApiRoutes.Record.Upload)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Upload([FromForm] int modelTypeId, IFormFile model, IFormFile label)
+        public async Task<IActionResult> Upload([FromForm] int recordTypeId, IFormFile model, IFormFile label)
         {
-            var createData = await _requestMapper.MapCreateRequestAsync(modelTypeId, model, label);
+            var createData = await _requestMapper.MapCreateRequestAsync(recordTypeId, model, label);
             
             int id = await _tFLiteRecordRepository.CreateAsync(createData);
 

@@ -1,7 +1,20 @@
 import { createApp } from 'vue'
 import { router } from './router'
-import { storeKey, store } from './composable/useStore'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import 'tailwindcss/tailwind.css'
 
-createApp(App).provide(storeKey, store).use(router).mount('#app')
+declare global {
+  interface Window {
+    onLoadLinks: Record<number, 'image-classification' | 'video-analysis'>
+    isRecordLoadedForCurrentRoute: boolean
+  }
+}
+
+window.onLoadLinks = {
+  2: 'image-classification',
+  3: 'video-analysis'
+}
+
+const app = createApp(App).use(router).use(createPinia())
+app.mount('#app')

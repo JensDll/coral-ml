@@ -1,5 +1,5 @@
 <template>
-  <section class="pt-20 px-4">
+  <section class="pt-20 px-6">
     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
       Explore Artificial Intelligence
     </h1>

@@ -1,18 +1,12 @@
 <template>
-  <div class="mb-8">
-    <div class="flex items-end mb-4">
-      <h1 class="flex items-center text-3xl font-extrabold">
-        <ArrowLeftIcon
-          v-if="back"
-          class="w-6 h-6 mr-4 hover:text-blue-700 cursor-pointer"
-          @click="$emit('back')"
-        />
-        {{ title }}
-      </h1>
-      <slot name="extra"></slot>
-    </div>
-    <slot name="text"></slot>
-  </div>
+  <h1 class="flex items-center text-3xl font-extrabold">
+    <ArrowLeftIcon
+      v-if="back"
+      class="w-6 h-6 mr-4 hover:text-blue-700 cursor-pointer"
+      @click="$emit('back')"
+    />
+    {{ title }}
+  </h1>
 </template>
 
 <script lang="ts">

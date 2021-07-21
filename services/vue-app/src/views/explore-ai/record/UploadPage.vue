@@ -1,5 +1,7 @@
 <template>
-  <v-title title="Upload a new Model" @back="$router.back()" back />
+  <div class="mb-8">
+    <v-title title="Upload a new Model" @back="$router.back()" back />
+  </div>
   <p>A Coral Edge TPU model consists of a label and model file.</p>
   <p>Select both in the form field below and press upload.</p>
   <record-upload-form @submit="handleUpload" class="mt-8" />
@@ -9,11 +11,13 @@
 import VTitle from '~/components/base/BaseTitle.vue'
 import RecordUploadForm from './components/RecordUploadForm.vue'
 import type { FormData } from './components/RecordUploadForm.vue'
-import { recordRepository } from '~/api'
+import { recordRepository, recordTypeRepository } from '~/api'
 import { useRouter, useRoute } from 'vue-router'
+import { useRecordStore } from '~/store/recordStore'
 
 const router = useRouter()
 const route = useRoute()
+const recordTypeId = route.params.recordTypeId as string
 
 async function handleUpload({ files }: FormData) {
   const idxModel = files[0].name.endsWith('.tflite') ? 0 : 1
@@ -22,12 +26,11 @@ async function handleUpload({ files }: FormData) {
 
   router.back()
 
-  await recordRepository.upload(
-    false,
-    route.params.recordTypeId as string,
-    model,
-    label
-  ).promise
+  await recordRepository.upload(false, recordTypeId, model, label).promise
+  await Promise.all([
+    recordRepository.loadWithRecordTypeId(recordTypeId),
+    recordTypeRepository.loadAll()
+  ])
 }
 </script>
 

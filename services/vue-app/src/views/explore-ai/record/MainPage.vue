@@ -1,15 +1,16 @@
 <template>
-  <base-title title="Manage Models">
-    <template #text>
-      <p>
-        Learn more about available Models on the
-        <base-link href="https://coral.ai/models/">Coral AI Website</base-link>.
-      </p>
-    </template>
-  </base-title>
+  <div class="mb-4">
+    <base-title title="Manage Models" />
+  </div>
+  <p class="mb-8">
+    Learn more about available Models on the
+    <base-link href="https://coral.ai/models/">Coral AI Website</base-link>.
+  </p>
   <base-card-grid class="gap-12">
     <section
-      v-for="({ id, recordType, total, loaded }, i) in recordTypes"
+      v-for="(
+        { id, recordType, total, loaded }, i
+      ) in recordTypeStore.recordTypes"
       :key="i"
     >
       <div class="flex">
@@ -56,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { recordTypeRepository, recordRepository, Record } from '~/api'
+import { recordTypeRepository, recordRepository } from '~/api'
 import BaseTitle from '~/components/base/BaseTitle.vue'
 import BaseButton from '~/components/base/BaseButton.vue'
 import BaseCardGrid from '~/components/base/BaseCardGrid.vue'
@@ -65,12 +66,8 @@ import BaseLink from '~/components/base/BaseLink.vue'
 import BaseBadge from '~/components/base/BaseBadge.vue'
 
 import { defineComponent } from '@vue/runtime-core'
-import { RecordType } from '~/api/repositories/recordTypeRepository'
-
-type Data = {
-  loadedRecord: Record
-  recordTypes: RecordType[]
-}
+import { useRecordStore } from '~/store/recordStore'
+import { useRecordTypeStore } from '~/store/recordTypeStore'
 
 export default defineComponent({
   components: {
@@ -81,19 +78,21 @@ export default defineComponent({
     BaseLink,
     BaseBadge
   },
-  data(): Data {
+  setup() {
+    const recordStore = useRecordStore()
+    const recordTypeStore = useRecordTypeStore()
+
     return {
-      loadedRecord: null!,
-      recordTypes: []
+      recordStore,
+      recordTypeStore
     }
   },
   async beforeRouteEnter(to, from, next) {
-    const recordType = await recordTypeRepository.getAll(false).promise
-    const record = await recordRepository.getLoaded(false).promise
-    next((vm: any) => {
-      vm.recordTypes = recordType.data?.data
-      vm.loadedRecord = record.data
-    })
+    await Promise.allSettled([
+      recordTypeRepository.loadAll(),
+      recordRepository.loadLoaded()
+    ])
+    next()
   }
 })
 </script>

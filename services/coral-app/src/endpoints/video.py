@@ -9,6 +9,7 @@ import logging
 import src.detection.detect as detect
 import src.common as common
 import src.zutils as zutils
+import src.annotation as annotation
 import scripts.stream
 
 
@@ -23,7 +24,6 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
     reset.connect("tcp://localhost:7777")
     reset.setsockopt(zmq.SUBSCRIBE, b"")
 
-    # general messaging
     reply_addr = f"tcp://*:{args.video_port}"
     reply = ctx.socket(zmq.REP)
     reply.bind(reply_addr)
@@ -47,7 +47,7 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
         publish_uri=args.publish_uri,
     )
 
-    fps_iter = common.fps_iter()
+    fps_iter = annotation.fps_iter()
     interpreter: tflite.Interpreter = None
     labels: dict = None
     msg: Message = {"topK": 1, "threshold": 0.1}
@@ -84,7 +84,7 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
         if interpreter is not None:
             input_size = common.get_input_size(interpreter)
             resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
-            inference_time = common.interpreter_invoke(interpreter, resized)
+            common.invoke_interpreter(interpreter, resized)
             detections = detect.get_detections(
                 interpreter, score_threshold=msg["threshold"]
             )[: msg["topK"]]
@@ -92,6 +92,6 @@ async def start(ctx: Context, video_peer: zmq.Socket, args: argparse.Namespace):
                 img=frame, input_size=input_size, detections=detections, labels=labels
             )
 
-        common.print_fps(frame, fps_iter)
+        annotation.print_fps(frame, fps_iter)
 
         process.stdin.write(frame.tobytes())

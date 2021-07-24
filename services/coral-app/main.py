@@ -28,7 +28,9 @@ if not os.path.isdir("logs"):
     os.mkdir("logs")
 
 fileHanlder = logging.FileHandler(filename=f"logs/{log_id}.log")
+fileHanlder.setLevel(logging.DEBUG)
 streamHandler = logging.StreamHandler()
+streamHandler.setLevel(logging.INFO)
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -59,7 +61,6 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
     while True:
         id = await reply.recv_string()
         result = await common.load_model(record_repo, id)
-        time.sleep(2)
         if result["success"]:
             reset.send(b"")
             model_path = str(result["model_path"]).encode()

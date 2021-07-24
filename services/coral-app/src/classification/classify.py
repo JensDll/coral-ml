@@ -4,6 +4,7 @@ import tflite_runtime.interpreter as tflite
 import imageio
 import src.common as common
 import cv2
+import time
 
 
 def evaluate(y_scores: np.ndarray, labels: dict, top_k: int) -> Tuple[list, list]:
@@ -29,7 +30,9 @@ def classify(
     img = imageio.imread(img_buffer, format=format)
     input_size = common.get_input_size(interpreter)
     resized = cv2.resize(img, input_size, interpolation=cv2.INTER_AREA)
-    inference_time = common.interpreter_invoke(interpreter, resized)
+    start = time.perf_counter()
+    common.invoke_interpreter(interpreter, resized)
+    inference_time = (time.perf_counter() - start) * 1000
     output_data = common.get_output_tensor(interpreter, 0)
-    probs, classes = evaluate(output_data, labels, 4)
+    probs, classes = evaluate(output_data, labels, 5)
     return {"probabilities": probs, "classes": classes, "inferenceTime": inference_time}

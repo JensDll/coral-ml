@@ -31,4 +31,4 @@ async def recv_interpreter(pipe: Socket):
     model_path, label_path = await pipe.recv_multipart()
     model_path = pathlib.Path(model_path.decode())
     label_path = pathlib.Path(label_path.decode())
-    return common.interpreter_load(model_path, label_path)
+    return common.load_interpreter(model_path, label_path)

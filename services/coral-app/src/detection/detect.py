@@ -44,8 +44,8 @@ def get_detections(interpreter: tflite.Interpreter, score_threshold=0.1):
     count = int(common.get_output_tensor(interpreter, 3)[0])
 
     width, height = common.get_input_size(interpreter)
-    image_scale_x, image_scale_y = 1.0, 1.0
-    sx, sy = width / image_scale_x, height / image_scale_y
+    img_scale_x, img_scale_y = 1.0, 1.0
+    sx, sy = width / img_scale_x, height / img_scale_y
 
     def make(i) -> Detection:
         ymin, xmin, ymax, xmax = boxes[i]

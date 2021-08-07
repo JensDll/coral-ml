@@ -1,11 +1,11 @@
 import { createServer } from 'http'
-import WebSocket from 'ws'
+import WebSocket, { WebSocketServer } from 'ws'
 
 export function videoStart(host: string) {
   const SOCKET_PORT = 8080
   const LISTEN = 5060
 
-  var wss = new WebSocket.Server({
+  var wss = new WebSocketServer({
     port: SOCKET_PORT,
     host,
     perMessageDeflate: false

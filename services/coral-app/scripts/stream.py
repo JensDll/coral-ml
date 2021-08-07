@@ -16,8 +16,8 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, publish_uri):
             framerate=fps,
             s=f"{frame_width}x{frame_height}",
             format="mpegts",
-            video_bitrate="400k",
-            maxrate="600k",
+            video_bitrate="500k",
+            maxrate="800k",
             bufsize="600k",
             segment_time="6",
         )

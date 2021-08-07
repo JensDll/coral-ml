@@ -44,8 +44,8 @@ class RecordRepository(RepositoryBase):
         logging.info(f"Downloading model with id ({id})")
         async with self.client.get(f"{self.base_uri}/record/download/{id}") as resp:
             try:
+                file_path = pathlib.Path("record.zip")
                 if resp.ok:
-                    file_path = pathlib.Path("record.zip")
                     await save_zip(resp, file_path)
                     return extract_zip(file_path)
                 raise aiohttp.ClientError()
@@ -54,7 +54,8 @@ class RecordRepository(RepositoryBase):
                 logging.error(str(e))
                 raise e
             finally:
-                file_path.unlink()
+                if file_path.is_file():
+                    file_path.unlink()
 
     async def set_loaded(self, id: int):
         logging.info(f"Setting model loaded with id ({id})")

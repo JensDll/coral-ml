@@ -44,7 +44,7 @@ import BaseBadge from '~/components/base/BaseBadge.vue'
 import { useLoading } from '~/composable'
 import { useRecordStore } from '~/store/recordStore'
 import ClassificationForm from './components/ClassificationForm.vue'
-import { computed } from '@vue/runtime-core'
+import { computed } from 'vue'
 
 const recordStore = useRecordStore()
 const recordLoaded = computed(() => {

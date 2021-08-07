@@ -14,14 +14,14 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, publish_uri):
             vcodec="mpeg1video",
             preset="ultrafast",
             framerate=fps,
-            s=f"{int(frame_width * 0.8)}x{int(frame_height * 0.8)}",
+            s=f"{frame_width}x{frame_height}",
             format="mpegts",
-            video_bitrate="800k",
-            maxrate="1M",
-            bufsize="1M",
+            video_bitrate="400k",
+            maxrate="600k",
+            bufsize="600k",
             segment_time="6",
-            loglevel="quiet",
         )
         .run_async(pipe_stdin=True)
     )
+
     return process

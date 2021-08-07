@@ -35,11 +35,10 @@
     "
   >
     <div>
-      <v-link href="https://coral.ai/models/"> Coral AI </v-link>
-      <v-link href="https://tfhub.dev/" class="ml-4"> TensorFlow Hub </v-link>
+      <v-link href="https://coral.ai/models/">Coral AI</v-link>
     </div>
     <div>
-      <v-link href="https://github.com/JensDll/coral-ml"> GitHub </v-link>
+      <v-link href="https://github.com/JensDll/coral-ml">GitHub</v-link>
     </div>
   </header>
 </template>

@@ -20,9 +20,15 @@ services:
     networks:
       - appnet
 
-  node-socket:
+  node-api:
     build:
-      context: ./services/node-socket
+      context: ./services/node-api
+    networks:
+      - appnet
+
+  node-video:
+    build:
+      context: ./services/node-video
     networks:
       - appnet
 
@@ -49,7 +55,8 @@ services:
       - 80:80
     depends_on:
       - record-api
-      - node-socket
+      - node-api
+      - node-video
     networks:
       - appnet
 

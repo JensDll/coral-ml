@@ -31,21 +31,26 @@ def append_detection_to_img(img, input_size, detections: List[Detection], labels
 
         img = cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 0), 2)
         img = cv2.putText(
-            img, label, (x0, y0 + 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2
+            img, label, (x0, y0 + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2
         )
 
     return img
 
 
 def get_detections(interpreter: tflite.Interpreter, score_threshold=0.1):
-    boxes = common.get_output_tensor(interpreter, 0)[0]
-    class_ids = common.get_output_tensor(interpreter, 1)[0]
-    scores = common.get_output_tensor(interpreter, 2)[0]
-    count = int(common.get_output_tensor(interpreter, 3)[0])
+    for i in range(common.get_num_outputs(interpreter)):
+        shape_len = len(common.get_output_shape(interpreter, i))
+        output = common.get_output_tensor(interpreter, i)[0]
+        if shape_len == 3:
+            boxes = output
+        elif shape_len == 1:
+            count = int(output)
+        elif int(output[0]) == 0:
+            scores = output
+        else:
+            class_ids = output
 
-    width, height = common.get_input_size(interpreter)
-    img_scale_x, img_scale_y = 1.0, 1.0
-    sx, sy = width / img_scale_x, height / img_scale_y
+    sx, sy = common.get_input_size(interpreter)
 
     def make(i) -> Detection:
         ymin, xmin, ymax, xmax = boxes[i]

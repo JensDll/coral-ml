@@ -15,12 +15,29 @@ EDGETUP_LIB = {
     "Windows": "edgetpu.dll",
 }[platform.system()]
 
+# -------------- Ouput --------------
+def get_output_detail(interpreter: tflite.Interpreter, i: int, key: str):
+    return interpreter.get_output_details()[i][key]
+
+
+def get_output_shape(interpreter: tflite.Interpreter, i: int):
+    return get_output_detail(interpreter, i, "shape")
+
+
+def get_output_dtype(interpreter: tflite.Interpreter, i: int):
+    return get_output_detail(interpreter, i, "dtype")
+
 
 def get_output_tensor(interpreter: tflite.Interpreter, i):
-    tensor_idx = interpreter.get_output_details()[i]["index"]
-    return interpreter.tensor(tensor_idx)()
+    output_index = interpreter.get_output_details()[i]["index"]
+    return interpreter.tensor(output_index)()
 
 
+def get_num_outputs(interpreter: tflite.Interpreter):
+    return len(interpreter.get_output_details())
+
+
+# -------------- Input --------------
 def get_input_detail(interpreter: tflite.Interpreter, key):
     return interpreter.get_input_details()[0][key]
 
@@ -34,6 +51,7 @@ def get_input_index(interpreter: tflite.Interpreter):
     return get_input_detail(interpreter, "index")
 
 
+# -------------- Loading --------------
 def load_labels(label_path: pathlib.Path):
     with label_path.open("r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -55,13 +73,6 @@ def load_interpreter(model_path: pathlib.Path, label_path: pathlib.Path):
     interpreter.allocate_tensors()
     labels = load_labels(label_path)
     return interpreter, labels
-
-
-def invoke_interpreter(interpreter: tflite.Interpreter, data):
-    input_index = get_input_index(interpreter)
-    img = np.expand_dims(data, axis=0)
-    interpreter.set_tensor(input_index, img)
-    interpreter.invoke()
 
 
 class LoadModelResult(TypedDict):
@@ -94,3 +105,10 @@ async def load_model(record_repo: repos.RecordRepository, id):
         result["success"] = False
 
     return result
+
+
+def invoke_interpreter(interpreter: tflite.Interpreter, data):
+    input_index = get_input_index(interpreter)
+    img = np.expand_dims(data, axis=0)
+    interpreter.set_tensor(input_index, img)
+    interpreter.invoke()

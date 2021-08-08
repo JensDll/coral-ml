@@ -9,7 +9,13 @@ type RequestData = {
 export const updateVideo =
   (client: zmq.Request) =>
   async (data: RequestData, callback: Listener<void>) => {
-    await client.send(JSON.stringify(data))
-    await client.receive()
-    callback()
+    try {
+      await client.send(JSON.stringify(data))
+      console.log(data)
+      await client.receive()
+    } catch (e) {
+      console.log(`Error updating video parameters ${e}`)
+    } finally {
+      callback()
+    }
   }

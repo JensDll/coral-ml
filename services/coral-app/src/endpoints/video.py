@@ -84,8 +84,6 @@ async def start(
 
         if reply in items:
             settings: Settings = await reply.recv_json()
-            print(settings)
-            time.sleep(0.1)
             reply.send(b"")
 
         has_frame, frame = cap.read()
@@ -114,7 +112,7 @@ async def start(
             logging.error("FFMPEG Error")
             logging.error(traceback.format_exc())
             while True:
-                time.sleep(5)
+                time.sleep(4)
                 logging.info("Restarting Stream")
                 try:
                     process = start_stream(

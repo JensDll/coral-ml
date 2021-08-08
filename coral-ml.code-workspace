@@ -4,7 +4,7 @@
       "path": "services/vue-app"
     },
     {
-      "path": "services/node-socket"
+      "path": "services/node-api"
     },
     {
       "path": "services/record-api"
@@ -17,6 +17,9 @@
     },
     {
       "path": "services/proxy"
+    },
+    {
+      "path": "services/node-video"
     },
     {
       "path": ".github"

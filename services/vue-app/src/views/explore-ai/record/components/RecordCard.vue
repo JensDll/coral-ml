@@ -1,8 +1,8 @@
 <template>
   <div class="border p-6 rounded-md">
-    <div class="flex justify-between items-start mb-8">
-      <h3 class="font-semibold break-words w-3/5">{{ modelName }}</h3>
-      <div class="ml-8 flex items-center">
+    <div class="title-grid">
+      <h3 class="title">{{ modelName }}</h3>
+      <div class="flex items-center justify-self-end">
         <v-badge v-if="record.loaded">Loaded</v-badge>
         <loading-icon
           v-if="loading"
@@ -100,4 +100,17 @@ async function handleDownload() {
 }
 </script>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+.title {
+  @apply font-semibold break-words;
+}
+
+.title-grid {
+  display: grid;
+  grid-template-columns: minmax(40%, 60%) 1fr;
+  grid-auto-flow: column;
+  align-items: start;
+  column-gap: 1rem;
+  margin-bottom: 2rem;
+}
+</style>

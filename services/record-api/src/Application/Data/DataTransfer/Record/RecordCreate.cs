@@ -10,8 +10,6 @@ namespace Application.Data.DataTransfer.Record
     {
         public string ModelFileName { get; set; }
 
-        public string LabelFileName { get; set; }
-
         public byte[] ZipContent { get; set; }
 
         public int RecordTypeId { get; set; }

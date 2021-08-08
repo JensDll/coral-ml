@@ -12,8 +12,6 @@ namespace Application.Data.DataTransfer.Record
 
         public string ModelFileName { get; set; }
 
-        public string LabelFileName { get; set; }
-
         public int RecordTypeId { get; set; }
 
         public string RecordType { get; set; }

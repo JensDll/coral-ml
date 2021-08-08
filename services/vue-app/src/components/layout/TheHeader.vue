@@ -1,18 +1,20 @@
 <template>
   <div
     class="
+      logo
       flex
       items-center
       cursor-pointer
       hover:text-indigo-700
       pl-6
       py-6
+      pr-8
       sticky
       border-b
       bg-white
       z-10
       top-0
-      lg:pl-4
+      lg:pr-0 lg:pl-4
     "
     @click="goHome()"
   >
@@ -55,6 +57,10 @@ function goHome() {
 </script>
 
 <style lang="postcss" scoped>
+.logo {
+  grid-area: logo;
+}
+
 .header {
   grid-area: header;
 }

@@ -8,8 +8,5 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --only=prod
 COPY --from=build /app/dist ./
-# API Port
-# Http MPEG-TS Stream
-# Socket video port
-EXPOSE 5050 5060 8080
+EXPOSE 5050
 ENTRYPOINT [ "node", "bundle.min.js" ]

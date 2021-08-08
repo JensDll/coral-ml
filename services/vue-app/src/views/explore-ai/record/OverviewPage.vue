@@ -1,7 +1,7 @@
 <template>
   <div class="mb-8">
     <base-title :title="`Models`" @back="$router.back()" back />
-    <div class="mt-2">{{ $route.params.recordType }}</div>
+    <div class="mt-2 text-xl">{{ $route.params.recordType }}</div>
   </div>
   <base-card-grid class="gap-12">
     <record-card

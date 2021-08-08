@@ -18,7 +18,7 @@ import TheMain from '~/components/layout/TheMain.vue'
   row-gap: 4rem;
   height: 100%;
   grid-template-rows: auto 1fr;
-  grid-template-columns: 16rem 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
     'logo header'
     'main main';
@@ -26,6 +26,7 @@ import TheMain from '~/components/layout/TheMain.vue'
 
 @screen lg {
   .grid-container {
+    grid-template-columns: 16rem 1fr;
     grid-template-areas:
       'logo header'
       'nav main';

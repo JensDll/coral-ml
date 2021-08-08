@@ -29,7 +29,7 @@ const buildConfig = defineConfig({
     typescript(),
     terser(),
     replace({
-      'process.env.HOST': JSON.stringify('node-socket'),
+      'process.env.HOST': JSON.stringify('node-api'),
       'process.env.CORAL_APP': JSON.stringify('coral-app'),
       preventAssignment: true
     })

@@ -5,7 +5,6 @@ import { PaginationEnvelope, Id, PaginationRequest, RecordType } from './common'
 export type ApiRecord = {
   id: number
   modelFileName: string
-  labelFileName: string
   loaded: boolean
   recordTypeId: number
   recordType: RecordType

@@ -34,7 +34,6 @@ namespace Infrastructure.Mapping.Record
             return new RecordCreate
             {
                 ModelFileName = Path.GetFileName(model.FileName),
-                LabelFileName = Path.GetFileName(label.FileName),
                 ZipContent = zipContent,
                 RecordTypeId = recordTypeId
             };

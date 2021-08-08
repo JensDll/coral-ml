@@ -112,7 +112,6 @@ namespace Infrastructure.Data.Repositories
 
             var parameter = new DynamicParameters();
             parameter.Add("param_modelFileName", createData.ModelFileName);
-            parameter.Add("param_LabelFileName", createData.LabelFileName);
             parameter.Add("param_zipContent", createData.ZipContent);
             parameter.Add("param_recordTypeId", createData.RecordTypeId);
 

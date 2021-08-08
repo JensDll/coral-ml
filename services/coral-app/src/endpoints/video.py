@@ -86,11 +86,7 @@ async def start(
             settings: Settings = await reply.recv_json()
             reply.send(b"")
 
-        has_frame, frame = cap.read()
-
-        if not has_frame:
-            break
-
+        frame = cap.read()[1]
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         if interpreter is not None:

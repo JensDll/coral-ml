@@ -9,11 +9,13 @@ export const loadModel =
     if (busy) {
       callback(false)
     } else {
-      console.log(`Load model with id (${id})`)
+      console.log(`Load model with ids (${id})`)
       busy = true
       await client.send(id)
       const [success] = await client.receive()
-      callback(toBool(success))
+      const status = toBool(success)
+      console.log(`Loaded model with status (${status})`)
+      callback(status)
       busy = false
     }
   }

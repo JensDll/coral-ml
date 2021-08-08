@@ -1,3 +1,4 @@
+import traceback
 from typing_extensions import Literal
 import aiohttp
 from aiohttp.client_reqrep import ClientResponse
@@ -51,7 +52,7 @@ class RecordRepository(RepositoryBase):
                 raise aiohttp.ClientError()
             except Exception as e:
                 logging.error(f"Error downloading model with id ({id})")
-                logging.error(str(e))
+                logging.error(traceback.format_exc())
                 raise e
             finally:
                 if file_path.is_file():

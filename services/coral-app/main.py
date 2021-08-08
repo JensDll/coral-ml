@@ -1,4 +1,5 @@
 import zmq
+from typing import List
 from zmq.asyncio import Context
 import asyncio
 import argparse
@@ -40,7 +41,12 @@ logging.basicConfig(
 )
 
 
-async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Socket):
+async def model_manager(
+    ctx: Context,
+    video_pipe: zmq.Socket,
+    img_pipe: zmq.Socket,
+    reset_pipes: List[zmq.Socket],
+):
     reply_addr = f"tcp://*:{args.manager_port}"
     reply = ctx.socket(zmq.REP)
     reply.bind(reply_addr)
@@ -62,34 +68,48 @@ async def model_manager(ctx: Context, video_pipe: zmq.Socket, img_pipe: zmq.Sock
         id = await reply.recv_string()
         result = await common.load_model(record_repo, id)
         if result["success"]:
-            reset.send(b"")
+            await asyncio.gather(*[reset_pipe.send(b"") for reset_pipe in reset_pipes])
             model_path = str(result["model_path"]).encode()
             label_path = str(result["label_path"]).encode()
+            logging.info("[MODEL MANAGER] Sending model and label path")
             if result["record_type"] == "Object Detection":
                 await video_pipe.send_multipart([model_path, label_path])
                 await video_pipe.recv()
             else:
                 await img_pipe.send_multipart([model_path, label_path])
                 await img_pipe.recv()
-        await reply.send(zutils.encode_bool(result["success"]))
+        reply.send(zutils.encode_bool(result["success"]))
 
 
 async def main():
     ctx = Context()
 
     img_pipe, img_peer = zutils.pipe(ctx)
+    img_reset, img_reset_peer = zutils.pipe(ctx)
+
     video_pipe, video_peer = zutils.pipe(ctx)
+    video_reset, video_reset_peer = zutils.pipe(ctx)
+
+    reset_pipes = [img_reset, video_reset]
 
     video_thread = threading.Thread(
         target=asyncio.run,
-        args=[endpoints.video.start(ctx, video_peer, args)],
+        args=[
+            endpoints.video.start(
+                ctx, video_peer=video_peer, reset_peer=video_reset_peer, args=args
+            )
+        ],
         daemon=True,
     )
     video_thread.start()
 
     classification_thread = threading.Thread(
         target=asyncio.run,
-        args=[endpoints.classification.start(ctx, img_peer, args)],
+        args=[
+            endpoints.classification.start(
+                ctx, img_peer=img_peer, reset_peer=img_reset_peer, args=args
+            )
+        ],
         daemon=True,
     )
     classification_thread.start()
@@ -97,9 +117,7 @@ async def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     await model_manager(
-        ctx,
-        video_pipe=video_pipe,
-        img_pipe=img_pipe,
+        ctx, video_pipe=video_pipe, img_pipe=img_pipe, reset_pipes=reset_pipes
     )
 
 

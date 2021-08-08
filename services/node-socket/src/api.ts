@@ -32,7 +32,9 @@ export function apiStart(host: string) {
     classifyClient.connect(`tcp://${process.env.CORAL_APP}:${CLASSIFY_PORT}`)
     socket.on('classify', classify(classifyClient))
 
-    const videoClient = new zmq.Request()
+    const videoClient = new zmq.Request({
+      sendTimeout: 0
+    })
     videoClient.connect(`tcp://${process.env.CORAL_APP}:${VIDEO_PORT}`)
     socket.on('update video', updateVideo(videoClient))
 

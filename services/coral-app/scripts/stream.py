@@ -14,7 +14,7 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, publish_uri):
             vcodec="mpeg1video",
             preset="ultrafast",
             framerate=fps,
-            s=f"{frame_width}x{frame_height}",
+            s=f"640x480",
             format="mpegts",
             video_bitrate="500k",
             maxrate="800k",

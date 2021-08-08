@@ -7,6 +7,7 @@ import tflite_runtime.interpreter as tflite
 import numpy as np
 import src.repositories as repos
 import logging
+import traceback
 
 EDGETUP_LIB = {
     "Linux": "libedgetpu.so.1",
@@ -87,8 +88,9 @@ async def load_model(record_repo: repos.RecordRepository, id):
         result["model_path"] = model_path
         result["label_path"] = label_path
         result["record_type"] = record_type
-    except Exception as e:
-        logging.error(str(e))
+    except Exception:
+        logging.error("Error loading model")
+        logging.error(traceback.format_exc())
         result["success"] = False
 
     return result

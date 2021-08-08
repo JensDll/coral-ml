@@ -15,18 +15,16 @@ class Message(TypedDict):
     data: any
 
 
-async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
+async def start(
+    ctx: Context, img_peer: zmq.Socket, reset_peer: zmq.Socket, args: argparse.Namespace
+):
     reply_addr = f"tcp://*:{args.classify_port}"
     reply = ctx.socket(zmq.REP)
     reply.bind(reply_addr)
     logging.info(f"[CLASSIFICATION] (REP) Bind to '{reply_addr}'")
 
-    reset = ctx.socket(zmq.SUB)
-    reset.connect("tcp://localhost:7777")
-    reset.setsockopt(zmq.SUBSCRIBE, b"")
-
     poller = Poller()
-    poller.register(reset, zmq.POLLIN)
+    poller.register(reset_peer, zmq.POLLIN)
     poller.register(reply, zmq.POLLIN)
     poller.register(img_peer, zmq.POLLIN)
 
@@ -41,10 +39,11 @@ async def start(ctx: Context, img_peer: zmq.Socket, args: argparse.Namespace):
         except:
             break
 
-        if reset in items:
-            await reset.recv()
+        if reset_peer in items:
+            await reset_peer.recv()
             interpreter = None
             logging.info("[CLASSIFICATION] Reset")
+            reset_peer.send(b"")
 
         if img_peer in items:
             interpreter, labels = await zutils.recv_interpreter(img_peer)

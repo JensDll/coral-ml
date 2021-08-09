@@ -4,6 +4,7 @@
       label="Image File"
       v-model="form.images.$value"
       :errors="form.images.$errors"
+      @input="form.images.$onBlur()"
       image
       accept=".jpg, .jpeg, .png"
     ></form-file-upload>
@@ -40,7 +41,7 @@ type Data = {
   images: Field<File[]>
 }
 
-const { form, validateFields } = useValidation<Data>({
+const { form, formFields, validateFields } = useValidation<Data>({
   images: {
     $value: [],
     $rules: [minMax(1, 1)('Please select an image')]
@@ -51,7 +52,12 @@ const handleSubmit = async () => {
   try {
     const { images } = await validateFields()
     emit('submit', images[0])
-  } catch {}
+  } catch {
+  } finally {
+    for (const formField of formFields.value.values()) {
+      formField.touched = false
+    }
+  }
 }
 </script>
 

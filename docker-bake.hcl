@@ -36,7 +36,7 @@ target "record-api" {
     ]
 }
 
-target "node-api {
+target "node-api" {
     context = "services/node-api"
     tags = [
       "${REPOSITORY}:node-api/latest"

@@ -9,10 +9,11 @@ from src.inference.classification import models
 
 
 async def load_model(peer: Socket):
+    logging.info("[CLASSIFICATION] Received Interpreter")
     json = await peer.recv_json()
     labels = common.load_labels(json["label_path"])
     interpreter = common.load_interpreter(json["model_path"])
-    logging.info("[CLASSIFICATION] Received Interpreter - Sending response ...")
+    logging.info("[CLASSIFICATION] Sending Response ...")
     zutils.send_normalized_json(peer)
     return functools.partial(
         getattr(models, "generic_model"), interpreter=interpreter, labels=labels

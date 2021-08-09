@@ -51,11 +51,12 @@ def restart_stream(cap_props: CapProps, intervall=4):
 
 
 async def receive_model(peer: Socket, model_args):
+    logging.info("[VIDEO] Received Interpreter")
     json = await peer.recv_json()
     model_args["labels"] = common.load_labels(json["label_path"])
     interpreter = common.load_interpreter(json["model_path"])
     model_name = json["model_file_name"]
-    logging.info("[VIDEO] Received Interpreter - Sending response ...")
+    logging.info("[VIDEO] Sending Response ...")
     if hasattr(models, model_name):
         zutils.send_normalized_json(peer)
         return partial(getattr(models, model_name), interpreter)

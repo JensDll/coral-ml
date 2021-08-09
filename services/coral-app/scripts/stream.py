@@ -17,7 +17,6 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, publish_uri):
             format="mpegts",
             video_bitrate="800k",
             segment_time="6",
-            loglevel="warning",
         )
         .run_async(pipe_stdin=True)
     )

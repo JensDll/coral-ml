@@ -18,8 +18,10 @@ export const classify =
     { image, format }: RequestData,
     callback: Listener<MessageEnvelope<Response>>
   ) => {
-    await client.send([image, format])
-    const [result] = await client.receive()
-    const response: MessageEnvelope<Response> = JSON.parse(result.toString())
-    callback(response)
+    try {
+      await client.send([image, format])
+      const [result] = await client.receive()
+      const response: MessageEnvelope<Response> = JSON.parse(result.toString())
+      callback(response)
+    } catch {}
   }

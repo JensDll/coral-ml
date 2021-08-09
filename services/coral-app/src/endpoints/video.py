@@ -8,9 +8,8 @@ import logging
 import time
 import traceback
 
-import src.detection.detect as detect
+import src.inference.detection.detect as detect
 import src.common as common
-import src.zutils as zutils
 import src.annotation as annotation
 import scripts.stream
 
@@ -78,7 +77,11 @@ async def start(
             reset_peer.send(b"")
 
         if video_peer in items:
-            interpreter, labels = await zutils.recv_interpreter(video_peer)
+            json = await video_peer.recv_json()
+            labels = common.load_labels(json["label_path"])
+            interpreter = common.load_interpreter(json["model_path"])
+            model_name = json["model_file_name"]
+            print(model_name)
             logging.info("[VIDEO] Received Interpreter - Sending response ...")
             video_peer.send(b"")
 

@@ -4,9 +4,10 @@ from typing import List
 import zmq
 from zmq.asyncio import Context, Poller
 import tflite_runtime.interpreter as tflite
-import src.zutils as zutils
-import src.classification.classify as classify
 import logging
+
+from src.inference.classification.classify import classify
+from src import common
 
 
 class Message(TypedDict):
@@ -28,10 +29,10 @@ async def start(
     poller.register(reply, zmq.POLLIN)
     poller.register(img_peer, zmq.POLLIN)
 
-    interpreter: tflite.Interpreter = None
     labels: dict = None
+    interpreter: tflite.Interpreter = None
 
-    await img_peer.send(b"")
+    img_peer.send(b"")
 
     while True:
         try:
@@ -46,7 +47,9 @@ async def start(
             reset_peer.send(b"")
 
         if img_peer in items:
-            interpreter, labels = await zutils.recv_interpreter(img_peer)
+            json = await img_peer.recv_json()
+            labels = common.load_labels(json["label_path"])
+            interpreter = common.load_interpreter(json["model_path"])
             logging.info("[CLASSIFICATION] Received Interpreter - Sending response ...")
             img_peer.send(b"")
 
@@ -64,7 +67,7 @@ async def start(
                 format = format.decode()
 
                 try:
-                    results = classify.classify(
+                    results = classify(
                         interpreter=interpreter,
                         labels=labels,
                         img_buffer=img_buffer,

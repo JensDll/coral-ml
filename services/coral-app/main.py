@@ -1,17 +1,14 @@
-import zmq
-from typing import List
-from zmq.asyncio import Context
+from zmq.asyncio import Context, Socket
 import asyncio
 import argparse
 import threading
-import aiohttp
 import signal
 import logging
-import src.common as common
 import src.zutils as zutils
 import src.endpoints as endpoints
 import time
 import os
+from functools import partial
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--manager-port", default=7000, type=int)
@@ -41,56 +38,27 @@ logging.basicConfig(
 )
 
 
-async def model_manager(
-    ctx: Context,
-    video_pipe: zmq.Socket,
-    img_pipe: zmq.Socket,
-    reset_pipes: List[zmq.Socket],
-):
-    reply_addr = f"tcp://*:{args.manager_port}"
-    reply = ctx.socket(zmq.REP)
-    reply.bind(reply_addr)
-    logging.info(f"[MODEL MANAGER] (REP) Bind to '{reply_addr}'")
+def send(pipe: Socket):
+    async def f(**kwargs):
+        pipe.send_json(kwargs)
+        await pipe.recv()
 
-    reset_addr = "tcp://*:7777"
-    reset = ctx.socket(zmq.PUB)
-    reset.bind(reset_addr)
-    logging.info(f"[MODEL MANAGER] (PUB) Bind to '{reset_addr}'")
-
-    client = aiohttp.ClientSession()
-    record_repo = common.repos.RecordRepository(base_uri=args.api_uri, client=client)
-
-    await asyncio.gather(img_pipe.recv(), video_pipe.recv())
-
-    logging.info("[MODEL MANAGER] All Ready")
-
-    while True:
-        id = await reply.recv_string()
-        result = await common.load_model(record_repo, id)
-        if result["success"]:
-            await asyncio.gather(*[reset_pipe.send(b"") for reset_pipe in reset_pipes])
-            model_path = str(result["model_path"]).encode()
-            label_path = str(result["label_path"]).encode()
-            logging.info("[MODEL MANAGER] Sending model and label path")
-            if result["record_type"] == "Object Detection":
-                await video_pipe.send_multipart([model_path, label_path])
-                await video_pipe.recv()
-            else:
-                await img_pipe.send_multipart([model_path, label_path])
-                await img_pipe.recv()
-        reply.send(zutils.encode_bool(result["success"]))
+    return f
 
 
 async def main():
+    handlers = {}
     ctx = Context()
 
     img_pipe, img_peer = zutils.pipe(ctx)
-    img_reset, img_reset_peer = zutils.pipe(ctx)
+    img_reset_pipe, img_reset_peer = zutils.pipe(ctx)
+    handlers["Image Classification"] = send(img_pipe)
 
     video_pipe, video_peer = zutils.pipe(ctx)
-    video_reset, video_reset_peer = zutils.pipe(ctx)
+    video_reset_pipe, video_reset_peer = zutils.pipe(ctx)
+    handlers["Object Detection"] = send(video_pipe)
 
-    reset_pipes = [img_reset, video_reset]
+    reset_pipes = [img_reset_pipe, video_reset_pipe]
 
     video_thread = threading.Thread(
         target=asyncio.run,
@@ -116,8 +84,11 @@ async def main():
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-    await model_manager(
-        ctx, video_pipe=video_pipe, img_pipe=img_pipe, reset_pipes=reset_pipes
+    await asyncio.gather(img_pipe.recv(), video_pipe.recv())
+    logging.info("[MAIN] All Endpoints Ready")
+    logging.info("[MAIN] Starting Model Manager")
+    await endpoints.model_manager.start(
+        ctx=ctx, handlers=handlers, reset_pipes=reset_pipes, args=args
     )
 
 

@@ -8,6 +8,7 @@ import numpy as np
 import src.repositories as repos
 import logging
 import traceback
+from zmq.asyncio import Socket
 
 EDGETUP_LIB = {
     "Linux": "libedgetpu.so.1",
@@ -15,7 +16,7 @@ EDGETUP_LIB = {
     "Windows": "edgetpu.dll",
 }[platform.system()]
 
-# -------------- Ouput --------------
+
 def get_output_detail(interpreter: tflite.Interpreter, i: int, key: str):
     return interpreter.get_output_details()[i][key]
 
@@ -37,7 +38,6 @@ def get_num_outputs(interpreter: tflite.Interpreter):
     return len(interpreter.get_output_details())
 
 
-# -------------- Input --------------
 def get_input_detail(interpreter: tflite.Interpreter, key):
     return interpreter.get_input_details()[0][key]
 
@@ -51,11 +51,13 @@ def get_input_index(interpreter: tflite.Interpreter):
     return get_input_detail(interpreter, "index")
 
 
-# -------------- Loading --------------
-def load_labels(label_path: pathlib.Path):
+def load_labels(label_path):
+    label_path = pathlib.Path(str(label_path))
+    labels = {}
+    if not label_path.is_file():
+        return labels
     with label_path.open("r", encoding="utf-8") as f:
         lines = f.readlines()
-    labels = {}
     for row_number, content in enumerate(lines):
         pair = re.split(r"[:\s]+", content.strip(), maxsplit=1)
         if len(pair) == 2 and pair[0].strip().isdigit():
@@ -65,21 +67,22 @@ def load_labels(label_path: pathlib.Path):
     return labels
 
 
-def load_interpreter(model_path: pathlib.Path, label_path: pathlib.Path):
+def load_interpreter(model_path):
+    model_path = pathlib.Path(str(model_path))
     delegate = tflite.load_delegate(EDGETUP_LIB)
     interpreter = tflite.Interpreter(
         model_path=str(model_path), experimental_delegates=[delegate]
     )
     interpreter.allocate_tensors()
-    labels = load_labels(label_path)
-    return interpreter, labels
+    return interpreter
 
 
 class LoadModelResult(TypedDict):
     success: str
-    model_path: str
-    label_path: str
+    model_path: bytes
+    label_path: bytes
     record_type: str
+    model_file_name: str
 
 
 async def load_model(record_repo: repos.RecordRepository, id):
@@ -88,17 +91,19 @@ async def load_model(record_repo: repos.RecordRepository, id):
         "model_path": None,
         "label_path": None,
         "record_type": None,
+        "model_file_name": None,
     }
 
     try:
-        (model_path, label_path), record_type = await asyncio.gather(
-            record_repo.download(id), record_repo.get_record_type(id)
+        (model_path, label_path), (record_type, model_file_name) = await asyncio.gather(
+            record_repo.download(id), record_repo.get_record_info(id)
         )
         await record_repo.set_loaded(id)
 
-        result["model_path"] = model_path
-        result["label_path"] = label_path
+        result["model_path"] = str(model_path)
+        result["label_path"] = str(label_path)
         result["record_type"] = record_type
+        result["model_file_name"] = model_file_name
     except Exception:
         logging.error("Error loading model")
         logging.error(traceback.format_exc())

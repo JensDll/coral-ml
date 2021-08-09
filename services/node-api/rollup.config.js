@@ -6,7 +6,7 @@ import replace from '@rollup/plugin-replace'
 const watchConfig = defineConfig({
   input: 'src/main.ts',
   output: {
-    file: 'bundle.js',
+    file: 'dist/bundle.js',
     format: 'esm'
   },
   plugins: [

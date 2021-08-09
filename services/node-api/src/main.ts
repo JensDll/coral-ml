@@ -21,7 +21,10 @@ const io = new Server(httpServer, {
 io.on('connection', socket => {
   console.log(`A user connected (${socket.id})`)
 
-  const modelManagerClient = new zmq.Request({ receiveTimeout: 20000 })
+  const modelManagerClient = new zmq.Request({
+    receiveTimeout: 20000,
+    sendTimeout: 20000
+  })
   modelManagerClient.connect(
     `tcp://${process.env.CORAL_APP}:${MODL_MANAGER_PORT}`
   )

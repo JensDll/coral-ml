@@ -7,6 +7,8 @@ from .base import RepositoryBase
 import pathlib
 import logging
 
+RecordType = Literal["Image Classification", "Object Detection"]
+
 
 def extract_zip(file_path: pathlib.Path):
     stem = file_path.stem
@@ -30,16 +32,17 @@ class RecordRepository(RepositoryBase):
     def __init__(self, base_uri: str, client: aiohttp.ClientSession) -> None:
         super().__init__(base_uri, client)
 
-    async def get_record_type(self, id: int):
+    async def get_record_info(self, id: int):
         logging.info(f"Loading model with id ({id})")
         async with self.client.get(f"{self.base_uri}/record/{id}") as resp:
             if resp.ok:
                 json = await resp.json()
-                record_type: Literal["Image Classification", "Object Detection"] = json[
-                    "recordType"
-                ]
-                logging.info(f"Received record type '{record_type}'")
-                return record_type
+                record_type: RecordType = json["recordType"]
+                model_file_name: str = json["modelFileName"]
+                model_file_name = model_file_name.replace(".tflite", "")
+                logging.info(f"Received record info - type ({record_type})")
+                logging.info(f"Received record info - filename ({model_file_name})")
+                return record_type, model_file_name
 
     async def download(self, id: int):
         logging.info(f"Downloading model with id ({id})")
@@ -60,5 +63,5 @@ class RecordRepository(RepositoryBase):
 
     async def set_loaded(self, id: int):
         logging.info(f"Setting model loaded with id ({id})")
-        async with self.client.put(f"{self.base_uri}/record/loaded/{id}") as resp:
-            pass
+        async with self.client.put(f"{self.base_uri}/record/loaded/{id}"):
+            return

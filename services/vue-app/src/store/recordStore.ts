@@ -7,7 +7,6 @@ type State = {
   pageSize: number
   total: number
   loadedRecord?: ApiRecord
-  isRecordLoadedForCurrentRoute: boolean
   loadingRecord: boolean
 }
 
@@ -19,7 +18,6 @@ export const useRecordStore = defineStore({
       pageNumber: 1,
       pageSize: 200,
       total: 0,
-      isRecordLoadedForCurrentRoute: false,
       loadingRecord: false
     }
   },

@@ -8,3 +8,23 @@ updates:
     directory: "/services/record-api"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/vue-app"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/node-api"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/node-video"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/proxy"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/services/coral-app"
+    schedule:
+      interval: "weekly"

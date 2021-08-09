@@ -38,12 +38,12 @@ logging.basicConfig(
 )
 
 
-def send(pipe: Socket):
-    async def f(**kwargs):
+def load_model(pipe: Socket):
+    async def impl(**kwargs):
         pipe.send_json(kwargs)
-        await pipe.recv()
+        return await pipe.recv_json()
 
-    return f
+    return impl
 
 
 async def main():
@@ -52,11 +52,11 @@ async def main():
 
     img_pipe, img_peer = zutils.pipe(ctx)
     img_reset_pipe, img_reset_peer = zutils.pipe(ctx)
-    handlers["Image Classification"] = send(img_pipe)
+    handlers["Image Classification"] = load_model(img_pipe)
 
     video_pipe, video_peer = zutils.pipe(ctx)
     video_reset_pipe, video_reset_peer = zutils.pipe(ctx)
-    handlers["Object Detection"] = send(video_pipe)
+    handlers["Object Detection"] = load_model(video_pipe)
 
     reset_pipes = [img_reset_pipe, video_reset_pipe]
 
@@ -64,7 +64,10 @@ async def main():
         target=asyncio.run,
         args=[
             endpoints.video.start(
-                ctx, video_peer=video_peer, reset_peer=video_reset_peer, args=args
+                ctx,
+                load_model_peer=video_peer,
+                reset_peer=video_reset_peer,
+                args=args,
             )
         ],
         daemon=True,
@@ -75,7 +78,7 @@ async def main():
         target=asyncio.run,
         args=[
             endpoints.classification.start(
-                ctx, img_peer=img_peer, reset_peer=img_reset_peer, args=args
+                ctx, load_model_peer=img_peer, reset_peer=img_reset_peer, args=args
             )
         ],
         daemon=True,

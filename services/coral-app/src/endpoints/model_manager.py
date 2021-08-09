@@ -1,4 +1,5 @@
 import typing
+from typing_extensions import TypedDict
 import zmq
 from typing import List
 from zmq.asyncio import Context, Socket
@@ -9,6 +10,11 @@ import asyncio
 
 import src.common as common
 import src.zutils as zutils
+
+
+class LoadModelResult(TypedDict):
+    success: bool
+    error: str
 
 
 async def start(
@@ -41,9 +47,17 @@ async def start(
         if result["success"]:
             await reset_endpoints()
             logging.info("[MODEL MANAGER] Sending model and label path")
-            await handlers[result["record_type"]](
+            normalized_json: zutils.NormalizedJson = await handlers[
+                result["record_type"]
+            ](
                 model_path=result["model_path"],
                 label_path=result["label_path"],
                 model_file_name=result["model_file_name"],
             )
-        reply.send(zutils.encode_bool(result["success"]))
+            if normalized_json["success"]:
+                await record_repo.set_loaded(id)
+            else:
+                await record_repo.unload()
+            reply.send_json(normalized_json)
+        else:
+            zutils.send_normalized_json(reply, errors=["An unknown error occurred"])

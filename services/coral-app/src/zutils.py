@@ -1,7 +1,10 @@
 import random
 import string
 import zmq
-from zmq.asyncio import Context
+
+from zmq.asyncio import Context, Socket
+from typing_extensions import TypedDict
+from typing import Any, List
 
 
 def id_generator(length):
@@ -21,3 +24,15 @@ def pipe(ctx: Context):
 
 def encode_bool(bool: bool):
     return bool.to_bytes(1, "big")
+
+
+class NormalizedJson(TypedDict):
+    success: bool
+    errors: List[str]
+    data: Any
+
+
+def send_normalized_json(socket: Socket, data=[], errors=[]):
+    json: NormalizedJson = {"data": data, "errors": errors}
+    json["success"] = len(json["errors"]) == 0
+    socket.send_json(json)

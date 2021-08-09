@@ -24,6 +24,8 @@ namespace Contracts
 
             public const string SetLoaded = Prefix + "SetLoaded";
 
+            public const string Unload = Prefix + "Unload";
+
             public const string Delete = Prefix + "Delete";
         }
 

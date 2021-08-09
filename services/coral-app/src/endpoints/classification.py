@@ -1,23 +1,29 @@
 import argparse
-from typing_extensions import TypedDict
-from typing import List
 import zmq
-from zmq.asyncio import Context, Poller
-import tflite_runtime.interpreter as tflite
 import logging
+import functools
 
-from src.inference.classification.classify import classify
-from src import common
+from zmq.asyncio import Context, Poller, Socket
+from src import common, zutils
+from src.inference.classification import models
 
 
-class Message(TypedDict):
-    success: bool
-    errors: List[str]
-    data: any
+async def load_model(peer: Socket):
+    json = await peer.recv_json()
+    labels = common.load_labels(json["label_path"])
+    interpreter = common.load_interpreter(json["model_path"])
+    logging.info("[CLASSIFICATION] Received Interpreter - Sending response ...")
+    zutils.send_normalized_json(peer)
+    return functools.partial(
+        getattr(models, "generic_model"), interpreter=interpreter, labels=labels
+    )
 
 
 async def start(
-    ctx: Context, img_peer: zmq.Socket, reset_peer: zmq.Socket, args: argparse.Namespace
+    ctx: Context,
+    load_model_peer: zmq.Socket,
+    reset_peer: zmq.Socket,
+    args: argparse.Namespace,
 ):
     reply_addr = f"tcp://*:{args.classify_port}"
     reply = ctx.socket(zmq.REP)
@@ -27,12 +33,10 @@ async def start(
     poller = Poller()
     poller.register(reset_peer, zmq.POLLIN)
     poller.register(reply, zmq.POLLIN)
-    poller.register(img_peer, zmq.POLLIN)
+    poller.register(load_model_peer, zmq.POLLIN)
 
-    labels: dict = None
-    interpreter: tflite.Interpreter = None
-
-    img_peer.send(b"")
+    run_inference = None
+    load_model_peer.send(b"")
 
     while True:
         try:
@@ -42,40 +46,27 @@ async def start(
 
         if reset_peer in items:
             await reset_peer.recv()
-            interpreter = None
+            run_inference = None
             logging.info("[CLASSIFICATION] Reset")
             reset_peer.send(b"")
 
-        if img_peer in items:
-            json = await img_peer.recv_json()
-            labels = common.load_labels(json["label_path"])
-            interpreter = common.load_interpreter(json["model_path"])
-            logging.info("[CLASSIFICATION] Received Interpreter - Sending response ...")
-            img_peer.send(b"")
+        if load_model_peer in items:
+            run_inference = await load_model(load_model_peer)
 
         if reply in items:
-            img_buffer: bytes
-            format: bytes
             img_buffer, format = await reply.recv_multipart()
-
-            msg: Message = {"success": False, "errors": [], "data": None}
-
-            if interpreter == None:
-                msg["errors"].append("No model is loaded for this task")
-                await reply.send_json(msg)
+            if run_inference == None:
+                zutils.send_normalized_json(
+                    reply, errors=["No model is loaded for this task"]
+                )
             else:
                 format = format.decode()
 
                 try:
-                    results = classify(
-                        interpreter=interpreter,
-                        labels=labels,
+                    results = run_inference(
                         img_buffer=img_buffer,
                         format=format,
                     )
-                    msg["data"] = results
-                    msg["success"] = True
+                    zutils.send_normalized_json(reply, data=results)
                 except Exception as e:
-                    msg["errors"].append(str(e))
-
-                await reply.send_json(msg)
+                    zutils.send_normalized_json(reply, errors=[str(e)])

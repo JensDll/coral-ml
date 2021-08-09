@@ -26,6 +26,8 @@ namespace Application.Data.Repositories
 
         public Task<int> SetLoadedAsync(int recordId);
 
+        public Task<int> UnloadAsync();
+
         public Task<int> DeleteAsync(int id);
     }
 }

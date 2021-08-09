@@ -78,8 +78,9 @@ async function handleLoad() {
   loading.value = true
   recordStore.loadingRecord = true
   router.push({ name: window.onLoadLinks[props.record.recordType] })
-  const success = await socketService.loadModel(props.record.id)
-  if (success) {
+  const response = await socketService.loadModel(props.record.id)
+  console.log(response)
+  if (response.success) {
     await recordRepository.loadLoaded()
   }
   recordStore.loadingRecord = false

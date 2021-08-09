@@ -2,17 +2,19 @@ import { io, Socket } from 'socket.io-client'
 import { ref } from 'vue'
 import { useImage } from '~/composable'
 
-type MessageEnvelope<T> = {
+export type MessageEnvelope<T = []> = {
   success: boolean
   errors: string[]
   data: T
 }
 
-type ClassificationResult = {
-  classes: string[]
+type ClassificationResult = MessageEnvelope<{
   probabilities: number[]
+  classes: string[]
   inferenceTime: number
-}
+}>
+
+type LoadModelResult = MessageEnvelope
 
 export type UpdateVideoRequest = {
   topK: number
@@ -43,9 +45,9 @@ export class SocketService {
   }
 
   loadModel(id: number) {
-    return new Promise<boolean>((resolve, reject) => {
-      this.socket.emit('load model', id, (success: boolean) => {
-        resolve(success)
+    return new Promise<LoadModelResult>((resolve, reject) => {
+      this.socket.emit('load model', id, (response: LoadModelResult) => {
+        resolve(response)
       })
     })
   }
@@ -58,8 +60,8 @@ export class SocketService {
         this.socket.emit(
           'classify',
           { image, format },
-          (resp: MessageEnvelope<ClassificationResult>) => {
-            resolve(resp)
+          (response: MessageEnvelope<ClassificationResult>) => {
+            resolve(response)
           }
         )
       }

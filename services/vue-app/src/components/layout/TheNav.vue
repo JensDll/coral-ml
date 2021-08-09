@@ -52,8 +52,10 @@
 
 <script setup lang="ts">
 import { useNavStore } from '~/store'
+import { useRecordStore } from '~/store/recordStore'
 
 const navStore = useNavStore()
+const recordStore = useRecordStore()
 </script>
 
 <style lang="postcss" scoped>

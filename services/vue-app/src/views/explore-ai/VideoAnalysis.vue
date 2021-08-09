@@ -12,7 +12,7 @@
   <form v-if="recordLoaded" class="w-1/2 mt-8">
     <div>
       <label class="block font-semibold mb-2 rounded-md" for="top-k">
-        Show top k Results
+        Show Top Results
       </label>
       <input
         type="number"
@@ -25,7 +25,7 @@
   </form>
   <canvas
     ref="videoCanvas"
-    class="rounded-lg w-full lg:w-5/6 2xl:w-1/2 mt-8"
+    class="rounded-lg w-full lg:w-5/6 2xl:w-4/6 mt-8"
     v-show="!loading && !recordStore.loadingRecord"
   ></canvas>
 </template>
@@ -51,6 +51,8 @@ const formData: UpdateVideoRequest = reactive({
 const recordLoaded = computed(() => {
   return recordStore.loadedType === 'video'
 })
+
+socketService.updateVideo(formData)
 
 watch(formData, formData => {
   socketService.updateVideo(formData)

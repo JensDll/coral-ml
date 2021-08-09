@@ -23,12 +23,12 @@ namespace ModelAPI.Controllers
     [ApiController]
     public class RecordController : ControllerBase
     {
-        private readonly IRecordRepository _tFLiteRecordRepository;
+        private readonly IRecordRepository _recordRepository;
         private readonly IRecordRequestMapper _requestMapper;
 
-        public RecordController(IRecordRepository tFLiteRecordRepository, IRecordRequestMapper requestMapper)
+        public RecordController(IRecordRepository recordRepository, IRecordRequestMapper requestMapper)
         {
-            _tFLiteRecordRepository = tFLiteRecordRepository;
+            _recordRepository = recordRepository;
             _requestMapper = requestMapper;
         }
 
@@ -40,7 +40,7 @@ namespace ModelAPI.Controllers
         {
             var pagination = _requestMapper.MapPaginationRequest(paginationRequestDto);
 
-            var envelope = await _tFLiteRecordRepository.GetWithRecordTypeIdAsync(pagination, recordTypeId);
+            var envelope = await _recordRepository.GetWithRecordTypeIdAsync(pagination, recordTypeId);
 
             return Ok(envelope);
         }
@@ -51,7 +51,7 @@ namespace ModelAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetLoaded()
         {
-            var loadedRecord = await _tFLiteRecordRepository.GetLoadedAsync();
+            var loadedRecord = await _recordRepository.GetLoadedAsync();
 
             if (loadedRecord == null)
             {
@@ -67,7 +67,7 @@ namespace ModelAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
-            var record = await _tFLiteRecordRepository.GetByIdAsync(id);
+            var record = await _recordRepository.GetByIdAsync(id);
 
             if (record == null)
             {
@@ -84,7 +84,7 @@ namespace ModelAPI.Controllers
         public async Task<IActionResult> Download(int id)
         {
             
-            byte[] zipContent = await _tFLiteRecordRepository.DownloadAsync(id);
+            byte[] zipContent = await _recordRepository.DownloadAsync(id);
 
             if (zipContent == null)
             {
@@ -100,7 +100,7 @@ namespace ModelAPI.Controllers
         {
             var createData = await _requestMapper.MapCreateRequestAsync(recordTypeId, model, label);
             
-            int id = await _tFLiteRecordRepository.CreateAsync(createData);
+            int id = await _recordRepository.CreateAsync(createData);
 
             return CreatedAtAction(nameof(GetById), new { id }, null);
         }
@@ -109,7 +109,16 @@ namespace ModelAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> SetLoaded(int id)
         {
-            await _tFLiteRecordRepository.SetLoadedAsync(id);
+            await _recordRepository.SetLoadedAsync(id);
+
+            return NoContent();
+        }
+
+        [HttpPut(ApiRoutes.Record.Unload)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Unload()
+        {
+            await _recordRepository.UnloadAsync();
 
             return NoContent();
         }
@@ -118,7 +127,7 @@ namespace ModelAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(int id)
         {
-            await _tFLiteRecordRepository.DeleteAsync(id);
+            await _recordRepository.DeleteAsync(id);
 
             return NoContent();
         }

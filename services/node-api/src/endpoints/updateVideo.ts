@@ -11,7 +11,6 @@ export const updateVideo =
   async (data: RequestData, callback: Listener<void>) => {
     try {
       await client.send(JSON.stringify(data))
-      console.log(data)
       await client.receive()
     } catch (e) {
       console.log(`Error updating video parameters ${e}`)

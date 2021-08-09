@@ -35,7 +35,6 @@
       </tbody>
     </table>
   </div>
-  <pre>{{ recordStore }}</pre>
 </template>
 
 <script setup lang="ts">

@@ -18,7 +18,8 @@ export const useRecordStore = defineStore({
       pageNumber: 1,
       pageSize: 200,
       total: 0,
-      loadingRecord: false
+      loadingRecord: false,
+      loadedRecord: undefined
     }
   },
   getters: {

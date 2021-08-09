@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { RecordType } from '~/api'
+import { ApiRecordType } from '~/api'
 
 type State = {
-  recordTypes: RecordType[]
+  recordTypes: ApiRecordType[]
 }
 
 export const useRecordTypeStore = defineStore({

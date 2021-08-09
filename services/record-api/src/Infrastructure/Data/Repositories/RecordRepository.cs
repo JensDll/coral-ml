@@ -137,5 +137,13 @@ namespace Infrastructure.Data.Repositories
                 param: new { param_id = id },
                 commandType: CommandType.StoredProcedure);
         }
+
+        public async Task<int> UnloadAsync()
+        {
+            using var connection = _connectionFactory.NewConnection;
+
+            return await connection.ExecuteAsync(StoredProcedures.Record.Unload,
+                commandType: CommandType.StoredProcedure);
+        }
     }
 }

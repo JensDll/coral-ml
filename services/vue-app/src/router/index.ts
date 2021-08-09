@@ -16,6 +16,7 @@ import ImageClassification from '~/views/explore-ai/ImageClassification.vue'
 import VideoAnalysis from '~/views/explore-ai/VideoAnalysis.vue'
 
 import RecordMain from '../views/explore-ai/record/MainPage.vue'
+import { recordRepository } from '~/api'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -70,4 +71,8 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, from) => {
+  recordRepository.loadLoaded().then()
 })

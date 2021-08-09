@@ -1,10 +1,10 @@
-import { Listener } from './types'
+import { Listener, MessageEnvelope } from './types'
 import zmq from 'zeromq'
 
 type Response = {
-  success: boolean
-  errors: string[]
-  data: any
+  probabilities: number[]
+  classes: string[]
+  inferenceTime: number
 }
 
 type RequestData = {
@@ -14,10 +14,12 @@ type RequestData = {
 
 export const classify =
   (client: zmq.Request) =>
-  async ({ image, format }: RequestData, callback: Listener<Response>) => {
-    console.log('Awaiting image classification')
+  async (
+    { image, format }: RequestData,
+    callback: Listener<MessageEnvelope<Response>>
+  ) => {
     await client.send([image, format])
     const [result] = await client.receive()
-    const data: Response = JSON.parse(result.toString())
-    callback(data)
+    const response: MessageEnvelope<Response> = JSON.parse(result.toString())
+    callback(response)
   }

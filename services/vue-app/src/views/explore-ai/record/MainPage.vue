@@ -8,10 +8,8 @@
   </p>
   <base-card-grid class="gap-12">
     <section
-      v-for="(
-        { id, recordType, total, loaded }, i
-      ) in recordTypeStore.recordTypes"
-      :key="i"
+      v-for="{ id, recordType, total, loaded } in recordTypeStore.recordTypes"
+      :key="id"
     >
       <div class="flex">
         <h3 class="text-xl font-semibold">
@@ -23,7 +21,6 @@
         <span class="mr-2">Available Models</span>
         {{ total }}
       </p>
-
       <div>
         <base-button
           class="py-2 px-6 rounded font-semibold mr-4"
@@ -56,45 +53,19 @@
   </base-card-grid>
 </template>
 
-<script lang="ts">
-import { recordTypeRepository, recordRepository } from '~/api'
+<script setup lang="ts">
+import { recordTypeRepository } from '~/api'
+import { useRecordTypeStore } from '~/store/recordTypeStore'
+
 import BaseTitle from '~/components/base/BaseTitle.vue'
 import BaseButton from '~/components/base/BaseButton.vue'
 import BaseCardGrid from '~/components/base/BaseCardGrid.vue'
-import BaseLoading from '~/components/base/BaseLoading.vue'
 import BaseLink from '~/components/base/BaseLink.vue'
 import BaseBadge from '~/components/base/BaseBadge.vue'
 
-import { defineComponent } from '@vue/runtime-core'
-import { useRecordStore } from '~/store/recordStore'
-import { useRecordTypeStore } from '~/store/recordTypeStore'
+const recordTypeStore = useRecordTypeStore()
 
-export default defineComponent({
-  components: {
-    BaseTitle,
-    BaseButton,
-    BaseCardGrid,
-    BaseLoading,
-    BaseLink,
-    BaseBadge
-  },
-  setup() {
-    const recordStore = useRecordStore()
-    const recordTypeStore = useRecordTypeStore()
-
-    return {
-      recordStore,
-      recordTypeStore
-    }
-  },
-  async beforeRouteEnter(to, from, next) {
-    await Promise.allSettled([
-      recordTypeRepository.loadAll(),
-      recordRepository.loadLoaded()
-    ])
-    next()
-  }
-})
+recordTypeRepository.loadAll().then()
 </script>
 
 <style lang="postcss"></style>

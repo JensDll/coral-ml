@@ -20,19 +20,19 @@ namespace Domain.Entities
 
         public async Task<byte[]> CreateZipAsync()
         {
-            using var compressedStream = new MemoryStream();
+            using var memoryStream = new MemoryStream();
 
-            using (var archive = new ZipArchive(compressedStream, ZipArchiveMode.Create, true))
+            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
                 foreach (var entry in _formFileZipEntries)
                 {
-                    var zipEntry = archive.CreateEntry(entry.EntryName);
+                    var zipEntry = archive.CreateEntry(entry.EntryName, CompressionLevel.Optimal);
                     using var zipEntryStream = zipEntry.Open();
                     await entry.File.CopyToAsync(zipEntryStream);
                 }
             }
 
-            return compressedStream.ToArray();
+            return memoryStream.ToArray();
         }
     }
 }

@@ -4,6 +4,7 @@ using Contracts.Request;
 using Domain.Entities;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,19 +16,25 @@ namespace Infrastructure.Mapping.Record
         public async Task<RecordCreate>
             MapCreateRequestAsync(int recordTypeId, IFormFile model, IFormFile label)
         {
-            var modelEntry = new FormFileZipEntry
+            var zipEntries = new List<FormFileZipEntry>
             {
-                EntryName = "model.tflite",
-                File = model
+                new FormFileZipEntry
+                {
+                    EntryName = "model.tflite",
+                    File = model
+                }            
             };
 
-            var labelEntry = new FormFileZipEntry
+            if (label != null)
             {
-                EntryName = "label.txt",
-                File = label
-            };
+                zipEntries.Add(new FormFileZipEntry
+                {
+                    EntryName = "label.txt",
+                    File = label
+                });
+            }
 
-            var zipper = new FormFileZipper(modelEntry, labelEntry);
+            var zipper = new FormFileZipper(zipEntries.ToArray());
 
             byte[] zipContent = await zipper.CreateZipAsync();
 

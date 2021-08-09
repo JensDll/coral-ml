@@ -33,19 +33,23 @@ class RecordRepository(RepositoryBase):
         super().__init__(base_uri, client)
 
     async def get_record_info(self, id: int):
-        logging.info(f"Loading model with id ({id})")
+        logging.info(f"[RECORD REPO] Loading model with id ({id})")
         async with self.client.get(f"{self.base_uri}/record/{id}") as resp:
             if resp.ok:
                 json = await resp.json()
                 record_type: RecordType = json["recordType"]
                 model_file_name: str = json["modelFileName"]
                 model_file_name = model_file_name.replace(".tflite", "")
-                logging.info(f"Received record info - type ({record_type})")
-                logging.info(f"Received record info - filename ({model_file_name})")
+                logging.info(
+                    f"[RECORD REPO] Received record info - type ({record_type})"
+                )
+                logging.info(
+                    f"[RECORD REPO] Received record info - filename ({model_file_name})"
+                )
                 return record_type, model_file_name
 
     async def download(self, id: int):
-        logging.info(f"Downloading model with id ({id})")
+        logging.info(f"[RECORD REPO] Downloading model with id ({id})")
         async with self.client.get(f"{self.base_uri}/record/download/{id}") as resp:
             try:
                 file_path = pathlib.Path("record.zip")
@@ -54,7 +58,7 @@ class RecordRepository(RepositoryBase):
                     return extract_zip(file_path)
                 raise aiohttp.ClientError()
             except Exception as e:
-                logging.error(f"Error downloading model with id ({id})")
+                logging.error(f"[RECORD REPO] Error downloading model with id ({id})")
                 logging.error(traceback.format_exc())
                 raise e
             finally:
@@ -62,6 +66,11 @@ class RecordRepository(RepositoryBase):
                     file_path.unlink()
 
     async def set_loaded(self, id: int):
-        logging.info(f"Setting model loaded with id ({id})")
+        logging.info(f"[RECORD REPO] Setting model loaded with id ({id})")
         async with self.client.put(f"{self.base_uri}/record/loaded/{id}"):
+            return
+
+    async def unload(self):
+        logging.info(f"[RECORD REPO] Unloading model")
+        async with self.client.put(f"{self.base_uri}/record/unload"):
             return

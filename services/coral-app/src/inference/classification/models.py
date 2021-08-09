@@ -24,7 +24,7 @@ def evaluate(y_scores: np.ndarray, labels: dict, top_k: int) -> Tuple[list, list
     return probs.tolist(), classes
 
 
-def classify(
+def generic_model(
     interpreter: tflite.Interpreter, labels: dict, img_buffer: bytes, format: str
 ):
     img = imageio.imread(img_buffer, format=format)

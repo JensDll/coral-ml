@@ -24,6 +24,8 @@ namespace Contracts
 
             public const string SetLoaded = Base + "/record/loaded/{id}";
 
+            public const string Unload = Base + "/record/unload";
+
             public const string Delete = Base + "/record/{id}";
         }
 

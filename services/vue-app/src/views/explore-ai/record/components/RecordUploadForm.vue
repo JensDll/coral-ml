@@ -43,11 +43,8 @@ const { form, validateFields, resetFields } = useValidation<Data>({
     $value: [],
     $rules: [
       files => {
-        if (
-          files.length !== 2 ||
-          !files.find(f => f.name.endsWith('.tflite'))
-        ) {
-          return 'Please select a model and label file'
+        if (!files.find(f => f.name.endsWith('.tflite'))) {
+          return 'Please select one model file'
         }
       }
     ]

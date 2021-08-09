@@ -98,8 +98,6 @@ async def load_model(record_repo: repos.RecordRepository, id):
         (model_path, label_path), (record_type, model_file_name) = await asyncio.gather(
             record_repo.download(id), record_repo.get_record_info(id)
         )
-        await record_repo.set_loaded(id)
-
         result["model_path"] = str(model_path)
         result["label_path"] = str(label_path)
         result["record_type"] = record_type

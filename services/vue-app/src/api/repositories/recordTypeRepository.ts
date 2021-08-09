@@ -1,8 +1,8 @@
 import { useFetch } from '~/composable'
 import { useRecordTypeStore } from '~/store/recordTypeStore'
-import { EnumerableEnvelope } from './common'
+import { EnumerableEnvelope, RecordType } from './common'
 
-export type RecordType = {
+export type ApiRecordType = {
   id: number
   recordType: RecordType
   total: number
@@ -11,9 +11,9 @@ export type RecordType = {
 
 export const recordTypeRepository = {
   async loadAll() {
-    const { data, responseOk } = await useFetch<EnumerableEnvelope<RecordType>>(
-      '/recordType'
-    )
+    const { data, responseOk } = await useFetch<
+      EnumerableEnvelope<ApiRecordType>
+    >('/recordType')
       .get()
       .json(false).promise
 

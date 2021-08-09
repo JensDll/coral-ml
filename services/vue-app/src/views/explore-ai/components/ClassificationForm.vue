@@ -15,13 +15,6 @@
       >
         Run Classification
       </v-button>
-      <v-button
-        class="font-semibold px-6 py-2 rounded ml-4"
-        type="basic"
-        @click="resetFields()"
-      >
-        Cancel
-      </v-button>
     </div>
   </form>
 </template>
@@ -47,7 +40,7 @@ type Data = {
   images: Field<File[]>
 }
 
-const { form, validateFields, resetFields } = useValidation<Data>({
+const { form, validateFields } = useValidation<Data>({
   images: {
     $value: [],
     $rules: [minMax(1, 1)('Please select an image')]

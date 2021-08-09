@@ -1,21 +1,26 @@
-import { Id, Listener } from './types'
-import { toBool } from '../converters/index'
+import { Listener } from './types'
 import zmq from 'zeromq'
 
-let busy = false
+type Response = {
+  success: boolean
+  error: string
+}
 
 export const loadModel =
-  (client: zmq.Request) => async (id: string, callback: Listener<boolean>) => {
+  (client: zmq.Request) => async (id: string, callback: Listener<Response>) => {
     try {
       console.log(`Loading model with id (${id})`)
-      busy = true
       await client.send(id)
-      const [success] = await client.receive()
-      const status = toBool(success)
-      console.log(`Loaded model, success (${status})`)
-      callback(status)
+      console.log(`Loading model message queued`)
+      const [result] = await client.receive()
+      const response: Response = JSON.parse(result.toString())
+      console.log(`Loaded model with response (${response})`)
+      callback(response)
     } catch (e) {
       console.log(`Error loading model ${e}`)
-      callback(false)
+      callback({
+        success: false,
+        error: e.toString()
+      })
     }
   }

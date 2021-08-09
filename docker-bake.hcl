@@ -17,7 +17,7 @@ group "default" {
 target "mariadb" {
     context = "services/mariadb"
     tags = [
-      "${REPOSITORY}:mariadb/latest"
+      "${REPOSITORY}:mariadb.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -28,7 +28,7 @@ target "mariadb" {
 target "record-api" {
     context = "services/record-api"
     tags = [
-      "${REPOSITORY}:record-api/latest"
+      "${REPOSITORY}:record-api.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -39,7 +39,7 @@ target "record-api" {
 target "node-api" {
     context = "services/node-api"
     tags = [
-      "${REPOSITORY}:node-api/latest"
+      "${REPOSITORY}:node-api.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -50,7 +50,7 @@ target "node-api" {
 target "node-video" {
     context = "services/node-video"
     tags = [
-      "${REPOSITORY}:node-video/latest"
+      "${REPOSITORY}:node-video.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -61,7 +61,7 @@ target "node-video" {
 target "vue-app" {
     context = "services/vue-app"
     tags = [
-      "${REPOSITORY}:vue-app/latest"
+      "${REPOSITORY}:vue-app.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -72,7 +72,7 @@ target "vue-app" {
 target "coral-app" {
     context = "services/coral-app"
     tags = [
-      "${REPOSITORY}:coral-app/latest"
+      "${REPOSITORY}:coral-app.latest"
     ]
     platforms = [
       "linux/amd64",
@@ -83,7 +83,7 @@ target "coral-app" {
 target "proxy" {
     context = "services/proxy"
     tags = [
-      "${REPOSITORY}:proxy/latest"
+      "${REPOSITORY}:proxy.latest"
     ]
     platforms = [
       "linux/amd64",

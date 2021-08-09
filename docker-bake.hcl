@@ -47,7 +47,7 @@ target "node-api" {
     ]
 }
 
-target "node-video {
+target "node-video" {
     context = "services/node-video"
     tags = [
       "${REPOSITORY}:node-video/latest"

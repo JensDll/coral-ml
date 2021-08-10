@@ -30,7 +30,10 @@ io.on('connection', socket => {
   )
   socket.on('load model', loadModel(modelManagerClient))
 
-  const classifyClient = new zmq.Request()
+  const classifyClient = new zmq.Request({
+    receiveTimeout: 20000,
+    sendTimeout: 20000
+  })
   classifyClient.connect(`tcp://${process.env.CORAL_APP}:${CLASSIFY_PORT}`)
   socket.on('classify', classify(classifyClient))
 

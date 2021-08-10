@@ -25,6 +25,6 @@ export const classify =
       callback(response)
     } catch (e) {
       callback({ success: false, errors: ['An unknown error occurred'] })
-      console.log(`Error classifying image ${e}`)
+      console.log(`Error classifying image (${e})`)
     }
   }

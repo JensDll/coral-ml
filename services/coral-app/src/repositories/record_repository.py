@@ -6,20 +6,35 @@ import zipfile
 from .base import RepositoryBase
 import pathlib
 import logging
+import platform
+import subprocess
 
 RecordType = Literal["Image Classification", "Object Detection"]
 
 
 def extract_zip(file_path: pathlib.Path):
     stem = file_path.stem
-    with zipfile.ZipFile(file_path, "r") as zip:
-        zip.extractall(stem)
+    name = file_path.name
+    if platform.system() == "Windows":
+        logging.info(f"[RECORD REPO] Extracting zip ({name}) under {platform.system()}")
+        with zipfile.ZipFile(file_path, "r") as zip:
+            zip.extractall(stem)
+    else:
+        logging.info(f"[RECORD REPO] Extracting zip ({name}) under {platform.system()}")
+        subprocess.run(["unzip", "-o", "-d", stem, name])
+    logging.info(f"[RECORD REPO] Extracted zip content to ({stem})")
     model_path = pathlib.Path(stem) / "model.tflite"
+    model_path_abs = model_path.resolve()
+    logging.info(f"[RECORD REPO] Model Path ({model_path_abs})")
     label_path = pathlib.Path(stem) / "label.txt"
-    return model_path.resolve(), label_path.resolve()
+    label_path_abs = label_path.resolve()
+    logging.info(f"[RECORD REPO] Label Path ({label_path_abs})")
+
+    return model_path_abs, label_path_abs
 
 
 async def save_zip(resp: ClientResponse, file_path: pathlib.Path, chunk_size=512):
+    logging.info(f"[RECORD REPO] Saving zip")
     with file_path.open("wb") as f:
         while True:
             chunk = await resp.content.read(chunk_size)
@@ -63,6 +78,7 @@ class RecordRepository(RepositoryBase):
                 raise e
             finally:
                 if file_path.is_file():
+                    logging.info(f"[RECORD REPO] Removing zip ({id})")
                     file_path.unlink()
 
     async def set_loaded(self, id: int):

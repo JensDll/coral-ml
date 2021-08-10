@@ -8,7 +8,6 @@ import src.zutils as zutils
 import src.endpoints as endpoints
 import time
 import os
-from functools import partial
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--manager-port", default=7000, type=int)

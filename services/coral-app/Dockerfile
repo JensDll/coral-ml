@@ -1,13 +1,13 @@
 FROM debian:buster
 
 # add Google repository and common packages
-RUN apt-get update && apt-get install -y curl gnupg udev wget && \
+RUN apt-get update && apt-get install -y curl gnupg udev wget unzip && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
     tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
     # https://coral.ai/docs/m2/get-started/#2-install-the-pcie-driver-and-edge-tpu-runtime
-    apt-get install -y libedgetpu1-std && apt-get clean
+    apt-get install -y libedgetpu1-std
 
 WORKDIR /app
 

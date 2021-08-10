@@ -14,10 +14,10 @@ export const loadModel =
       console.log(`Loading model message queued`)
       const [result] = await client.receive()
       const response: Response = JSON.parse(result.toString())
-      console.log(`Loaded model with response (${response})`)
+      console.log(`Loaded model with response (${result.toString()})`)
       callback(response)
     } catch (e) {
-      console.log(`Error loading model ${e}`)
+      console.log(`Error loading model (${e})`)
       callback({
         success: false,
         error: e.toString()

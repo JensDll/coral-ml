@@ -23,5 +23,8 @@ export const classify =
       const [result] = await client.receive()
       const response: MessageEnvelope<Response> = JSON.parse(result.toString())
       callback(response)
-    } catch {}
+    } catch (e) {
+      callback({ success: false, errors: ['An unknown error occurred'] })
+      console.log(`Error classifying image ${e}`)
+    }
   }

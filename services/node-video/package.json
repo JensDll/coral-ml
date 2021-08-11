@@ -23,7 +23,7 @@
     "@types/ws": "^7.4.7",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
-    "rollup": "^2.56.1",
+    "rollup": "^2.56.2",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.3.5"
   },

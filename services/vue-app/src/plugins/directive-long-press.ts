@@ -15,8 +15,6 @@ export const longPress: Plugin = {
         }, ms)
       })
 
-    let isDown = false
-
     const onDown = (binding: MyDirectiveBinding<() => void, string | number>) =>
       function (this: HTMLElement, e: MouseEvent | TouchEvent) {
         e.stopPropagation()

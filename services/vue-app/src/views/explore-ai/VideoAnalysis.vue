@@ -32,7 +32,6 @@
         />
         <input
           id="top-k"
-          ref="topK"
           type="number"
           min="0"
           v-model="formData.topK"
@@ -68,11 +67,10 @@ import type { Ref } from 'vue'
 const recordStore = useRecordStore()
 const videoCanvas = ref() as Ref<HTMLCanvasElement>
 const loading = ref(true)
-const formData: UpdateVideoRequest = reactive({
+const formData = reactive<UpdateVideoRequest>({
   topK: 1,
   threshold: 0.1
 })
-const topKInput = ref<HTMLInputElement>()
 
 const recordLoaded = computed(() => {
   return recordStore.loadedType === 'video'

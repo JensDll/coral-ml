@@ -28,3 +28,7 @@ updates:
     directory: "/services/coral-app"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/services/coral-app"
+    schedule:
+      interval: "weekly"

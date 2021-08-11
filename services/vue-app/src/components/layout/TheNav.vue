@@ -12,7 +12,8 @@
         left-0
         z-50
         w-8/12
-        p-6
+        px-4
+        py-6
         lg:relative lg:p-0 lg:z-0 lg:w-full
       "
     >

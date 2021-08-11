@@ -1,15 +1,24 @@
 <template>
-  <div class="flex items-end mb-4">
+  <div class="flex flex-col items-start lg:flex-row lg:items-center">
     <base-title title="Image Classification" />
-    <base-badge class="ml-4" v-if="recordStore.loadingRecord" loading>
+    <base-badge
+      class="my-3 lg:ml-4 lg:my-0"
+      v-if="recordStore.loadingRecord"
+      loading
+    >
       Loading Model
     </base-badge>
-    <base-badge class="ml-4" v-else-if="recordLoaded">Loaded</base-badge>
+    <base-badge class="my-3 lg:ml-4 lg:my-0" v-else-if="recordLoaded">
+      Loaded
+    </base-badge>
   </div>
-  <p v-if="recordLoaded && !recordStore.loadingRecord">
+  <p
+    v-if="recordLoaded && !recordStore.loadingRecord"
+    class="break-all lg:mt-3"
+  >
     {{ recordStore.loadedModelFileName }}
   </p>
-  <classification-form class="mt-8" @submit="classify" :submitting="loading" />
+  <classification-form class="mt-10" @submit="classify" :submitting="loading" />
   <div v-if="result" class="mt-16">
     <pre v-if="!result.success">{{ result.errors }}</pre>
     <template v-if="result.success" class="">

@@ -19,7 +19,9 @@
     @click="goHome()"
   >
     <AcademicCapIcon class="w-6 h-6" />
-    <span class="uppercase tracking-wider font-semibold ml-4">Explore AI</span>
+    <span class="hidden uppercase tracking-wider font-semibold ml-4 sm:inline">
+      Explore AI
+    </span>
   </div>
   <header
     class="
@@ -37,7 +39,7 @@
     "
   >
     <div>
-      <v-link href="https://coral.ai/models/">Coral AI</v-link>
+      <v-link href="https://coral.ai/models/">Coral AI </v-link>
     </div>
     <div>
       <v-link href="https://github.com/JensDll/coral-ml">GitHub</v-link>

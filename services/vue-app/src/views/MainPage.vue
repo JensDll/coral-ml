@@ -15,7 +15,7 @@ import TheMain from '~/components/layout/TheMain.vue'
 <style scoped lang="postcss">
 .grid-container {
   display: grid;
-  row-gap: 4rem;
+  row-gap: 2rem;
   height: 100%;
   grid-template-rows: auto 1fr;
   grid-template-columns: auto 1fr;
@@ -26,6 +26,7 @@ import TheMain from '~/components/layout/TheMain.vue'
 
 @screen lg {
   .grid-container {
+    row-gap: 4rem;
     grid-template-columns: 16rem 1fr;
     grid-template-areas:
       'logo header'

@@ -27,24 +27,24 @@ class CapProps(TypedDict):
     fps: int
 
 
-def start_stream(cap_props: CapProps, publish_uri):
+def start_stream(cap_props: CapProps, args):
     return scripts.stream.start_stream(
         frame_width=cap_props["frame_width"],
         frame_height=cap_props["frame_height"],
         pix_fmt="rgb24",
         fps=cap_props["fps"],
-        publish_uri=publish_uri,
+        args=args,
     )
 
 
-def restart_stream(cap_props: CapProps, intervall=4):
+def restart_stream(cap_props: CapProps, args, intervall=4):
     logging.error("FFMPEG Error")
     logging.error(traceback.format_exc())
     while True:
         time.sleep(intervall)
         logging.info("Restarting Stream")
         try:
-            yield start_stream(cap_props)
+            yield start_stream(cap_props, args)
             break
         except:
             pass
@@ -69,13 +69,13 @@ async def update_args(reply: Socket, model_args):
     settings: Settings = await reply.recv_json()
     model_args["top_k"] = settings["topK"]
     model_args["score_threshold"] = settings["threshold"]
-    reply.send(b"")
+    await reply.send(b"")
 
 
 async def start(
     ctx: Context,
-    load_model_peer: zmq.Socket,
-    reset_peer: zmq.Socket,
+    load_model_peer: Socket,
+    reset_peer: Socket,
     args: argparse.Namespace,
 ):
     reply_addr = f"tcp://*:{args.video_port}"
@@ -95,10 +95,7 @@ async def start(
         "fps": int(cap.get(cv2.CAP_PROP_FPS)),
     }
 
-    process = start_stream(
-        cap_props,
-        publish_uri=args.publish_uri,
-    )
+    process = start_stream(cap_props, args)
 
     fps_iter = annotation.fps_iter()
     run_inference = None
@@ -139,4 +136,4 @@ async def start(
         try:
             process.stdin.write(frame.tobytes())
         except:
-            process = next(restart_stream(cap_props))
+            process = next(restart_stream(cap_props, args))

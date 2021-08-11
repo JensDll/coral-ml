@@ -1,13 +1,13 @@
 <template>
   <form class="lg:w-1/2" @submit.prevent="handleSubmit()">
     <form-file-upload
-      label="Model and Label File"
+      label="Model and Label File For Classifcation"
       v-model="form.files.$value"
       :errors="form.files.$errors"
       multiple
     >
       <template #hint>
-        <p class="text-gray-500 text-xs">TFLITE + Label File</p>
+        <p class="text-gray-500 text-xs">TFLite + Optional Label File</p>
       </template>
     </form-file-upload>
     <div class="mt-8">

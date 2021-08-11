@@ -37,9 +37,7 @@ io.on('connection', socket => {
   classifyClient.connect(`tcp://${process.env.CORAL_APP}:${CLASSIFY_PORT}`)
   socket.on('classify', classify(classifyClient))
 
-  const videoClient = new zmq.Request({
-    sendTimeout: 0
-  })
+  const videoClient = new zmq.Request()
   videoClient.connect(`tcp://${process.env.CORAL_APP}:${VIDEO_PORT}`)
   socket.on('update video', updateVideo(videoClient))
 

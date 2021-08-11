@@ -2,8 +2,11 @@
   <div class="mb-8">
     <v-title title="Upload a new Model" @back="$router.back()" back />
   </div>
-  <p>A Coral Edge TPU model consists of a label and model file.</p>
-  <p>Select both in the form field below and press upload.</p>
+  <p class="2xl:w-2/3">
+    Upload a Coral Edge TPU model. For Classifcation tasks this consists of
+    TFLite and Label file. Select one or both in the form field below and press
+    upload.
+  </p>
   <record-upload-form @submit="handleUpload" class="mt-8" />
 </template>
 

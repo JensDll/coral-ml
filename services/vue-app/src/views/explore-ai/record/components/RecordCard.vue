@@ -2,14 +2,8 @@
   <div class="border p-6 rounded-md">
     <div class="title-grid">
       <h3 class="title">{{ modelName }}</h3>
-      <div class="flex items-center justify-self-end">
-        <v-badge v-if="record.loaded">Loaded</v-badge>
-        <loading-icon
-          v-if="loading"
-          class="w-4 mr-1 h-4 ml-4"
-          :class="{ 'mt-1': !record.loaded }"
-        />
-      </div>
+      <v-badge v-if="record.loaded" class="model-loaded">Loaded</v-badge>
+      <loading-icon v-if="loading" class="loading" />
     </div>
     <div class="flex items-center justify-between">
       <div>
@@ -103,15 +97,42 @@ async function handleDownload() {
 
 <style lang="postcss" scoped>
 .title {
-  @apply font-semibold break-words;
+  @apply font-semibold break-all;
+  grid-area: title;
+}
+
+.loading {
+  @apply w-4 h-4 ml-4 self-start mt-1 mr-1;
+  grid-area: loading;
+}
+
+.model-loaded {
+  @apply justify-self-start;
+  grid-area: model-loaded;
 }
 
 .title-grid {
-  display: grid;
-  grid-template-columns: minmax(40%, 60%) 1fr;
-  grid-auto-flow: column;
-  align-items: start;
-  column-gap: 1rem;
-  margin-bottom: 2rem;
+  @apply grid gap-y-2 mb-8;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    'title loading'
+    'model-loaded model-loaded';
+}
+
+@screen lg {
+  .title-grid {
+    grid-template-columns: minmax(40%, 60%) 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas: 'title model-loaded loading';
+  }
+
+  .model-loaded {
+    @apply justify-self-end self-start;
+  }
+
+  .loading {
+    @apply mt-2;
+  }
 }
 </style>

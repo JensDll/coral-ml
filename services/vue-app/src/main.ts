@@ -1,14 +1,14 @@
 import { createApp } from 'vue'
 import { router } from './router'
 import { createPinia } from 'pinia'
+import { RecordType } from './api'
+import { longPress } from './plugins'
 import App from './App.vue'
 import 'tailwindcss/tailwind.css'
-import { RecordType } from './api'
 
 declare global {
   interface Window {
     onLoadLinks: Record<RecordType, 'image-classification' | 'video-analysis'>
-    isRecordLoadedForCurrentRoute: boolean
   }
 }
 
@@ -17,5 +17,6 @@ window.onLoadLinks = {
   'Object Detection': 'video-analysis'
 }
 
-const app = createApp(App).use(router).use(createPinia())
+const app = createApp(App).use(router).use(createPinia()).use(longPress)
+
 app.mount('#app')

@@ -55,17 +55,15 @@ export class SocketService {
   async classify(image: File) {
     const format = useImage.getFormat(image)
 
-    return new Promise<MessageEnvelope<ClassificationResult>>(
-      (resolve, reject) => {
-        this.socket.emit(
-          'classify',
-          { image, format },
-          (response: MessageEnvelope<ClassificationResult>) => {
-            resolve(response)
-          }
-        )
-      }
-    )
+    return new Promise<ClassificationResult>((resolve, reject) => {
+      this.socket.emit(
+        'classify',
+        { image, format },
+        (response: ClassificationResult) => {
+          resolve(response)
+        }
+      )
+    })
   }
 
   async updateVideo(request: UpdateVideoRequest) {

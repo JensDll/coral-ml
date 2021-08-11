@@ -6,24 +6,26 @@
     Learn more about available Models on the
     <base-link href="https://coral.ai/models/">Coral AI Website</base-link>.
   </p>
-  <base-card-grid class="gap-12">
+  <base-card-grid class="gap-12 items-start">
     <section
       v-for="{ id, recordType, total, loaded } in recordTypeStore.recordTypes"
       :key="id"
     >
-      <div class="flex">
+      <div class="flex flex-col items-start lg:flex-row">
         <h3 class="text-xl font-semibold">
           {{ recordType }}
         </h3>
-        <base-badge class="ml-4" v-if="loaded">Loaded</base-badge>
+        <base-badge class="mt-2 lg:ml-4 lg:mt-0" v-if="loaded">
+          Loaded
+        </base-badge>
       </div>
       <p class="mt-2 mb-4 text-gray-600">
         <span class="mr-2">Available Models</span>
         {{ total }}
       </p>
-      <div>
+      <div class="flex flex-col items-start lg:flex-row">
         <base-button
-          class="py-2 px-6 rounded font-semibold mr-4"
+          class="py-2 px-6 rounded font-semibold mb-2 lg:mb-0 lg:mr-4"
           @click="
             $router.push({
               name: 'record-overview',
@@ -68,4 +70,4 @@ const recordTypeStore = useRecordTypeStore()
 recordTypeRepository.loadAll().then()
 </script>
 
-<style lang="postcss"></style>
+<style lang="postcss" scoped></style>

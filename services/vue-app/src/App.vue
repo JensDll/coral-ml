@@ -15,4 +15,12 @@ import NavToggleMobile from './components/mobile/NavToggleMobile.vue'
 #app {
   @apply font-body;
 }
+
+@layer base {
+  .input-number-reset::-webkit-file-upload-button,
+  .input-number-reset::-webkit-inner-spin-button {
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+  }
+}
 </style>

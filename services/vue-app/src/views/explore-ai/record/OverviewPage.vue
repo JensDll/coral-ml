@@ -2,7 +2,7 @@
   <div class="mb-8">
     <base-title :title="$route.params.recordType" @back="$router.back()" back />
   </div>
-  <base-card-grid class="gap-12">
+  <base-card-grid class="gap-12 items-start">
     <record-card
       v-for="record in recordStore.records"
       :key="record.id"

@@ -1,5 +1,5 @@
 <template>
-  <h1 class="flex items-center text-3xl font-extrabold">
+  <h1 class="flex items-center text-2xl lg:text-3xl font-extrabold">
     <ArrowLeftIcon
       v-if="back"
       class="w-6 h-6 mr-4 hover:text-blue-700 cursor-pointer"

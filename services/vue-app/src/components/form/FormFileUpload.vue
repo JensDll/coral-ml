@@ -61,7 +61,7 @@
       >
         <span class="group-hover:line-through">{{ file.name }}</span>
         <MinusCircleIcon
-          class="w-5 h-5 text-red-500 ml-2 group-hover:text-red-700"
+          class="w-6 h-6 text-red-500 ml-2 group-hover:text-red-700"
         />
       </li>
     </ul>
@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { MinusCircleIcon } from '@heroicons/vue/solid'
+import { MinusCircleIcon } from '@heroicons/vue/outline'
 import type { PropType } from 'vue'
 
 type FileHelper = {

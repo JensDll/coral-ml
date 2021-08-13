@@ -29,7 +29,7 @@ export class SocketService {
     this.socket = io(
       address,
       import.meta.env.MODE !== 'development'
-        ? { path: '/socket-api/' }
+        ? { path: '/node-api/' }
         : undefined
     )
 

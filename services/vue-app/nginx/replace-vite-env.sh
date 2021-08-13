@@ -6,9 +6,7 @@ echo "Replacing vite environment variables"
 for file in $ROOT_DIR/assets/*.js $ROOT_DIR/index.html
 do
   echo "Processing $file ..."
-  sed -i "s|VITE_RECORD_API|${RECORD_API}|g" $file
-  sed -i "s|VITE_NODE_API|${NODE_API}|g" $file 
-  sed -i "s|VITE_NODE_VIDEO|${NODE_VIDEO}|g" $file 
+  sed -i "s|__PROXY_URI|${PROXY_URI}|g" $file
 done
 
 exit 0

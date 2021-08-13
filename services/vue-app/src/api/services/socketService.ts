@@ -75,6 +75,4 @@ export class SocketService {
   }
 }
 
-export const socketService = new SocketService(
-  import.meta.env.VITE_IO_SOCKET_URI
-)
+export const socketService = new SocketService(import.meta.env.VITE_NODE_API)

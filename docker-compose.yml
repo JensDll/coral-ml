@@ -35,8 +35,10 @@ services:
   vue-app:
     build: 
       context: ./services/vue-app
-      args:
-        mode: compose
+    environment:
+      RECORD_API: http://localhost/record-api
+      NODE_API: http://localhost
+      NODE_VIDEO: ws://localhost/ws
     ports: 
       - 8100:80
     networks:

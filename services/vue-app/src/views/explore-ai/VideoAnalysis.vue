@@ -95,7 +95,7 @@ const decreaseTopK = () => {
 let player: any
 
 onMounted(() => {
-  player = new JSMpeg.Player(import.meta.env.VITE_VIDEO_URI, {
+  player = new JSMpeg.Player(import.meta.env.VITE_NODE_VIDEO, {
     audio: false,
     canvas: videoCanvas.value,
     disableWebAssembly: true,

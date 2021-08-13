@@ -10,7 +10,6 @@ import numpy as np
 from typing_extensions import TypedDict
 from functools import partial
 from src import common, zutils
-from src import annotation
 from src.inference.video import models
 from src.inference.video.models import VideoModelArgs
 from zmq.asyncio import Context, Poller, Socket
@@ -25,6 +24,32 @@ class CapProps(TypedDict):
     frame_width: int
     frame_height: int
     fps: int
+
+
+def new_fps_iter():
+    prev = time.time()
+    yield 0.0  # First fps value
+    while True:
+        curr = time.time()
+        diff = curr - prev
+        fps = 1 / diff
+        prev = curr
+        yield fps
+
+
+def print_fps(img: np.ndarray, fps_iter):
+    fps = next(fps_iter)
+
+    cv2.putText(
+        img,
+        "FPS: {:.2f}".format(fps),
+        (30, 30),
+        fontFace=1,
+        fontScale=cv2.FONT_HERSHEY_PLAIN,
+        color=(0, 245, 0),
+        thickness=1,
+        lineType=cv2.LINE_AA,
+    )
 
 
 def start_stream(cap_props: CapProps, args):
@@ -78,15 +103,15 @@ async def start(
     reset_peer: Socket,
     args: argparse.Namespace,
 ):
-    reply_addr = f"tcp://*:{args.video_port}"
-    reply = ctx.socket(zmq.REP)
-    reply.bind(reply_addr)
-    logging.info(f"[VIDEO] (REP) Bind to '{reply_addr}'")
+    video_server_addr = f"tcp://*:{args.video_server_port}"
+    video_server = ctx.socket(zmq.REP)
+    video_server.bind(video_server_addr)
+    logging.info(f"[VIDEO] (REP) Bind to '{video_server_addr}'")
 
     poller = Poller()
     poller.register(reset_peer, zmq.POLLIN)
     poller.register(load_model_peer, zmq.POLLIN)
-    poller.register(reply, zmq.POLLIN)
+    poller.register(video_server, zmq.POLLIN)
 
     cap = cv2.VideoCapture(0)
     cap_props: CapProps = {
@@ -97,7 +122,7 @@ async def start(
 
     process = start_stream(cap_props, args)
 
-    fps_iter = annotation.fps_iter()
+    fps_iter = new_fps_iter()
     run_inference = None
     model_args: VideoModelArgs = {
         "top_k": 1,
@@ -122,8 +147,8 @@ async def start(
         if load_model_peer in items:
             run_inference = await receive_model(load_model_peer, model_args)
 
-        if reply in items:
-            await update_args(reply, model_args)
+        if video_server in items:
+            await update_args(video_server, model_args)
 
         frame: np.ndarray = cap.read()[1]
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -131,7 +156,7 @@ async def start(
         if run_inference is not None:
             run_inference(model_args, frame=frame)
 
-        annotation.print_fps(frame, fps_iter)
+        print_fps(frame, fps_iter)
 
         try:
             process.stdin.write(frame.tobytes())

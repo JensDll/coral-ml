@@ -2,13 +2,13 @@ import asyncio
 import pathlib
 import platform
 import re
-from typing_extensions import TypedDict
 import tflite_runtime.interpreter as tflite
 import numpy as np
 import src.repositories as repos
 import logging
 import traceback
-from zmq.asyncio import Socket
+
+from typing_extensions import TypedDict
 
 EDGETUP_LIB = {
     "Linux": "libedgetpu.so.1",

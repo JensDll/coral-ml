@@ -79,7 +79,11 @@ const recordLoaded = computed(() => {
 socketService.updateVideo(formData)
 
 watch(formData, formData => {
-  socketService.updateVideo(formData)
+  const settings: UpdateVideoRequest = {
+    topK: typeof formData.topK !== 'number' ? 0 : formData.topK,
+    threshold: typeof formData.threshold !== 'number' ? 0 : formData.threshold
+  }
+  socketService.updateVideo(settings)
 })
 
 const increaseTopK = () => {

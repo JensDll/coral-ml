@@ -26,15 +26,15 @@ async def start(
     reset_peer: zmq.Socket,
     args: argparse.Namespace,
 ):
-    reply_addr = f"tcp://*:{args.classify_port}"
-    reply = ctx.socket(zmq.REP)
-    reply.bind(reply_addr)
-    logging.info(f"[CLASSIFICATION] (REP) Bind to '{reply_addr}'")
+    classify_server_addr = f"tcp://*:{args.classify_server_port}"
+    classify_server = ctx.socket(zmq.REP)
+    classify_server.bind(classify_server_addr)
+    logging.info(f"[CLASSIFICATION] (REP) Bind to '{classify_server_addr}'")
 
     poller = Poller()
     poller.register(reset_peer, zmq.POLLIN)
-    poller.register(reply, zmq.POLLIN)
     poller.register(load_model_peer, zmq.POLLIN)
+    poller.register(classify_server, zmq.POLLIN)
 
     run_inference = None
     load_model_peer.send(b"")
@@ -54,11 +54,11 @@ async def start(
         if load_model_peer in items:
             run_inference = await load_model(load_model_peer)
 
-        if reply in items:
-            img_buffer, format = await reply.recv_multipart()
+        if classify_server in items:
+            img_buffer, format = await classify_server.recv_multipart()
             if run_inference == None:
                 zutils.send_normalized_json(
-                    reply, errors=["No model is loaded for this task"]
+                    classify_server, errors=["No model is loaded for this task"]
                 )
             else:
                 format = format.decode()
@@ -68,6 +68,6 @@ async def start(
                         img_buffer=img_buffer,
                         format=format,
                     )
-                    zutils.send_normalized_json(reply, data=results)
+                    zutils.send_normalized_json(classify_server, data=results)
                 except Exception as e:
-                    zutils.send_normalized_json(reply, errors=[str(e)])
+                    zutils.send_normalized_json(classify_server, errors=[str(e)])

@@ -1,24 +1,25 @@
-from zmq.asyncio import Context, Socket
 import asyncio
 import argparse
 import threading
 import signal
 import logging
 import src.zutils as zutils
-import src.endpoints as endpoints
 import time
 import os
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--manager-port", default=7000, type=int)
-parser.add_argument("--classify-port", default=7100, type=int)
-parser.add_argument("--video-port", default=7200, type=int)
-parser.add_argument("--loglevel", default="quiet", type=str)
+from zmq.asyncio import Context, Socket
+from src.servers import classification_server, model_manager_server, video_server
 
-parser.add_argument("--publish-uri", default="http://localhost:5060", type=str)
-parser.add_argument("--api-uri", default="http://localhost:5000/api", type=str)
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--loglevel", default="info", type=str)
+parser.add_argument("--publish-uri", default="http://node-video:5060", type=str)
+parser.add_argument("--api-uri", default="http://record-api/api", type=str)
 
 args = parser.parse_args()
+args.manager_server_port = 7000
+args.classify_server_port = 7100
+args.video_server_port = 7200
 
 log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
 
@@ -63,7 +64,7 @@ async def main():
     video_thread = threading.Thread(
         target=asyncio.run,
         args=[
-            endpoints.video.start(
+            video_server.start(
                 ctx,
                 load_model_peer=video_peer,
                 reset_peer=video_reset_peer,
@@ -77,7 +78,7 @@ async def main():
     classification_thread = threading.Thread(
         target=asyncio.run,
         args=[
-            endpoints.classification.start(
+            classification_server.start(
                 ctx, load_model_peer=img_peer, reset_peer=img_reset_peer, args=args
             )
         ],
@@ -90,7 +91,7 @@ async def main():
     await asyncio.gather(img_pipe.recv(), video_pipe.recv())
     logging.info("[MAIN] All Endpoints Ready")
     logging.info("[MAIN] Starting Model Manager")
-    await endpoints.model_manager.start(
+    await model_manager_server.start(
         ctx=ctx, handlers=handlers, reset_pipes=reset_pipes, args=args
     )
 

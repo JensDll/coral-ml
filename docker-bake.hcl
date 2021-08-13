@@ -21,8 +21,8 @@ group "default" {
 target "mariadb" {
     context = "services/mariadb"
     tags = [
-      "${REPOSITORY}:mariadb.latest",
-      notequal("", TAG) ? "${REPOSITORY}:mariadb.${TAG}" : ""
+      "${REPOSITORY}:mariadb_latest",
+      notequal("", TAG) ? "${REPOSITORY}:mariadb_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -33,8 +33,8 @@ target "mariadb" {
 target "record-api" {
     context = "services/record-api"
     tags = [
-      "${REPOSITORY}:record-api.latest",
-      notequal("", TAG) ? "${REPOSITORY}:record-api.${TAG}" : ""
+      "${REPOSITORY}:record-api_latest",
+      notequal("", TAG) ? "${REPOSITORY}:record-api_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -45,8 +45,8 @@ target "record-api" {
 target "node-api" {
     context = "services/node-api"
     tags = [
-      "${REPOSITORY}:node-api.latest",
-      notequal("", TAG) ? "${REPOSITORY}:node-api.${TAG}" : ""
+      "${REPOSITORY}:node-api_latest",
+      notequal("", TAG) ? "${REPOSITORY}:node-api_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -57,8 +57,8 @@ target "node-api" {
 target "node-video" {
     context = "services/node-video"
     tags = [
-      "${REPOSITORY}:node-video.latest",
-      notequal("", TAG) ? "${REPOSITORY}:node-video.${TAG}" : ""
+      "${REPOSITORY}:node-video_latest",
+      notequal("", TAG) ? "${REPOSITORY}:node-video_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -69,8 +69,8 @@ target "node-video" {
 target "vue-app" {
     context = "services/vue-app"
     tags = [
-      "${REPOSITORY}:vue-app.latest",
-      notequal("", TAG) ? "${REPOSITORY}:vue-app.${TAG}" : ""
+      "${REPOSITORY}:vue-app_latest",
+      notequal("", TAG) ? "${REPOSITORY}:vue-app_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -81,8 +81,8 @@ target "vue-app" {
 target "coral-app" {
     context = "services/coral-app"
     tags = [
-      "${REPOSITORY}:coral-app.latest",
-      notequal("", TAG) ? "${REPOSITORY}:coral-app.${TAG}" : ""
+      "${REPOSITORY}:coral-app_latest",
+      notequal("", TAG) ? "${REPOSITORY}:coral-app_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",
@@ -93,8 +93,8 @@ target "coral-app" {
 target "proxy" {
     context = "services/proxy"
     tags = [
-      "${REPOSITORY}:proxy.latest",
-      notequal("", TAG) ? "${REPOSITORY}:proxy.${TAG}" : ""
+      "${REPOSITORY}:proxy_latest",
+      notequal("", TAG) ? "${REPOSITORY}:proxy_${TAG}" : ""
     ]
     platforms = [
       "linux/amd64",

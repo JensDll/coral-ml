@@ -29,7 +29,5 @@ COPY /scripts ./scripts
 
 EXPOSE 7000 7100 7200
 
-# For development:
-# python .\main.py --publish-uri http://localhost:5060 --api-uri http://localhost:5000/api --loglevel quiet
 ENTRYPOINT [ "python3", "main.py" ]
 

@@ -32,8 +32,8 @@ const buildConfig = defineConfig({
     terser(),
     replace({
       'process.env.HOST': JSON.stringify('node-video'),
-      'process.env.STREAM_IN_PORT': JSON.stringify('80'),
-      'process.env.STREAM_OUT_PORT': JSON.stringify('8080'),
+      'process.env.STREAM_IN_PORT': JSON.stringify('8080'),
+      'process.env.STREAM_OUT_PORT': JSON.stringify('80'),
       'process.env.CORAL_APP': JSON.stringify('coral-app'),
       preventAssignment: true
     })

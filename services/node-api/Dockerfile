@@ -8,5 +8,5 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --only=prod
 COPY --from=build /app/dist ./
-EXPOSE 5050
+EXPOSE 80
 ENTRYPOINT [ "node", "bundle.min.js" ]

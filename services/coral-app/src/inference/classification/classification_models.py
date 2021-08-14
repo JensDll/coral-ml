@@ -34,9 +34,9 @@ def invoke_interpreter(
 
     # Apply quantization if necessary
     if (
-        not abs(input_scale * std - 1) < 1e-5
+        model_name.lower().startswith("efficientnet")
+        and not abs(input_scale * std - 1) < 1e-5
         and not abs(mean - input_zero_point) < 1e-5
-        and model_name.lower().startswith("efficientnet")
     ):
         # q = (r - mean) / (std * S) + Z
         img = (img - mean) / (std * input_scale) + input_zero_point

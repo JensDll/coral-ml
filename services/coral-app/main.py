@@ -1,3 +1,6 @@
+# For development:
+# python .\main.py --publish-uri http://localhost:5060 --api-uri http://localhost:5000/api --loglevel quiet
+
 import asyncio
 import argparse
 import threading
@@ -15,7 +18,7 @@ from src.inference.video import video_server
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--loglevel", default="info", type=str)
-parser.add_argument("--publish-uri", default="http://node-video:5060", type=str)
+parser.add_argument("--publish-uri", default="http://node-video:8080", type=str)
 parser.add_argument("--api-uri", default="http://record-api/api", type=str)
 
 args = parser.parse_args()

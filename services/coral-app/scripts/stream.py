@@ -1,7 +1,7 @@
 import ffmpeg
 
 
-def start_stream(frame_width, frame_height, pix_fmt, fps, args):
+def start_stream(frame_width, frame_height, pix_fmt, fps, config):
     process = (
         ffmpeg.input(
             "pipe:",
@@ -10,14 +10,14 @@ def start_stream(frame_width, frame_height, pix_fmt, fps, args):
             s=f"{frame_width}x{frame_height}",
         )
         .output(
-            args.publish_uri,
+            config.publish_uri,
             vcodec="mpeg1video",
             framerate=fps,
             s=f"640x480",
             format="mpegts",
             video_bitrate="800k",
             segment_time="6",
-            loglevel=args.loglevel,
+            loglevel=config.loglevel,
         )
         .run_async(pipe_stdin=True)
     )

@@ -1,6 +1,6 @@
 FROM debian:buster
 
-# add Google repository and common packages
+# Add Google repository and common packages
 RUN apt-get update && apt-get install -y curl gnupg udev wget unzip && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
     tee /etc/apt/sources.list.d/coral-edgetpu.list && \
@@ -11,17 +11,17 @@ RUN apt-get update && apt-get install -y curl gnupg udev wget unzip && \
 
 WORKDIR /app
 
-# copy entrypoint and requirements
+# Copy entrypoint and requirements
 COPY requirements.txt main.py ./
 
-# install python, the tflite runtime and other dependencies
+# Install python, the tflite runtime and other dependencies
 RUN apt-get install -y python3 python3-pip python3-tflite-runtime \
     # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
     libgl1-mesa-glx ffmpeg
 
-# update pip
+# Update pip
 RUN python3 -m pip install -U pip
-# install requirements
+# Install requirements
 RUN python3 -m pip install -r requirements.txt && apt-get clean
 
 COPY /src ./src
@@ -29,5 +29,7 @@ COPY /scripts ./scripts
 
 EXPOSE 7000 7100 7200
 
+# For development:
+# python .\main.py --publish-uri http://localhost:5060 --api-uri http://localhost:5000/api --loglevel quiet
 ENTRYPOINT [ "python3", "main.py" ]
 

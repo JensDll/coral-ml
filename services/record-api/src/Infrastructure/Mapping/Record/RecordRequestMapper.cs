@@ -29,7 +29,7 @@ namespace Infrastructure.Mapping.Record
             {
                 zipEntries.Add(new FormFileZipEntry
                 {
-                    EntryName = "label.txt",
+                    EntryName = "label",
                     File = label
                 });
             }

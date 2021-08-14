@@ -26,7 +26,7 @@ def extract_zip(file_path: pathlib.Path):
     model_path = pathlib.Path(stem) / "model.tflite"
     model_path_abs = model_path.resolve()
     logging.info(f"[RECORD REPO] Model Path ({model_path_abs})")
-    label_path = pathlib.Path(stem) / "label.txt"
+    label_path = pathlib.Path(stem) / "label"
     label_path_abs = label_path.resolve()
     logging.info(f"[RECORD REPO] Label Path ({label_path_abs})")
 

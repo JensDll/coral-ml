@@ -23,25 +23,9 @@
       Explore AI
     </span>
   </div>
-  <header
-    class="
-      header
-      flex
-      justify-between
-      border-b
-      py-6
-      pr-6
-      sticky
-      top-0
-      bg-white
-      z-10
-      lg:pr-0 lg:ml-12
-    "
-  >
-    <div>
-      <v-link href="https://coral.ai/models/">Coral AI </v-link>
-    </div>
-    <div>
+  <header class="header pr-6 sticky top-0 bg-white z-10 lg:pr-0 lg:pl-12">
+    <div class="flex justify-between border-b py-6">
+      <v-link href="https://coral.ai/models/">Coral AI</v-link>
       <v-link href="https://github.com/JensDll/coral-ml">GitHub</v-link>
     </div>
   </header>

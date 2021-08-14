@@ -1,4 +1,4 @@
-import { Listener, MessageEnvelope } from './types'
+import { Listener, MessageEnvelope } from '../types'
 import zmq from 'zeromq'
 
 type Response = {

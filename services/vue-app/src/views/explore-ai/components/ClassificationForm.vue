@@ -1,5 +1,5 @@
 <template>
-  <form class="lg:w-1/2" @submit.prevent="handleSubmit()">
+  <form class="lg:w-1/2" @submit.prevent="handleSubmit()" v-bind="$attrs">
     <form-file-upload
       label="Image File"
       v-model="form.images.$value"
@@ -18,14 +18,25 @@
       </v-button>
     </div>
   </form>
+  <form-top-k-controller
+    class="mt-12 sticky top-24 z-10"
+    v-model="formData.topK"
+  />
 </template>
 
 <script setup lang="ts">
-import { useValidation } from 'vue3-form-validation'
-import type { Field } from 'vue3-form-validation'
+import { useValidation, Field } from 'vue3-form-validation'
 import VButton from '~/components/base/BaseButton.vue'
+import FormTopKController from '~/components/form/FormTopKController.vue'
 import FormFileUpload from '~/components/form/FormFileUpload.vue'
 import { minMax } from '~/utils'
+import { reactive, watch } from 'vue'
+import {
+  UpdateModelRequest,
+  socketService,
+  MessageEnvelope,
+  ClassificationResult
+} from '~/api'
 
 const props = defineProps({
   submitting: {
@@ -35,6 +46,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (event: 'submit', image: File): void
+  (event: 'updateSettings', result: ClassificationResult): void
 }>()
 
 type Data = {
@@ -45,6 +57,24 @@ const { form, formFields, validateFields } = useValidation<Data>({
   images: {
     $value: [],
     $rules: [minMax(1, 1)('Please select an image')]
+  }
+})
+
+const formData = reactive<UpdateModelRequest>({
+  topK: 5,
+  threshold: 0.1
+})
+
+socketService.updateclassify(formData)
+
+watch(formData, async formData => {
+  const settings: UpdateModelRequest = {
+    topK: typeof formData.topK !== 'number' ? 0 : formData.topK,
+    threshold: typeof formData.threshold !== 'number' ? 0 : formData.threshold
+  }
+  const result = await socketService.updateclassify(settings)
+  if (result.success) {
+    emit('updateSettings', result)
   }
 })
 

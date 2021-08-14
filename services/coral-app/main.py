@@ -8,7 +8,9 @@ import time
 import os
 
 from zmq.asyncio import Context, Socket
-from src.servers import classification_server, model_manager_server, video_server
+from src import model_manager_server
+from src.inference.classification import classification_server
+from src.inference.video import video_server
 
 parser = argparse.ArgumentParser()
 
@@ -17,9 +19,13 @@ parser.add_argument("--publish-uri", default="http://node-video:5060", type=str)
 parser.add_argument("--api-uri", default="http://record-api/api", type=str)
 
 args = parser.parse_args()
+
 args.manager_server_port = 7000
-args.classify_server_port = 7100
-args.video_server_port = 7200
+
+args.update_video_settings_port = 7100
+
+args.classify_server_port = 7300
+args.update_clssify_settings_port = 7301
 
 log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
 
@@ -48,19 +54,22 @@ def load_model(pipe: Socket):
 
 
 async def main():
-    handlers = {}
+    load_model_handlers = {}
     ctx = Context()
 
+    # Register pipes for inner thread communication with the classifcation server
     img_pipe, img_peer = zutils.pipe(ctx)
     img_reset_pipe, img_reset_peer = zutils.pipe(ctx)
-    handlers["Image Classification"] = load_model(img_pipe)
+    load_model_handlers["Image Classification"] = load_model(img_pipe)
 
+    # Register pipes for inner thread communication with the video server
     video_pipe, video_peer = zutils.pipe(ctx)
     video_reset_pipe, video_reset_peer = zutils.pipe(ctx)
-    handlers["Object Detection"] = load_model(video_pipe)
+    load_model_handlers["Object Detection"] = load_model(video_pipe)
 
     reset_pipes = [img_reset_pipe, video_reset_pipe]
 
+    # Start the video server
     video_thread = threading.Thread(
         target=asyncio.run,
         args=[
@@ -68,18 +77,22 @@ async def main():
                 ctx,
                 load_model_peer=video_peer,
                 reset_peer=video_reset_peer,
-                args=args,
+                config=args,
             )
         ],
         daemon=True,
     )
     video_thread.start()
 
+    # Start the classifcation server
     classification_thread = threading.Thread(
         target=asyncio.run,
         args=[
             classification_server.start(
-                ctx, load_model_peer=img_peer, reset_peer=img_reset_peer, args=args
+                ctx,
+                load_model_peer=img_peer,
+                reset_peer=img_reset_peer,
+                config=args,
             )
         ],
         daemon=True,
@@ -88,11 +101,18 @@ async def main():
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+    # Wait for the ready signal from the servers
     await asyncio.gather(img_pipe.recv(), video_pipe.recv())
-    logging.info("[MAIN] All Endpoints Ready")
+
+    logging.info("[MAIN] All Servers Ready")
     logging.info("[MAIN] Starting Model Manager")
+
+    # Start the model manager server
     await model_manager_server.start(
-        ctx=ctx, handlers=handlers, reset_pipes=reset_pipes, args=args
+        ctx=ctx,
+        load_model_handlers=load_model_handlers,
+        reset_pipes=reset_pipes,
+        config=args,
     )
 
 

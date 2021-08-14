@@ -6,13 +6,15 @@ import replace from '@rollup/plugin-replace'
 const watchConfig = defineConfig({
   input: 'src/main.ts',
   output: {
-    file: 'dist/bundle.js',
+    file: 'dist/watch.js',
     format: 'esm'
   },
   plugins: [
     typescript(),
     replace({
       'process.env.HOST': JSON.stringify('localhost'),
+      'process.env.STREAM_IN_PORT': JSON.stringify('5060'),
+      'process.env.STREAM_OUT_PORT': JSON.stringify('8080'),
       'process.env.CORAL_APP': JSON.stringify('localhost'),
       preventAssignment: true
     })
@@ -30,6 +32,8 @@ const buildConfig = defineConfig({
     terser(),
     replace({
       'process.env.HOST': JSON.stringify('node-video'),
+      'process.env.STREAM_IN_PORT': JSON.stringify('80'),
+      'process.env.STREAM_OUT_PORT': JSON.stringify('8080'),
       'process.env.CORAL_APP': JSON.stringify('coral-app'),
       preventAssignment: true
     })

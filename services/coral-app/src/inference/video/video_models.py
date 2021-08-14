@@ -8,7 +8,14 @@ from src.inference.video.bbox import BBox
 from src.inference.video.common import append_detections_to_frame, Detection
 
 
-class VideoModelArgs(TypedDict):
+def invoke_interpreter(interpreter: tflite.Interpreter, data):
+    input_index = common.get_input_index(interpreter, 0)
+    data = np.expand_dims(data, axis=0)
+    interpreter.set_tensor(input_index, data)
+    interpreter.invoke()
+
+
+class ModelArgs(TypedDict):
     labels: dict
     top_k: int
     score_threshold: int
@@ -22,12 +29,12 @@ def make_detection(scale, class_id, score, box) -> Detection:
 
 
 def ssd_mobilenet_v1_coco_quant_postprocess_edgetpu(
-    interpreter: tflite.Interpreter, model_args: VideoModelArgs, frame: np.ndarray
+    interpreter: tflite.Interpreter, args: ModelArgs, frame: np.ndarray
 ):
-    input_size = common.get_input_size(interpreter)
+    input_size = common.get_input_size(interpreter, 0)
     resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
 
-    common.invoke_interpreter(interpreter, resized)
+    invoke_interpreter(interpreter, resized)
 
     boxes = common.get_output_tensor(interpreter, 0)[0]
     class_ids = common.get_output_tensor(interpreter, 1)[0]
@@ -39,30 +46,30 @@ def ssd_mobilenet_v1_coco_quant_postprocess_edgetpu(
             scale=input_size, class_id=class_ids[i], score=scores[i], box=boxes[i]
         )
         for i in range(count)
-        if scores[i] >= model_args["score_threshold"]
-    ][: model_args["top_k"]]
+        if scores[i] >= args["score_threshold"]
+    ][: args["top_k"]]
 
     append_detections_to_frame(
         frame=frame,
         input_size=input_size,
         detections=detections,
-        labels=model_args["labels"],
+        labels=args["labels"],
     )
 
 
 def ssd_mobilenet_v2_coco_quant_postprocess_edgetpu(
-    interpreter: tflite.Interpreter, model_args: VideoModelArgs, frame: np.ndarray
+    interpreter: tflite.Interpreter, args: ModelArgs, frame: np.ndarray
 ):
-    ssd_mobilenet_v1_coco_quant_postprocess_edgetpu(interpreter, model_args, frame)
+    ssd_mobilenet_v1_coco_quant_postprocess_edgetpu(interpreter, args, frame)
 
 
 def tf2_ssd_mobilenet_v1_fpn_640x640_coco17_ptq_edgetpu(
-    interpreter: tflite.Interpreter, model_args: VideoModelArgs, frame: np.ndarray
+    interpreter: tflite.Interpreter, args: ModelArgs, frame: np.ndarray
 ):
-    input_size = common.get_input_size(interpreter)
+    input_size = common.get_input_size(interpreter, 0)
     resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
 
-    common.invoke_interpreter(interpreter, resized)
+    invoke_interpreter(interpreter, resized)
 
     scores = common.get_output_tensor(interpreter, 0)[0]
     boxes = common.get_output_tensor(interpreter, 1)[0]
@@ -74,24 +81,24 @@ def tf2_ssd_mobilenet_v1_fpn_640x640_coco17_ptq_edgetpu(
             scale=input_size, class_id=class_ids[i], score=scores[i], box=boxes[i]
         )
         for i in range(count)
-        if scores[i] >= model_args["score_threshold"]
-    ][: model_args["top_k"]]
+        if scores[i] >= args["score_threshold"]
+    ][: args["top_k"]]
 
     append_detections_to_frame(
         frame=frame,
         input_size=input_size,
         detections=detections,
-        labels=model_args["labels"],
+        labels=args["labels"],
     )
 
 
 def ssd_mobilenet_v2_face_quant_postprocess_edgetpu(
-    interpreter: tflite.Interpreter, model_args: VideoModelArgs, frame: np.ndarray
+    interpreter: tflite.Interpreter, args: ModelArgs, frame: np.ndarray
 ):
-    input_size = common.get_input_size(interpreter)
+    input_size = common.get_input_size(interpreter, 0)
     resized = cv2.resize(frame, input_size, interpolation=cv2.INTER_AREA)
 
-    common.invoke_interpreter(interpreter, resized)
+    invoke_interpreter(interpreter, resized)
 
     boxes = common.get_output_tensor(interpreter, 0)[0]
     class_ids = common.get_output_tensor(interpreter, 1)[0]
@@ -103,7 +110,7 @@ def ssd_mobilenet_v2_face_quant_postprocess_edgetpu(
             scale=input_size, class_id=class_ids[i], score=scores[i], box=boxes[i]
         )
         for i in range(count)
-        if scores[i] >= model_args["score_threshold"]
+        if scores[i] >= args["score_threshold"]
     ]
 
     append_detections_to_frame(

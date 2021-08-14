@@ -18,7 +18,12 @@
   >
     {{ recordStore.loadedModelFileName }}
   </p>
-  <classification-form class="mt-10" @submit="classify" :submitting="loading" />
+  <classification-form
+    class="mt-10"
+    @submit="classify"
+    @update-settings="classificationResult => (result = classificationResult)"
+    :submitting="loading"
+  />
   <div v-if="result" class="mt-16">
     <pre v-if="!result.success">{{ result.errors }}</pre>
     <template v-if="result.success" class="">

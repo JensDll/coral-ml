@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon dist/bundle.js",
+    "dev": "nodemon dist/watch.js",
     "watch": "rollup --config rollup.config.js --watch",
     "build": "rollup --config rollup.config.js --build"
   },

@@ -1,12 +1,21 @@
 import { createServer } from 'http'
 import zmq from 'zeromq'
 import { Server } from 'socket.io'
-import { loadModel, classify, updateVideo } from './endpoints'
+import {
+  loadModel,
+  classify,
+  updateVideoSettings,
+  updateClassifySettings
+} from './endpoints'
 
 const MODL_MANAGER_PORT = 7000
-const CLASSIFY_PORT = 7100
-const VIDEO_PORT = 7200
-const LISTEN = 5050
+
+const UPDATE_VIDEO_ARGS_PORT = 7100
+
+const CLASSIFY_PORT = 7300
+const UPDATE_CLASSIFY_ARGS_PORT = 7301
+
+const LISTEN = +process.env.LISTEN
 const HOST = process.env.HOST
 
 const httpServer = createServer()
@@ -37,9 +46,17 @@ io.on('connection', socket => {
   classifyClient.connect(`tcp://${process.env.CORAL_APP}:${CLASSIFY_PORT}`)
   socket.on('classify', classify(classifyClient))
 
-  const videoClient = new zmq.Request()
-  videoClient.connect(`tcp://${process.env.CORAL_APP}:${VIDEO_PORT}`)
-  socket.on('update video', updateVideo(videoClient))
+  const updateVideo = new zmq.Request()
+  updateVideo.connect(
+    `tcp://${process.env.CORAL_APP}:${UPDATE_VIDEO_ARGS_PORT}`
+  )
+  socket.on('update video', updateVideoSettings(updateVideo))
+
+  const updateClassify = new zmq.Request()
+  updateClassify.connect(
+    `tcp://${process.env.CORAL_APP}:${UPDATE_CLASSIFY_ARGS_PORT}`
+  )
+  socket.on('update classify', updateClassifySettings(updateClassify))
 
   socket.on('disconnect', () => {
     classifyClient.close()

@@ -1,41 +1,41 @@
-import { createServer } from "http";
-import WebSocket, { WebSocketServer } from "ws";
+import { createServer } from 'http'
+import WebSocket, { WebSocketServer } from 'ws'
 
-const SOCKET_PORT = 8080;
-const LISTEN = 5060;
-const HOST = process.env.HOST;
+const HOST = process.env.HOST
+const STREAM_OUT_PORT = +process.env.STREAM_OUT_PORT
+const STREAM_IN_PORT = +process.env.STREAM_IN_PORT
 
 var wss = new WebSocketServer({
-  port: SOCKET_PORT,
+  port: STREAM_OUT_PORT,
   host: HOST,
-  perMessageDeflate: false,
-});
+  perMessageDeflate: false
+})
 
-wss.on("connection", (ws, req) => {
-  console.log(`Client connected ${req.socket.remoteAddress}`);
-  ws.on("close", () => {
-    console.log(`Client disconnected ${req.socket.remoteAddress}`);
-  });
-});
+wss.on('connection', (ws, req) => {
+  console.log(`Client connected ${req.socket.remoteAddress}`)
+  ws.on('close', () => {
+    console.log(`Client disconnected ${req.socket.remoteAddress}`)
+  })
+})
 
 function broadcastData(data: any) {
-  wss.clients.forEach((client) => {
+  wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
+      client.send(data)
     }
-  });
+  })
 }
 
 const server = createServer((request, response) => {
-  request.on("data", (data) => {
-    broadcastData(data);
-  });
-});
+  request.on('data', data => {
+    broadcastData(data)
+  })
+})
 
-server.headersTimeout = 0;
-server.listen(LISTEN, HOST);
+server.headersTimeout = 0
+server.listen(STREAM_IN_PORT, HOST)
 
 console.log(
-  `Listening for incomming MPEG-TS Stream on http://${HOST}:${LISTEN}`
-);
-console.log(`Awaiting WebSocket connections on ws://${HOST}:${SOCKET_PORT}`);
+  `Listening for incoming MPEG-TS Stream on http://${HOST}:${STREAM_IN_PORT}`
+)
+console.log(`Awaiting WebSocket connections on ws://${HOST}:${STREAM_OUT_PORT}`)

@@ -8,7 +8,7 @@ export type MessageEnvelope<T = []> = {
   data: T
 }
 
-type ClassificationResult = MessageEnvelope<{
+export type ClassificationResult = MessageEnvelope<{
   probabilities: number[]
   classes: string[]
   inferenceTime: number
@@ -16,7 +16,7 @@ type ClassificationResult = MessageEnvelope<{
 
 type LoadModelResult = MessageEnvelope
 
-export type UpdateVideoRequest = {
+export type UpdateModelRequest = {
   topK: number
   threshold: number
 }
@@ -66,11 +66,23 @@ export class SocketService {
     })
   }
 
-  async updateVideo(request: UpdateVideoRequest) {
+  async updateVideo(request: UpdateModelRequest) {
     return new Promise<void>((resolve, reject) => {
       this.socket.emit('update video', request, () => {
         resolve()
       })
+    })
+  }
+
+  async updateclassify(request: UpdateModelRequest) {
+    return new Promise<ClassificationResult>((resolve, reject) => {
+      this.socket.emit(
+        'update classify',
+        request,
+        (response: ClassificationResult) => {
+          resolve(response)
+        }
+      )
     })
   }
 }

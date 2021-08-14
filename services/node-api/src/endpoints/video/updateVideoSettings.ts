@@ -1,17 +1,16 @@
 import zmq from 'zeromq'
-import { Listener } from './types'
+import { Listener } from '../types'
 
 type RequestData = {
   topK: number
   threshold: number
 }
 
-let queued: RequestData | null = null
-let numSend = 0
+export const updateVideoSettings = (client: zmq.Request) => {
+  let queued: RequestData | null = null
+  let numSend = 0
 
-export const updateVideo =
-  (client: zmq.Request) =>
-  async (data: RequestData, callback: Listener<void>) => {
+  return async (data: RequestData, callback: Listener<void>) => {
     try {
       do {
         if (numSend === 1) {
@@ -29,8 +28,9 @@ export const updateVideo =
       } while (queued)
     } catch (e) {
       queued = data
-      console.log(`Error updating video parameters ${e}`)
+      console.log(`Error updating model parameters ${e}`)
     } finally {
       callback()
     }
   }
+}

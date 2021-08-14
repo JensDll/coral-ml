@@ -6,13 +6,14 @@ import replace from '@rollup/plugin-replace'
 const watchConfig = defineConfig({
   input: 'src/main.ts',
   output: {
-    file: 'dist/bundle.js',
+    file: 'dist/watch.js',
     format: 'esm'
   },
   plugins: [
     typescript(),
     replace({
       'process.env.HOST': JSON.stringify('localhost'),
+      'process.env.LISTEN': JSON.stringify('5050'),
       'process.env.CORAL_APP': JSON.stringify('localhost'),
       preventAssignment: true
     })
@@ -30,6 +31,7 @@ const buildConfig = defineConfig({
     terser(),
     replace({
       'process.env.HOST': JSON.stringify('node-api'),
+      'process.env.LISTEN': JSON.stringify('80'),
       'process.env.CORAL_APP': JSON.stringify('coral-app'),
       preventAssignment: true
     })

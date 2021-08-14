@@ -1,5 +1,9 @@
 export { socketService } from './services/socketService'
-export type { UpdateVideoRequest } from './services/socketService'
+export type {
+  UpdateModelRequest,
+  MessageEnvelope,
+  ClassificationResult
+} from './services/socketService'
 
 export { recordTypeRepository } from './repositories/recordTypeRepository'
 export type { ApiRecordType } from './repositories/recordTypeRepository'

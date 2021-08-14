@@ -7,6 +7,7 @@ COPY . ./
 RUN npm run build -- --mode ${mode}
 # final image
 FROM nginx:1.21
+ENV PROXY_URI=proxy
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx/replace-vite-env.sh /docker-entrypoint.d
 RUN chmod +x /docker-entrypoint.d/replace-vite-env.sh

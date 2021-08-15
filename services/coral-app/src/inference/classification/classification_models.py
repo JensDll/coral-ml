@@ -14,6 +14,7 @@ class ModelArgs(TypedDict):
     model_name: str
     labels: dict
     top_k: int
+    resized: np.ndarray
     score_threshold: int
 
 
@@ -68,29 +69,34 @@ def evaluate(y_scores: np.ndarray, labels: dict, top_k: int) -> Tuple[list, list
     if top_k == 0:
         return [], []
     y_scores = y_scores.flatten()
-    # indices of top k highest scores (unsorted)
+    # Indices of top k highest scores (unsorted)
     ind: np.ndarray = np.argpartition(y_scores, -top_k)[-top_k:]
-    # top k highest probalities (unsorted)
+    # Top k highest probalities (unsorted)
     probs: np.ndarray = np.take_along_axis(y_scores, ind, axis=0)
-    # indices of top k highest scores (sorted)
+    # Indices of top k highest scores (sorted)
     ind: np.ndarray = np.take_along_axis(ind, np.argsort(probs), axis=0)
-    # top k highest probalities (sorted)
+    # Top k highest probalities (sorted)
     probs: np.ndarray = np.take_along_axis(y_scores, ind, axis=0) * 100
-    # class names of top k highest probalities
+    # Class names of top k highest probalities
     classes = [labels[i] for i in ind]
-    # flatten probs and reverse order (highest first)
+    # Reverse order (highest first)
     probs = probs[::-1]
     classes = classes[::-1]
     return probs.tolist(), classes
 
 
 def generic_model(interpreter: tflite.Interpreter, args: ModelArgs):
-    img = imageio.imread(args["img_buffer"], format=args["format"])
-    input_size = common.get_input_size(interpreter, 0)
-    resized = cv2.resize(img, input_size, interpolation=cv2.INTER_AREA)
-    resized = np.expand_dims(resized, axis=0)
+    # Check if an image is already cached
+    if not args["resized"]:
+        img = imageio.imread(args["img_buffer"], format=args["format"])
+        input_size = common.get_input_size(interpreter, 0)
+        resized = cv2.resize(img, input_size, interpolation=cv2.INTER_AREA)
+        resized = np.expand_dims(resized, axis=0)
+        args["resized"] = resized
+
     output_data, inference_time = invoke_interpreter(
         interpreter, args["model_name"], resized
     )
     probs, classes = evaluate(output_data, args["labels"], args["top_k"])
+
     return {"probabilities": probs, "classes": classes, "inferenceTime": inference_time}

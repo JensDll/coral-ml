@@ -118,4 +118,5 @@ async def start(
             img_buffer, format = await main_socket.recv_multipart()
             args["img_buffer"] = img_buffer
             args["format"] = format.decode()
+            args["resized"] = None
             run_classfication(main_socket, args=args, run_inference=run_inference)

@@ -87,7 +87,7 @@ def evaluate(y_scores: np.ndarray, labels: dict, top_k: int) -> Tuple[list, list
 
 def generic_model(interpreter: tflite.Interpreter, args: ModelArgs):
     # Check if an image is already cached
-    if not args["resized"]:
+    if type(args["resized"]) is not np.ndarray:
         img = imageio.imread(args["img_buffer"], format=args["format"])
         input_size = common.get_input_size(interpreter, 0)
         resized = cv2.resize(img, input_size, interpolation=cv2.INTER_AREA)
@@ -97,7 +97,7 @@ def generic_model(interpreter: tflite.Interpreter, args: ModelArgs):
     output_data, inference_time = invoke_interpreter(
         interpreter,
         model_name=args["model_name"],
-        img=resized,
+        img=args["resized"],
     )
     probs, classes = evaluate(output_data, args["labels"], args["top_k"])
 

@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("--loglevel", default="info", type=str)
 parser.add_argument("--publish-uri", default="http://node-video:8080", type=str)
-parser.add_argument("--api-uri", default="http://record-api/api", type=str)
+parser.add_argument("--api-uri", default="http://proxy/record-api", type=str)
 
 args = parser.parse_args()
 
@@ -49,9 +49,9 @@ logging.basicConfig(
 
 
 def load_model(pipe: Socket):
-    async def impl(**kwargs):
+    def impl(**kwargs):
         pipe.send_json(kwargs)
-        return await pipe.recv_json()
+        return pipe.recv_json()
 
     return impl
 

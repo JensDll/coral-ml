@@ -6,7 +6,14 @@
     <div class="flex items-center">
       <plus-circle-icon
         v-long-press="increaseTopK"
-        class="w-8 h-8 text-blue-500 cursor-pointer hover:text-blue-700"
+        class="
+          w-8
+          h-8
+          text-blue-500
+          cursor-pointer
+          hover:text-blue-700
+          fill-white
+        "
         @mousedown="increaseTopK()"
         @touchstart.prevent="increaseTopK()"
       />
@@ -18,7 +25,15 @@
         class="input-number-reset w-16 px-2 py-1 mx-2"
       />
       <minus-circle-icon
-        class="w-8 h-8 text-red-500 cursor-pointer hover:text-red-700"
+        class="
+          w-8
+          h-8
+          text-red-500
+          cursor-pointer
+          hover:text-red-700
+          test
+          fill-white
+        "
         v-long-press="decreaseTopK"
         @mousedown="decreaseTopK()"
         @touchstart.prevent="decreaseTopK()"

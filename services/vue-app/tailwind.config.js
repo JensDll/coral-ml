@@ -10,7 +10,10 @@ module.exports = {
     extend: {
       fontFamily: {
         body: ["'Montserrat', sans-serif"]
-      }
+      },
+      fill: theme => ({
+        white: theme('colors.white')
+      })
     }
   },
   variants: {

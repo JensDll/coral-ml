@@ -95,7 +95,9 @@ def generic_model(interpreter: tflite.Interpreter, args: ModelArgs):
         args["resized"] = resized
 
     output_data, inference_time = invoke_interpreter(
-        interpreter, args["model_name"], resized
+        interpreter,
+        model_name=args["model_name"],
+        img=resized,
     )
     probs, classes = evaluate(output_data, args["labels"], args["top_k"])
 

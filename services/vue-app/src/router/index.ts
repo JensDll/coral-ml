@@ -5,18 +5,19 @@ import {
   RouteRecordRaw,
   RouterView
 } from 'vue-router'
+import { recordRepository } from '~/api'
+
 import LandingPage from '../views/LandingPage.vue'
 import MainPage from '../views/MainPage.vue'
 import HomePage from '../views/HomePage.vue'
 
-import RecordUpload from '~/views/explore-ai/record/UploadPage.vue'
-import RecordOverview from '~/views/explore-ai/record/OverviewPage.vue'
+import RecordUploadPage from '~/views/record/UploadPage.vue'
+import RecordOverviewPage from '~/views/record/OverviewPage.vue'
 
-import ImageClassification from '~/views/explore-ai/ImageClassification.vue'
-import VideoAnalysis from '~/views/explore-ai/VideoAnalysis.vue'
+import ImageClassificationPage from '~/views/classification/ImageClassificationPage.vue'
+import VideoAnalysisPage from '~/views/video/VideoAnalysisPage.vue'
 
-import RecordMain from '../views/explore-ai/record/MainPage.vue'
-import { recordRepository } from '~/api'
+import RecordMain from '../views/record/MainPage.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -45,24 +46,24 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'upload/:recordTypeId',
             name: 'record-upload',
-            component: RecordUpload
+            component: RecordUploadPage
           },
           {
             path: 'overview/:recordTypeId',
             name: 'record-overview',
-            component: RecordOverview
+            component: RecordOverviewPage
           }
         ]
       },
       {
         path: 'image-classification',
         name: 'image-classification',
-        component: ImageClassification
+        component: ImageClassificationPage
       },
       {
         path: 'video-analysis',
         name: 'video-analysis',
-        component: VideoAnalysis
+        component: VideoAnalysisPage
       }
     ]
   }

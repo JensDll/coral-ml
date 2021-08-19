@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { computed } from 'vue'
 import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/vue/outline'
 
 const props = defineProps({

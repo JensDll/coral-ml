@@ -26,11 +26,17 @@ import TheMain from '~/components/layout/TheMain.vue'
 
 @screen lg {
   .grid-container {
-    row-gap: 4rem;
+    row-gap: 3rem;
     grid-template-columns: 16rem 1fr;
     grid-template-areas:
       'logo header'
       'nav main';
+  }
+}
+
+@screen xl {
+  .grid-container {
+    row-gap: 4rem;
   }
 }
 </style>

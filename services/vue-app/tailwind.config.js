@@ -5,7 +5,8 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      ...require('tailwindcss/colors')
+      ...require('tailwindcss/colors'),
+      'white-90': 'rgba(255, 255, 255, 0.9)'
     },
     extend: {
       fontFamily: {

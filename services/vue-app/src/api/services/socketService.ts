@@ -74,7 +74,7 @@ export class SocketService {
     })
   }
 
-  async updateclassify(request: UpdateModelRequest) {
+  async updateClassify(request: UpdateModelRequest) {
     return new Promise<ClassificationResult>((resolve, reject) => {
       this.socket.emit(
         'update classify',

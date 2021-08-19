@@ -6,10 +6,12 @@
       duration-200
     "
     :class="[
-      { 'opacity-40 pointer-events-none': disabled },
+      { 'opacity-40 cursor-not-allowed': disabled },
+      { 'opacity-40 cursor-wait': loading },
       reverse ? `reverse-${type}` : type
     ]"
     :type="htmlType"
+    @click="onClick"
   >
     <slot></slot>
   </button>
@@ -20,6 +22,7 @@ import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
   name: 'vbutton',
+  emits: ['click'],
   props: {
     loading: {
       type: Boolean
@@ -37,6 +40,13 @@ export default defineComponent({
     },
     reverse: {
       type: Boolean
+    }
+  },
+  methods: {
+    onClick() {
+      if (!this.disabled || !this.loading) {
+        this.$emit('click')
+      }
     }
   }
 })

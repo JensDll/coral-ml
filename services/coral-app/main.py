@@ -27,8 +27,8 @@ args.manager_server_port = 7000
 
 args.update_video_settings_port = 7100
 
-args.classify_server_port = 7300
-args.update_clssify_settings_port = 7301
+args.classify_server_port = 7200
+args.update_clssify_settings_port = 7201
 
 log_id = time.strftime("%Y_%m_%d_%H_%M_%S")
 

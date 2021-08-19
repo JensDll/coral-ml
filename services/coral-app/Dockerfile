@@ -27,7 +27,5 @@ RUN python3 -m pip install -r requirements.txt && apt-get clean
 COPY /src ./src
 COPY /scripts ./scripts
 
-EXPOSE 7000 7100 7200
-
 ENTRYPOINT [ "python3", "main.py" ]
 

@@ -6,7 +6,8 @@
     Learn more about available Models on the
     <base-link href="https://coral.ai/models/">Coral AI Website</base-link>.
   </p>
-  <base-card-grid class="gap-12 items-start">
+  <div v-if="loading">Loading ...</div>
+  <base-card-grid class="gap-12 items-start" v-else>
     <section
       v-for="{ id, recordType, total, loaded } in recordTypeStore.recordTypes"
       :key="id"
@@ -64,10 +65,12 @@ import BaseButton from '~/components/base/BaseButton.vue'
 import BaseCardGrid from '~/components/base/BaseCardGrid.vue'
 import BaseLink from '~/components/base/BaseLink.vue'
 import BaseBadge from '~/components/base/BaseBadge.vue'
+import { useLoading } from '~/composable'
 
 const recordTypeStore = useRecordTypeStore()
 
-recordTypeRepository.loadAll().then()
+const [[loading, , loadAll]] = useLoading(recordTypeRepository.loadAll)
+loadAll().then()
 </script>
 
 <style lang="postcss" scoped></style>

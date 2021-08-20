@@ -3,8 +3,7 @@ import string
 import zmq
 
 from zmq.asyncio import Context, Socket
-from typing_extensions import TypedDict
-from typing import Any, List
+from typing import Any, List, TypedDict
 
 
 def id_generator(length):

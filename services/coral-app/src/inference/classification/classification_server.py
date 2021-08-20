@@ -6,7 +6,7 @@ import functools
 from zmq.asyncio import Context, Poller, Socket
 from src import common, zutils
 from src.inference.classification import classification_models
-from typing_extensions import TypedDict
+from typing import TypedDict
 
 
 class Settings(TypedDict):
@@ -15,35 +15,17 @@ class Settings(TypedDict):
 
 
 async def load_model(peer: Socket, args: classification_models.ModelArgs):
-    logging.info("[CLASSIFICATION] Received Interpreter")
     json = await peer.recv_json()
+    logging.info("[CLASSIFICATION] Received Interpreter")
     args["labels"] = common.load_labels(json["label_path"])
-    args["model_name"] = json["model_file_name"]
     interpreter = common.load_interpreter(json["model_path"])
+    args["model_name"] = json["model_name"]
     logging.info("[CLASSIFICATION] Sending Response ...")
     zutils.send_normalized_json(peer)
     return functools.partial(
         getattr(classification_models, "generic_model"),
         interpreter=interpreter,
     )
-
-
-async def classify(
-    main_socket: Socket, run_inference, args: classification_models.ModelArgs
-):
-    img_buffer, format = await main_socket.recv_multipart()
-    if run_inference == None:
-        zutils.send_normalized_json(
-            main_socket, errors=["No model is loaded for this task"]
-        )
-    else:
-        args["img_buffer"] = img_buffer
-        args["format"] = format.decode()
-        try:
-            results = run_inference(args=args)
-            zutils.send_normalized_json(main_socket, data=results)
-        except Exception as e:
-            zutils.send_normalized_json(main_socket, errors=[str(e)])
 
 
 def run_classfication(socket: Socket, args, run_inference):
@@ -104,7 +86,7 @@ async def start(
         if load_model_peer in items:
             run_inference = await load_model(load_model_peer, args=args)
 
-        # Update args request received
+        # Update settings request received
         if update_settings_socket in items:
             settings: Settings = await update_settings_socket.recv_json()
             args["top_k"] = settings["topK"]

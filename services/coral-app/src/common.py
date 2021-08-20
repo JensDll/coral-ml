@@ -1,5 +1,4 @@
 import asyncio
-from os import path
 import pathlib
 import platform
 import re
@@ -9,8 +8,7 @@ import src.repositories as repos
 import logging
 import traceback
 
-from typing_extensions import TypedDict
-from typing import Tuple
+from typing import Tuple, TypedDict
 
 EDGETUP_LIB = {
     "Linux": "libedgetpu.so.1",

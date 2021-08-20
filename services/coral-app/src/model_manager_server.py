@@ -4,9 +4,8 @@ import aiohttp
 import argparse
 import asyncio
 
-from typing import List
+from typing import List, TypedDict
 from zmq.asyncio import Context, Socket
-from typing_extensions import TypedDict
 from src import common, zutils
 from src.repositories.record_repository import RecordRepository
 
@@ -46,7 +45,7 @@ async def start(
             ](
                 model_path=result["model_path"],
                 label_path=result["label_path"],
-                model_file_name=result["model_file_name"],
+                model_name=result["model_file_name"],
             )
             if normalized_json["success"]:
                 await record_repo.set_loaded(id)

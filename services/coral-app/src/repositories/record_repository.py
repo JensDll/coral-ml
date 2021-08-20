@@ -1,13 +1,14 @@
 import traceback
-from typing_extensions import Literal
 import aiohttp
-from aiohttp.client_reqrep import ClientResponse
 import zipfile
-from .base import RepositoryBase
 import pathlib
 import logging
 import platform
 import subprocess
+
+from .base import RepositoryBase
+from aiohttp.client_reqrep import ClientResponse
+from typing import Literal
 
 RecordType = Literal["Image Classification", "Object Detection"]
 
@@ -77,9 +78,8 @@ class RecordRepository(RepositoryBase):
                 logging.error(traceback.format_exc())
                 raise e
             finally:
-                if file_path.is_file():
-                    logging.info(f"[RECORD REPO] Removing zip ({id})")
-                    file_path.unlink()
+                logging.info(f"[RECORD REPO] Removing zip ({id})")
+                file_path.unlink(missing_ok=True)
 
     async def set_loaded(self, id: int):
         logging.info(f"[RECORD REPO] Setting model loaded with id ({id})")

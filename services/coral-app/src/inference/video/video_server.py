@@ -54,7 +54,7 @@ async def receive_model(peer: Socket, model_args):
     json = await peer.recv_json()
     model_args["labels"] = common.load_labels(json["label_path"])
     interpreter = common.load_interpreter(json["model_path"])
-    model_name = json["model_file_name"]
+    model_name = json["model_name"]
     logging.info("[VIDEO] Sending Response ...")
     if hasattr(video_models, model_name):
         zutils.send_normalized_json(peer)

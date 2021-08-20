@@ -48,7 +48,7 @@ namespace ModelAPI
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ModelAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecordAPI", Version = "v1" });
             });
         }
 
@@ -58,7 +58,7 @@ namespace ModelAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModelAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecordAPI v1"));
             }
 
             app.UseSerilogRequestLogging();

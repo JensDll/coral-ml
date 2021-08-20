@@ -1,6 +1,6 @@
 FROM python:3.9.6-bullseye
 
-# Add Google repositorys and install required packages
+# Add Google repository and install required packages
 RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
     tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
@@ -8,11 +8,11 @@ RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" |
     # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
     apt-get install -y libedgetpu1-std python3-tflite-runtime libgl1-mesa-glx ffmpeg
 
-# Switch to app directory
-WORKDIR /app
-
 # Include python3-tflite-runtime location in python path
 ENV PYTHONPATH="/usr/lib/python3:/usr/lib/python3/dist-packages"
+
+# Switch to app directory
+WORKDIR /app
 
 # Copy entrypoint and requirements
 COPY requirements.txt main.py ./

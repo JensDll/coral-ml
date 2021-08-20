@@ -1,11 +1,11 @@
-from typing_extensions import Tuple
 import numpy as np
 import tflite_runtime.interpreter as tflite
 import imageio
 import src.common as common
 import cv2
 import time
-from typing_extensions import TypedDict
+
+from typing import TypedDict, Tuple
 
 
 class ModelArgs(TypedDict):

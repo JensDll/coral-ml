@@ -1,31 +1,27 @@
-FROM debian:buster
+FROM python:3.9.6-bullseye
 
-# Add Google repository and common packages
-RUN apt-get update && apt-get install -y curl gnupg udev wget unzip && \
-    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
+# Add Google repositorys and install required packages
+RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \
     tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
-    # https://coral.ai/docs/m2/get-started/#2-install-the-pcie-driver-and-edge-tpu-runtime
-    apt-get install -y libedgetpu1-std
+    apt-get install -y libedgetpu1-std python3-tflite-runtime libgl1-mesa-glx ffmpeg
 
+# Switch to app directory
 WORKDIR /app
+
+# Include python3-tflite-runtime location in python path
+ENV PYTHONPATH="/usr/lib/python3:/usr/lib/python3/dist-packages"
 
 # Copy entrypoint and requirements
 COPY requirements.txt main.py ./
 
-# Install python, the tflite runtime and other dependencies
-RUN apt-get install -y python3 python3-pip python3-tflite-runtime \
-    # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
-    libgl1-mesa-glx ffmpeg
-
-# Update pip
-RUN python3 -m pip install -U pip
 # Install requirements
-RUN python3 -m pip install -r requirements.txt && apt-get clean
+RUN pip install -r requirements.txt
 
+# Copy the rest
 COPY /src ./src
 COPY /scripts ./scripts
 
-ENTRYPOINT [ "python3", "main.py" ]
+ENTRYPOINT [ "python", "main.py" ]
 

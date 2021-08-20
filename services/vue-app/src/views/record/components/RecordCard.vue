@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between">
       <div>
         <v-button
-          class="px-3 py-1 rounded font-semibold"
+          class="px-6 py-1 rounded font-semibold"
           type="secondary"
           @click="handleLoad()"
           reverse
@@ -16,7 +16,7 @@
         >
           Load
         </v-button>
-        <v-button
+        <!-- <v-button
           class="px-3 py-1 rounded font-semibold ml-4"
           type="danger"
           reverse
@@ -24,7 +24,7 @@
           @click="handleDelete()"
         >
           Delete
-        </v-button>
+        </v-button> -->
       </div>
       <download-icon
         @click="handleDownload()"
@@ -122,17 +122,13 @@ async function handleDownload() {
 
 @screen lg {
   .title-grid {
-    grid-template-columns: minmax(40%, 60%) 1fr auto;
+    grid-template-columns: 1fr auto auto;
     grid-template-rows: auto;
     grid-template-areas: 'title model-loaded loading';
   }
 
   .model-loaded {
-    @apply justify-self-end self-start;
-  }
-
-  .loading {
-    @apply mt-2;
+    @apply justify-self-end self-start ml-4;
   }
 }
 </style>

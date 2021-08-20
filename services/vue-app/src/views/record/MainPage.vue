@@ -47,7 +47,7 @@
           >
             View Models
           </base-button>
-          <base-button
+          <!-- <base-button
             class="py-2 px-6 rounded font-semibold"
             type="secondary"
             @click="
@@ -58,7 +58,7 @@
             "
           >
             Upload a Model
-          </base-button>
+          </base-button> -->
         </div>
       </section>
     </template>

@@ -4,7 +4,7 @@ export const useNavStore = defineStore({
   id: 'navStore',
   state() {
     return {
-      navHidden: false
+      navHidden: true
     }
   },
   actions: {

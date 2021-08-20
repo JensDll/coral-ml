@@ -7,6 +7,23 @@
 
 <script setup lang="ts">
 import NavToggleMobile from './components/mobile/NavToggleMobile.vue'
+import { useNavStore } from './store'
+
+const navStore = useNavStore()
+let prevInnerWidth = 0
+
+window.addEventListener('resize', () => {
+  if (prevInnerWidth <= 1024 && window.innerWidth >= 1024) {
+    navStore.navHidden = false
+  }
+  prevInnerWidth = window.innerWidth
+})
+
+window.addEventListener('load', () => {
+  if (window.innerWidth >= 1024) {
+    navStore.navHidden = false
+  }
+})
 </script>
 
 <style lang="postcss">

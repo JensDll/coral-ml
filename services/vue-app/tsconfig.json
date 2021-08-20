@@ -12,7 +12,7 @@
     "paths": {
       "~/*": ["./*"]
     },
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom", "DOM.Iterable"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

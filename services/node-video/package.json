@@ -15,7 +15,7 @@
   "dependencies": {
     "bufferutil": "^4.0.3",
     "utf-8-validate": "^5.0.5",
-    "ws": "^8.0.0"
+    "ws": "^8.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^3.0.0",

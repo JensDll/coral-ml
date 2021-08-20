@@ -17,7 +17,7 @@ ENV PYTHONPATH="/usr/lib/python3:/usr/lib/python3/dist-packages"
 COPY requirements.txt main.py ./
 
 # Install requirements
-RUN pip install -r requirements.txt
+RUN pip install --upgrade --requirement requirements.txt
 
 # Copy the rest
 COPY /src ./src

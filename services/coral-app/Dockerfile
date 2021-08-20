@@ -5,6 +5,7 @@ RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" |
     tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
+    # https://github.com/conda-forge/pygridgen-feedstock/issues/10#issuecomment-365914605
     apt-get install -y libedgetpu1-std python3-tflite-runtime libgl1-mesa-glx ffmpeg
 
 # Switch to app directory

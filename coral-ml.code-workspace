@@ -22,6 +22,9 @@
       "path": "services/node-video"
     },
     {
+      "path": "services/coral-app-cpp"
+    },
+    {
       "path": ".github"
     }
   ],

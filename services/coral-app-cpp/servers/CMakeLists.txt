@@ -1,0 +1,1 @@
+add_library(coral-app-servers video-server.cpp)

@@ -8,6 +8,14 @@ module.exports = {
       ...require('tailwindcss/colors'),
       'white-90': 'rgba(255, 255, 255, 0.9)'
     },
+    screens: {
+      xs: '411px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px'
+    },
     extend: {
       fontFamily: {
         body: ["'Montserrat', sans-serif"]

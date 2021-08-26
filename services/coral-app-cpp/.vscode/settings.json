@@ -2,11 +2,8 @@
   "editor.formatOnSave": true,
   "cmake.generator": "Unix Makefiles",
   "C_Cpp.errorSquiggles": "Enabled",
-  "files.associations": {
-    "*.css": "css",
-    "ostream": "cpp",
-    "iostream": "cpp",
-    "vector": "cpp"
+  "cmake.debugConfig": {
+    "args": ["uri"]
   },
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": false
 }

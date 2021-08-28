@@ -15,6 +15,7 @@ RUN wget -q -O opencv.zip https://github.com/opencv/opencv/archive/master.zip &&
     unzip -q opencv.zip && unzip -q opencv_contrib.zip
 
 WORKDIR /build/cv/build
+# Options - https://docs.opencv.org/master/db/d05/tutorial_config_reference.html
 RUN cmake \
     -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib-master/modules \
     -D BUILD_JAVA=OFF \
@@ -60,6 +61,7 @@ RUN cmake ..
 RUN make
 
 # Find and copy library files
+# MAN - https://manpages.debian.org/bullseye/findutils/find.1.en.html
 WORKDIR /build/lib
 RUN find /install \
     -regex ".*/lib/.*\.\(so\|a\|la\).*" \
@@ -76,9 +78,13 @@ FROM debian:bullseye-slim AS final
 RUN apt-get update && \
     apt-get install -y ffmpeg
 
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 WORKDIR /app
-COPY --from=build-env /build/app/build/coralapp ./
+# Copy main executable
+COPY --from=build-env /build/app/build/coral-app ./
+# Copy libraries
 COPY --from=build-env /build/lib /usr/local/lib
+# Copy binaries
 COPY --from=build-env /build/bin /usr/local/bin
-CMD ["./coralapp"]
+ENTRYPOINT [ "./coral-app" ]
+CMD [ "http://node-video:8080", "info" ]

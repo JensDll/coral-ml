@@ -1,13 +1,15 @@
-#include "servers.hpp"
+#include "main.hpp"
+#include "zmq-servers.hpp"
 
-servers::VideoServer::VideoServer(cv::VideoCapture &cap,
-                                  zmq::context_t &context)
+zmq_servers::VideoServer::VideoServer(cv::VideoCapture &cap,
+                                      zmq::context_t &context)
     : cap(cap), context(context) {
   cap_props.frame_width = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
   cap_props.frame_height = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
 };
 
-void servers::VideoServer::start() {
+std::string zmq_servers::VideoServer::build_ffmpeg_command(
+    const coral_app_main::Config &config) {
   std::string command{"ffmpeg"};
   // Input options
   command.append(" -f rawvideo");
@@ -22,7 +24,14 @@ void servers::VideoServer::start() {
   command.append(" -b:v 800k");
   command.append(" -s 640x480");
   command.append(" -r 30");
-  command.append(" http://localhost:5060");
+  command.append(" -loglevel " + config.loglevel);
+  command.append(" " + config.publish_uri);
+
+  return command;
+}
+
+void zmq_servers::VideoServer::start(const coral_app_main::Config config) {
+  std::string command = build_ffmpeg_command(config);
 
   std::cout << command << std::endl;
 
@@ -46,4 +55,9 @@ void servers::VideoServer::start() {
 
   fflush(pipeout);
   pclose(pipeout);
+}
+
+void zmq_servers::VideoServer::test() {
+  cv::Mat m{2, 2, CV_8UC3, cv::Scalar{0, 0, 255}};
+  std::cout << m << std::endl;
 }

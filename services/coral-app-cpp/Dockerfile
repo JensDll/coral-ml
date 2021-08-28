@@ -1,12 +1,12 @@
-FROM debian:bullseye
+FROM debian:bullseye AS build-env
 
-RUN apt update && \
-    apt install -y wget unzip cmake git libtool ffmpeg \
+RUN apt-get update && \
+    apt-get install -y wget unzip cmake git libtool ffmpeg \
     build-essential pkg-config libgtk-3-dev libavcodec-dev \
     libavformat-dev libswscale-dev libv4l-dev \
     libxvidcore-dev libx264-dev libjpeg-dev libpng-dev libtiff-dev \
     gfortran openexr libatlas-base-dev python3-dev  \
-    libtbb2 libtbb-dev libdc1394-22-dev libzmq3-dev
+    libtbb2 libtbb-dev libdc1394-22-dev
 
 # Build OpenCV from source
 WORKDIR /build/cv
@@ -21,11 +21,64 @@ RUN cmake \
     -D BUILD_FAT_JAVA_LIB=OFF \
     -D BUILD_opencv_python2=OFF \
     -D BUILD_opencv_python3=OFF \
-    -D OPENCV_INSTALL_APPS_LIST="" \
+    -D BUILD_TESTS=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D BUILD_EXAMPLES=OFF \
+    -D BUILD_opencv_apps=OFF \
+    -D WITH_PROTOBUF=OFF \
+    -D BUILD_PROTOBUF=OFF \
+    -D OPENCV_DNN_OPENCL=OFF \
+    -D WITH_GTK=OFF \
+    -D WITH_WIN32UI=OFF \
+    -D CMAKE_INSTALL_PREFIX=/install \
     ../opencv-master
-RUN cmake --build .
 RUN make -j$(nproc) && make install
 
-# Copy application code
+# Build libzmq from source
+WORKDIR /build/zeromq
+RUN git clone --depth 1 -b v4.3.4 https://github.com/zeromq/libzmq.git && \
+    cd libzmq && mkdir build
+WORKDIR /build/zeromq/libzmq/build
+RUN cmake ..
+RUN make -j$(nproc) install
+RUN DESTDIR=/install make -j$(nproc) install
+
+# Build cppzmq from source
+WORKDIR /build/zeromq
+RUN git clone --depth 1 https://github.com/zeromq/cppzmq.git && \
+    cd cppzmq && mkdir build
+WORKDIR /build/zeromq/cppzmq/build
+RUN cmake ..
+RUN make -j$(nproc) install
+RUN DESTDIR=/install make -j$(nproc) install
+
+# Copy and build application code
 WORKDIR /build/app
 COPY . ./
+WORKDIR /build/app/build
+RUN cmake ..
+RUN make
+
+# Find and copy library files
+WORKDIR /build/lib
+RUN find /install \
+    -regex ".*/lib/.*\.\(so\|a\|la\).*" \
+    -exec cp "{}" . \;
+
+# Find and copy binary files
+WORKDIR /build/bin
+RUN find /install \
+    -regex ".*/bin/.*" \
+    -exec cp "{}" . \;
+
+FROM debian:bullseye-slim AS final
+
+RUN apt-get update && \
+    apt-get install -y ffmpeg
+
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+WORKDIR /app
+COPY --from=build-env /build/app/build/coralapp ./
+COPY --from=build-env /build/lib /usr/local/lib
+COPY --from=build-env /build/bin /usr/local/bin
+CMD ["./coralapp"]

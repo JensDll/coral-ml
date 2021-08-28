@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
+  "editor.tabSize": 2,
   "cmake.generator": "Unix Makefiles",
   "C_Cpp.errorSquiggles": "Enabled",
   "cmake.debugConfig": {

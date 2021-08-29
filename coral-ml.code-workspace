@@ -31,7 +31,6 @@
   "settings": {
     "volar.tsPlugin": true,
     "files.associations": {
-      "*.css": "css",
       "iostream": "cpp",
       "iosfwd": "cpp",
       "sstream": "cpp",

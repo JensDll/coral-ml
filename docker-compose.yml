@@ -2,58 +2,45 @@ version: "3.9"
 
 services:
   mariadb:
-    build:
-      context: ./services/mariadb
+    image: jensdll/coral-ml:mariadb_latest
     environment:
-      MARIADB_ROOT_PASSWORD: "${ROOT_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: Pwd12345!
     networks:
       - appnet
 
   record-api:
-    build:
-      context: ./services/record-api
+    image: jensdll/coral-ml:record-api_latest
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings:RecordDb: "Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=${ROOT_PASSWORD};"
+      ConnectionStrings:RecordDb: "Server=mariadb,3306;Database=RecordDb;User Id=root;Pwd=Pwd12345!;"
     depends_on:
       - mariadb
-    ports:
-      - 8000:80
     networks:
       - appnet
 
   node-api:
-    build:
-      context: ./services/node-api
+    image: jensdll/coral-ml:node-api_latest
     networks:
       - appnet
 
   node-video:
-    build:
-      context: ./services/node-video
+    image: jensdll/coral-ml:node-video_latest
     networks:
       - appnet
 
   vue-app:
-    build: 
-      context: ./services/vue-app
-    environment:
-      PROXY_URI: localhost
-      API_URI: http://localhost:8000
+    image: jensdll/coral-ml:vue-app_latest
     ports: 
       - 8080:80
     networks:
       - appnet
 
   coral-app:
-    build: 
-      context: ./services/coral-app
+    image: jensdll/coral-ml:coral-app_latest
     networks:
       - appnet
   
   proxy:
-    build:
-      context: ./services/proxy
+    image: jensdll/coral-ml:proxy_latest
     ports:
       - 80:80
     depends_on:

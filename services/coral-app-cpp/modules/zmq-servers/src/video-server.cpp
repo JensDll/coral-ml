@@ -37,6 +37,10 @@ void zmq_servers::VideoServer::start(const coral_app_main::Config config) {
 
   FILE *pipeout = popen(command.c_str(), "wb");
 
+  if (!pipeout) {
+    throw std::runtime_error("popen failes");
+  }
+
   cv::Mat frame{};
   size_t count = cap_props.frame_width * cap_props.frame_height * 3;
 

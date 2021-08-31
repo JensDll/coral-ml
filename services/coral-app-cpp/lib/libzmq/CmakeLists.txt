@@ -1,0 +1,8 @@
+add_library(libzmq INTERFACE)
+
+if(WIN32)
+  target_link_libraries(libzmq INTERFACE -llibzmq)
+else()
+  find_package(cppzmq REQUIRED)
+  target_link_libraries(libzmq INTERFACE cppzmq)
+endif()

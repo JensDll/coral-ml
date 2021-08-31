@@ -61,17 +61,18 @@ RUN cmake ..
 RUN make
 
 # Find and copy library files
-# MAN - https://manpages.debian.org/bullseye/findutils/find.1.en.html
+# - find  https://manpages.debian.org/bullseye/findutils/find.1.en.html
+# - cp    https://manpages.debian.org/bullseye/coreutils/cp.1.en.html
 WORKDIR /build/lib
 RUN find /install \
     -regex ".*/lib/.*\.\(so\|a\|la\).*" \
-    -exec cp "{}" . \;
+    -exec cp --no-dereference "{}" . \;
 
 # Find and copy binary files
 WORKDIR /build/bin
 RUN find /install \
     -regex ".*/bin/.*" \
-    -exec cp "{}" . \;
+    -exec cp --no-dereference "{}" . \;
 
 FROM debian:bullseye-slim AS final
 
@@ -81,7 +82,7 @@ RUN apt-get update && \
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 WORKDIR /app
 # Copy main executable
-COPY --from=build-env /build/app/build/coral-app ./
+COPY --from=build-env /build/app/build/modules/coral-app-exe/coral-app ./
 # Copy libraries
 COPY --from=build-env /build/lib /usr/local/lib
 # Copy binaries

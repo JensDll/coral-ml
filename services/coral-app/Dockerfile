@@ -25,4 +25,3 @@ COPY /src ./src
 COPY /scripts ./scripts
 
 ENTRYPOINT [ "python", "main.py" ]
-

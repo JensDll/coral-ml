@@ -54,8 +54,8 @@ services:
   coral-app:
     image: jensdll/coral-ml:coral-app_latest
     devices:
-      - /dev/video0
-      - /dev/apex_0
+      - /dev/video0:/dev/video0
+      - /dev/apex_0:/dev/apex_0
     depends_on:
       - proxy
     networks:

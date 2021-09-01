@@ -35,14 +35,6 @@ services:
       - 8080:80
     networks:
       - appnet
-
-  coral-app:
-    image: jensdll/coral-ml:coral-app_latest
-    devices:
-      - /dev/video0
-      - /dev/apex_0
-    networks:
-      - appnet
   
   proxy:
     image: jensdll/coral-ml:proxy_latest
@@ -56,6 +48,16 @@ services:
       - record-api
       - node-api
       - node-video
+    networks:
+      - appnet
+
+  coral-app:
+    image: jensdll/coral-ml:coral-app_latest
+    devices:
+      - /dev/video0
+      - /dev/apex_0
+    depends_on:
+      - proxy
     networks:
       - appnet
 

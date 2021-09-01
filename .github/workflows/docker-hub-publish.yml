@@ -27,6 +27,6 @@ jobs:
     - name: Set Environment Variables
       run: |
         echo "TAG=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
-    - name: Build and Push Images
-      run: |
-        docker buildx bake -f docker-bake.hcl --push
+    # - name: Build and Push Images
+    #   run: |
+    #     docker buildx bake -f docker-bake.hcl --push

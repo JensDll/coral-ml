@@ -29,6 +29,8 @@ services:
 
   vue-app:
     image: jensdll/coral-ml:vue-app_latest
+    environment:
+      PROXY_URI: iot2050-debian
     ports: 
       - 8080:80
     networks:
@@ -36,6 +38,9 @@ services:
 
   coral-app:
     image: jensdll/coral-ml:coral-app_latest
+    devices:
+      - /dev/video0
+      - /dev/apex_0
     networks:
       - appnet
   
@@ -43,6 +48,10 @@ services:
     image: jensdll/coral-ml:proxy_latest
     ports:
       - 80:80
+    environment:
+      RECORD_API_URI: record-api
+      NODE_API_URI: node-api
+      NODE_VIDEO_URI: node-video
     depends_on:
       - record-api
       - node-api

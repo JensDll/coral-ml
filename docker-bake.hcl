@@ -14,7 +14,6 @@ group "default" {
       "node-video",
       "vue-app",
       "coral-app",
-      "coral-app-cpp",
       "proxy"
     ]
 }
@@ -84,17 +83,6 @@ target "coral-app" {
     tags = [
       "${REPOSITORY}:coral-app_latest",
       notequal("", TAG) ? "${REPOSITORY}:coral-app_${TAG}" : ""
-    ]
-    platforms = [
-      "linux/amd64",
-      "linux/arm64"
-    ]
-}
-
-target "coral-app-cpp" {
-    context = "services/coral-app-cpp"
-    tags = [
-      "${REPOSITORY}:coral-app-cpp_beta",
     ]
     platforms = [
       "linux/amd64",

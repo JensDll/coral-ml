@@ -1,22 +1,23 @@
-#include "main.hpp"
-#include "zmq-servers.hpp"
+#include "video-server.hpp"
 
-zmq_servers::VideoServer::VideoServer(cv::VideoCapture &cap,
-                                      zmq::context_t &context)
-    : cap(cap), context(context) {
-  cap_props.frame_width = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-  cap_props.frame_height = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-};
+#include "main.hpp"
+
+zmq_servers::VideoServer::VideoServer(cv::VideoCapture& cap,
+                                      zmq::context_t& context)
+    : m_cap{ cap },
+      m_context{ context },
+      m_cap_props{ static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH)),
+                   static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT)) } {}
 
 std::string zmq_servers::VideoServer::build_ffmpeg_command(
-    const coral_app_main::Config &config) {
-  std::string command{"ffmpeg"};
+    const coral_app_main::Config& config) const {
+  std::string command{ "ffmpeg" };
   // Input options
   command.append(" -f rawvideo");
   command.append(" -r 1");
   command.append(" -pix_fmt rgb24");
-  command.append(" -s " + std::to_string(cap_props.frame_width) + "x" +
-                 std::to_string(cap_props.frame_height));
+  command.append(" -s " + std::to_string(m_cap_props.frame_width) + "x" +
+                 std::to_string(m_cap_props.frame_height));
   command.append(" -i pipe:0");  // Pipe to stdin
   // Output options
   command.append(" -f mpegts");
@@ -30,25 +31,26 @@ std::string zmq_servers::VideoServer::build_ffmpeg_command(
   return command;
 }
 
-void zmq_servers::VideoServer::start(const coral_app_main::Config config) {
+void zmq_servers::VideoServer::start(
+    const coral_app_main::Config& config) const {
   std::string command = build_ffmpeg_command(config);
 
   std::cout << command << std::endl;
 
-  FILE *pipeout = popen(command.c_str(), "wb");
+  FILE* pipeout = popen(command.c_str(), "wb");
 
   if (!pipeout) {
     throw std::runtime_error("popen failes");
   }
 
-  cv::Mat frame{};
-  size_t count = cap_props.frame_width * cap_props.frame_height * 3;
+  cv::Mat frame;
+  size_t count = m_cap_props.frame_width * m_cap_props.frame_height * 3;
 
   while (true) {
-    cap.read(frame);
+    bool success = m_cap.read(frame);
 
-    if (frame.empty()) {
-      std::cout << "Error: read empty frame" << std::endl;
+    if (!success) {
+      std::cout << "Error reading frame" << std::endl;
       break;
     }
 
@@ -59,9 +61,4 @@ void zmq_servers::VideoServer::start(const coral_app_main::Config config) {
 
   fflush(pipeout);
   pclose(pipeout);
-}
-
-void zmq_servers::VideoServer::test() {
-  cv::Mat m{2, 2, CV_8UC3, cv::Scalar{0, 0, 255}};
-  std::cout << m << std::endl;
 }

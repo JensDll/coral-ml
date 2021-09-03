@@ -1,6 +1,6 @@
 add_library(
   zmq-servers
-  src/zmq-servers.hpp
+  src/video-server.hpp
   src/video-server.cpp
 )
 

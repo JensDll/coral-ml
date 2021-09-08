@@ -10,5 +10,6 @@ add_subdirectory(lib/libav)
 add_subdirectory(lib/libzmq)
 add_subdirectory(lib/opencv)
 
-add_subdirectory(modules/zmq-servers)
-add_subdirectory(modules/coral-app-exe)
+add_subdirectory(modules/core)
+add_subdirectory(modules/servers)
+add_subdirectory(modules/main-exe)

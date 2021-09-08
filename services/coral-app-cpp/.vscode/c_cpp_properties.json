@@ -6,8 +6,6 @@
       "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
       "windowsSdkVersion": "10.0.19041.0",
       "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
-      "cStandard": "c17",
-      "cppStandard": "c++17",
       "configurationProvider": "ms-vscode.cmake-tools"
     }
   ],

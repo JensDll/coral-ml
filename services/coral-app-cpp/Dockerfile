@@ -46,7 +46,7 @@ RUN DESTDIR=/install make -j$(nproc) install
 
 # Build cppzmq from source
 WORKDIR /build/zeromq
-RUN git clone --depth 1 https://github.com/zeromq/cppzmq.git && \
+RUN git clone --depth 1 -b v4.8.0 https://github.com/zeromq/cppzmq.git && \
     cd cppzmq && mkdir build
 WORKDIR /build/zeromq/cppzmq/build
 RUN cmake ..

@@ -5,8 +5,8 @@
 namespace app_core {
 
 struct Config {
-  const std::string publish_uri;
-  const std::string api_uri;
+  const std::string publishUri;
+  const std::string apiUri;
   const std::string loglevel;
 };
 

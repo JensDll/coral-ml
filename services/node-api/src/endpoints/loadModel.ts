@@ -16,7 +16,7 @@ export const loadModel =
       const response: Response = JSON.parse(result.toString())
       console.log(`Loaded model with response (${result.toString()})`)
       callback(response)
-    } catch (e) {
+    } catch (e: any) {
       console.log(`Error loading model (${e})`)
       callback({
         success: false,

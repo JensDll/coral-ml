@@ -1,3 +1,4 @@
 BasedOnStyle: Google
+Cpp11BracedListStyle: false
 DerivePointerAlignment: false
-PointerAlignment: Right
+PointerAlignment: Left

@@ -26,12 +26,10 @@ export class SocketService {
   socket: Socket
 
   constructor(address: string) {
-    this.socket = io(
-      address,
-      import.meta.env.MODE !== 'development'
-        ? { path: '/node-api/' }
-        : undefined
-    )
+    this.socket = io(address, {
+      transports: ['websocket'],
+      path: import.meta.env.MODE !== 'development' ? '/node-api/' : undefined
+    })
 
     this.socket.on('connect', () => {
       console.log(`[Socket] Connected (${this.socket.id})`)

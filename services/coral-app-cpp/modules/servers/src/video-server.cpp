@@ -22,7 +22,7 @@ app_servers::VideoServer::VideoServer(const app_core::Config& config,
   if (!_libav.encoder) {
     std::cerr << "Could not allocate encoder\n";
   }
-  _libav.encoder->bit_rate = 800'000;
+  _libav.encoder->bit_rate = 600'000;
   _libav.encoder->width = _capProps.frameWidth;
   _libav.encoder->height = _capProps.frameHeight;
   _libav.encoder->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -41,9 +41,7 @@ app_servers::VideoServer::VideoServer(const app_core::Config& config,
   _libav.outFrame->width = _libav.encoder->width;
   _libav.outFrame->height = _libav.encoder->height;
   _libav.outFrame->format = _libav.encoder->pix_fmt;
-  ret = av_image_alloc(_libav.outFrame->data, _libav.outFrame->linesize,
-                       _libav.outFrame->width, _libav.outFrame->height,
-                       static_cast<AVPixelFormat>(_libav.outFrame->format), 16);
+  ret = av_frame_get_buffer(_libav.outFrame, 0);
   if (ret < 0) {
     std::cerr << "Could not allocate output frame\n";
   }
@@ -59,6 +57,8 @@ app_servers::VideoServer::VideoServer(const app_core::Config& config,
     std::cerr << "Could not copy codec parameters\n";
   }
   videoStream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+  videoStream->time_base = _libav.encoder->time_base;
+  videoStream->avg_frame_rate = _libav.encoder->framerate;
 
   // Setup IO context for muxer
   _libav.muxing.ioContext = nullptr;
@@ -69,7 +69,7 @@ app_servers::VideoServer::VideoServer(const app_core::Config& config,
   }
   _libav.muxing.muxer->pb = _libav.muxing.ioContext;
 
-  // Miscellaneous muxer setup
+  // Miscellaneous muxer setup and write header
   _libav.muxing.muxer->oformat = av_guess_format("mpegts", NULL, NULL);
   _libav.muxing.options = nullptr;
   av_dict_set(&_libav.muxing.options, "live", "1", 0);
@@ -90,7 +90,7 @@ app_servers::VideoServer::~VideoServer() {
 }
 
 void app_servers::VideoServer::start(
-    app_servers::OnFrameCallback callback) const {
+    app_servers::VideoServer::OnFrameCallback callback) const {
   cv::Mat image;
   int imageLineSizes[4];
   av_image_fill_linesizes(imageLineSizes, AV_PIX_FMT_RGB24,
@@ -100,7 +100,7 @@ void app_servers::VideoServer::start(
   for (int i{ 0 };; ++i) {
     _cap.read(image);
     cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-    callback(image);
+    callback(image, _context);
 
     sws_scale(_libav.scaler, &image.data, imageLineSizes, 0,
               _capProps.frameHeight, _libav.outFrame->data,
@@ -125,9 +125,6 @@ void app_servers::VideoServer::start(
         return;
       }
 
-      // std::cout << "Encoded packet " << _libav.outPacket->pts
-      //           << " (size = " << _libav.outPacket->size << ")\n";
-
       _libav.outPacket->stream_index = videoStream->index;
       int64_t scaled_pts =
           av_rescale_q(_libav.outPacket->pts, _libav.encoder->time_base,
@@ -139,4 +136,44 @@ void app_servers::VideoServer::start(
       av_packet_unref(_libav.outPacket);
     }
   }
+}
+
+void app_servers::VideoServer::startCli(
+    app_servers::VideoServer::OnFrameCallback callback) const {
+  std::string command{ "ffmpeg" };
+  // Input options
+  command.append(" -f rawvideo");
+  command.append(" -pix_fmt rgb24");
+  command.append(" -s " + std::to_string(_capProps.frameWidth) + "x" +
+                 std::to_string(_capProps.frameHeight));
+  command.append(" -i pipe:0");  // Pipe to stdin
+  // Output options
+  command.append(" -f mpegts");
+  command.append(" -vcodec mpeg1video");
+  command.append(" -b:v 800k");
+  command.append(" -s 640x480");
+  command.append(" -r 30");
+  command.append(" http://localhost:5060");
+
+  std::cout << command << std::endl;
+
+  FILE* pipeout = popen(command.c_str(), "wb");
+
+  if (!pipeout) {
+    throw std::runtime_error("popen failed");
+  }
+
+  cv::Mat image;
+  size_t count = _capProps.frameWidth * _capProps.frameHeight * 3;
+
+  while (true) {
+    _cap.read(image);
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+    callback(image, _context);
+
+    fwrite(image.data, sizeof(uchar), count, pipeout);
+  }
+
+  fflush(pipeout);
+  pclose(pipeout);
 }

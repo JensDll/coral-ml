@@ -1,7 +1,7 @@
 add_library(
   coral-app-servers
-  src/video-server.hpp
-  src/video-server.cpp
+  "src/video-server.cpp"
+  "include/video-server.hpp"
 )
 
 target_link_libraries(
@@ -11,10 +11,6 @@ target_link_libraries(
 
 target_include_directories(
   coral-app-servers PUBLIC
-  "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
-
-target_include_directories(
-  coral-app-servers PUBLIC
-  "${PROJECT_SOURCE_DIR}/modules/core/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  "${PROJECT_SOURCE_DIR}/modules/core/include"
 )

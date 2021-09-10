@@ -1,7 +1,9 @@
 #include <string>
 
-#ifndef CORAL_APP_MAIN
-#define CORAL_APP_MAIN
+#include "fps.hpp"
+
+#ifndef CORAL_APP_CORE
+#define CORAL_APP_CORE
 namespace app_core {
 
 struct Config {

@@ -1,7 +1,8 @@
 add_library(
   coral-app-core
-  src/core.hpp
-  src/core.cpp
+  "src/core.cpp"
+  "src/fps.cpp"
+  "include/core.hpp"
 )
 
 target_link_libraries(
@@ -11,5 +12,5 @@ target_link_libraries(
 
 target_include_directories(
   coral-app-core PUBLIC
-  "${CMAKE_CURRENT_SOURCE_DIR}/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )

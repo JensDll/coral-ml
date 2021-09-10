@@ -7,7 +7,10 @@
 #include "core.hpp"
 #include "video-server.hpp"
 
-void onFrame(const cv::Mat& frame) {}
+void onFrame(const cv::Mat& frame,
+             const app_servers::VideoServer::Context& context) {
+  context.fps.putFps(frame);
+}
 
 int main(int argc, char** argv) {
   if (argc != 3) {
@@ -23,7 +26,7 @@ int main(int argc, char** argv) {
   cv::VideoCapture cap;
   app_servers::VideoServer videoServer{ config, context, cap };
   std::thread videoServerThread{
-    &app_servers::VideoServer::start,
+    &app_servers::VideoServer::startCli,
     videoServer,
     onFrame,
   };

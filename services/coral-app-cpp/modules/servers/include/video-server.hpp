@@ -15,15 +15,21 @@ extern "C" {
 #define CORAL_APP_VIDEO_SERVER
 namespace app_servers {
 
-using OnFrameCallback = void (*)(const cv::Mat& frame);
-
 class VideoServer {
  public:
   VideoServer(const app_core::Config& config, zmq::context_t& context,
               cv::VideoCapture& cap, int camIdx = 0);
   ~VideoServer();
 
+  struct Context {
+    app_core::FPSCounter fps;
+  };
+
+  using OnFrameCallback = void (*)(const cv::Mat& frame,
+                                   const Context& context);
+
   void start(OnFrameCallback callback) const;
+  void startCli(OnFrameCallback callback) const;
 
  private:
   cv::VideoCapture& _cap;
@@ -43,6 +49,7 @@ class VideoServer {
     AVFrame* outFrame;
     AVPacket* outPacket;
   } _libav;
+  Context _context;
 };
 
 }  // namespace app_servers

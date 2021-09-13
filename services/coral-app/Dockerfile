@@ -18,7 +18,7 @@ WORKDIR /app
 COPY requirements.txt main.py ./
 
 # Install requirements
-RUN pip install --upgrade --requirement requirements.txt
+RUN pip install --upgrade --requirement requirements/prod.txt
 
 # Copy the rest
 COPY /src ./src

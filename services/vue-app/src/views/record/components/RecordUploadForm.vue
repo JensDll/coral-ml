@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import FormFileUpload from '~/components/form/FormFileUpload.vue'
-import VButton from '~/components/base/BaseButton.vue'
+  import VButton from '~/components/base/BaseButton.vue'
 import { useValidation } from 'vue3-form-validation'
 import type { Field } from 'vue3-form-validation'
 import type { PlainFormData } from '~/utils'

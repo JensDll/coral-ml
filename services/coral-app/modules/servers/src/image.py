@@ -1,16 +1,18 @@
-import zmq
-import zmq.asyncio
 import logging
 import functools
-import numpy as np
-from modules import core, inference
 from typing import Union
+
+import zmq
+import zmq.asyncio
+import numpy as np
+
+from modules import core, inference
 
 
 async def load_model(
     load_model_peer: zmq.asyncio.Socket, args: inference.image.classification.ModelArgs
-) -> core.typedef.RunInference:
-    json: core.typedef.LoadModelResult = await load_model_peer.recv_json()
+) -> core.types.RunInference:
+    json: core.types.LoadModelResult = await load_model_peer.recv_json()
     logging.info("[CLASSIFICATION] Received Interpreter")
     args["labels"] = core.coral.load_labels(json["labelPath"])
     interpreter = core.coral.load_interpreter(json["modelPath"])
@@ -27,7 +29,7 @@ async def load_model(
 def send_inference_results(
     socket: zmq.asyncio.Socket,
     run_inference: Union[
-        core.typedef.RunInference,
+        core.types.RunInference,
         None,
     ],
 ):
@@ -44,15 +46,15 @@ def send_inference_results(
 
 
 async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Socket):
-    main_addr = f"tcp://*:{core.CONFIG.PORTS.IMAGE_CLASSIFICATION}"
-    main_socket: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.REP)
+    main_addr = f"tcp://*:{core.Config.Ports.IMAGE_CLASSIFICATION}"
+    main_socket: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
     main_socket.bind(main_addr)
-    logging.info(f"[IMAGE] (Main) Bind to '{main_addr}'")
+    logging.info(f"[IMAGE SERVER] (Main) Bind to ({main_addr})")
 
-    update_settings_addrs = f"tcp://*:{core.CONFIG.PORTS.IMAGE_UPDATE_SETTINGS}"
-    update_settings_socket: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.REP)
+    update_settings_addrs = f"tcp://*:{core.Config.Ports.IMAGE_UPDATE_SETTINGS}"
+    update_settings_socket: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
     update_settings_socket.bind(update_settings_addrs)
-    logging.info(f"[IMAGE] (Update Settings) Bind to '{update_settings_addrs}'")
+    logging.info(f"[IMAGE SERVER] (Update Settings) Bind to ({update_settings_addrs})")
 
     poller = zmq.asyncio.Poller()
     poller.register(reset_peer, zmq.POLLIN)
@@ -69,7 +71,7 @@ async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Soc
         "topK": 5,
         "scoreThreshold": 0.1,
     }
-    run_inference: Union[core.typedef.RunInference, None] = None
+    run_inference: Union[core.types.RunInference, None] = None
 
     # Signal image server ready
     await load_model_peer.send(b"")
@@ -83,7 +85,7 @@ async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Soc
         if reset_peer in items:
             await reset_peer.recv()
             run_inference = None
-            logging.info("[IMAGE] Reset")
+            logging.info("[IMAGE SERVER] Reset")
             await reset_peer.send(b"")
 
         if load_model_peer in items:
@@ -99,7 +101,7 @@ async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Soc
             send_inference_results(main_socket, run_inference)
 
         if update_settings_socket in items:
-            settings: core.typedef.ModelSettings = (
+            settings: core.types.ModelSettings = (
                 await update_settings_socket.recv_json()
             )
             args["topK"] = settings["topK"]

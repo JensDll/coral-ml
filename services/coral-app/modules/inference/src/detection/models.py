@@ -1,7 +1,9 @@
+from typing import TypedDict
+
 import cv2
 import numpy as np
+
 from .bbox import BBox
-from typing import TypedDict
 from modules import core
 
 
@@ -19,9 +21,9 @@ class ModelArgs(TypedDict):
 
 def append_detections_to_image(
     image: np.ndarray,
-    input_size: core.typedef.InputSize,
+    input_size: core.types.InputSize,
     detections: list[Detection],
-    labels: core.typedef.Labels = {},
+    labels: core.types.Labels = {},
 ):
     h_image, w_image = image.shape[:2]
     h_in, w_in = input_size

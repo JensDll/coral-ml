@@ -1,18 +1,20 @@
 import logging
+
 import asyncio
 import zmq
 import zmq.asyncio
+
 from modules import core, repositories
 
 
 async def start(
     reset_pipes: list[zmq.asyncio.Socket],
-    load_model_handlers: core.typedef.LoadModelHandlers,
+    load_model_handlers: core.types.LoadModelHandlers,
 ):
-    main_addr = f"tcp://*:{core.CONFIG.PORTS.MODEL_MANAGER}"
-    main_socket: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.REP)
+    main_addr = f"tcp://*:{core.Config.Ports.MODEL_MANAGER}"
+    main_socket: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
     main_socket.bind(main_addr)
-    logging.info(f"[MODEL MANAGER] (Main) Bind to '{main_addr}'")
+    logging.info(f"[MODEL MANAGER] (Main) Bind to ({main_addr})")
 
     def send_reset_signals():
         for pipe in reset_pipes:

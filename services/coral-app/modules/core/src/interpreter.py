@@ -1,7 +1,9 @@
-import tflite_runtime.interpreter as tflite
-import numpy as np
 from typing import Tuple
-from . import typedef
+
+import numpy as np
+import tflite_runtime.interpreter as tflite
+
+from modules import core
 
 
 class Interpreter(tflite.Interpreter):
@@ -21,7 +23,7 @@ class Interpreter(tflite.Interpreter):
     def get_num_outputs(self):
         return len(self.get_output_details())
 
-    def get_input_size(self, i: int) -> typedef.InputSize:
+    def get_input_size(self, i: int) -> core.types.InputSize:
         _, height, width, _ = self.get_input_details()[i]["shape"]
         return width, height
 

@@ -1,13 +1,15 @@
 import uuid
+from typing import Any
+
 import zmq
 import zmq.asyncio
+
 from modules import core
-from typing import Any, Union
 
 
 def pipe():
-    a: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.PAIR)
-    b: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.PAIR)
+    a: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.PAIR)
+    b: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.PAIR)
     a.linger = b.linger = 0
     a.hwm = b.hwm = 1
     inproc = f"inproc://{uuid.uuid4()}"

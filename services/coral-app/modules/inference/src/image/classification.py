@@ -1,8 +1,10 @@
+from typing import TypedDict, Tuple, Union
+
 import numpy as np
 import imageio
 import cv2
 import time
-from typing import TypedDict, Tuple, Union
+
 from modules import core
 
 

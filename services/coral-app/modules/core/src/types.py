@@ -1,5 +1,5 @@
 from collections.abc import Coroutine
-from typing import Generic, Tuple, TypeVar, TypedDict, Any, Literal, Union, Callable
+from typing import Tuple, TypeVar, TypedDict, Any, Literal, Union, Callable
 
 Id = Union[str, int]
 RecordType = Literal["Image Classification", "Object Detection"]

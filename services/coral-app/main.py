@@ -1,16 +1,17 @@
 # python main.py --publish-uri http://localhost:5060 --api-uri http://localhost:5000/api --loglevel quiet
 import argparse
 import asyncio
-import aiohttp
 import logging
-import zmq.asyncio
 import threading
-import signal
+
+import zmq.asyncio
+import aiohttp
+
 from modules import core, servers
 
 
 def load_model(pipe: zmq.asyncio.Socket):
-    def impl(json: core.typedef.LoadModelResult):
+    def impl(json: core.types.LoadModelResult):
         pipe.send_json(json)
         return pipe.recv_json()
 
@@ -28,13 +29,13 @@ async def main():
 
     args = parser.parse_args()
 
-    core.CONFIG.HTTP.SESSION = aiohttp.ClientSession()
-    core.CONFIG.ZMQ.CONTEXT = zmq.asyncio.Context()
-    core.CONFIG.URI.RECORD_API = args.api_uri
-    core.CONFIG.URI.PUBLISH_VIDEO = args.publish_uri
-    core.CONFIG.FFMPEG.LOGLEVEL = args.loglevel
+    core.Config.Http.SESSION = aiohttp.ClientSession()
+    core.Config.Zmq.CONTEXT = zmq.asyncio.Context()
+    core.Config.Uri.RECORD_API = args.api_uri
+    core.Config.Uri.PUBLISH_VIDEO = args.publish_uri
+    core.Config.FFmpeg.LOGLEVEL = args.loglevel
 
-    load_model_handlers: core.typedef.LoadModelHandlers = {}
+    load_model_handlers: core.types.LoadModelHandlers = {}
 
     # Register pipes for inner thread communication with the image server
     img_load_model_pipe, img_load_model_peer = core.zutils.pipe()
@@ -72,8 +73,6 @@ async def main():
     )
     t_image.start()
 
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-
     # Wait for the ready signal from the servers
     await asyncio.gather(img_load_model_pipe.recv(), video_load_model_pipe.recv())
 
@@ -85,7 +84,7 @@ async def main():
         reset_pipes=reset_pipes, load_model_handlers=load_model_handlers
     )
 
-    await core.CONFIG.HTTP.SESSION.close()
+    await core.Config.Http.SESSION.close()
 
 
 if __name__ == "__main__":

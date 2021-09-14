@@ -2,22 +2,22 @@ import aiohttp
 import zmq.asyncio
 
 
-class CONFIG:
-    class PORTS:
+class Config:
+    class Ports:
         MODEL_MANAGER = 7000
         IMAGE_CLASSIFICATION = 7100
         IMAGE_UPDATE_SETTINGS = 7101
         VIDEO_UPDATE_SETTINGS = 7200
 
-    class URI:
+    class Uri:
         RECORD_API: str
         PUBLISH_VIDEO: str
 
-    class FFMPEG:
+    class FFmpeg:
         LOGLEVEL: str
 
-    class HTTP:
+    class Http:
         SESSION: aiohttp.ClientSession
 
-    class ZMQ:
+    class Zmq:
         CONTEXT: zmq.asyncio.Context

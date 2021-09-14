@@ -39,21 +39,21 @@ async def save_zip(resp: ClientResponse, file_path: pathlib.Path, chunk_size=512
 
 class RecordRepository:
     @staticmethod
-    async def get_by_id(id: core.typedef.Id):
-        uri = f"{core.CONFIG.URI.RECORD_API}/record/{id}"
+    async def get_by_id(id: core.types.Id):
+        uri = f"{core.Config.Uri.RECORD_API}/record/{id}"
         logging.info(uri)
-        async with core.CONFIG.HTTP.SESSION.get(uri) as resp:
+        async with core.Config.Http.SESSION.get(uri) as resp:
             if resp.ok:
-                record: core.typedef.Record = await resp.json()
+                record: core.types.Record = await resp.json()
                 record["modelFileName"] = record["modelFileName"].replace(".tflite", "")
                 return record
             raise aiohttp.ClientError()
 
     @staticmethod
-    async def download(id: core.typedef.Id):
-        uri = f"{core.CONFIG.URI.RECORD_API}/record/download/{id}"
+    async def download(id: core.types.Id):
+        uri = f"{core.Config.Uri.RECORD_API}/record/download/{id}"
         logging.info(uri)
-        async with core.CONFIG.HTTP.SESSION.get(uri) as resp:
+        async with core.Config.Http.SESSION.get(uri) as resp:
             zip_path = pathlib.Path("record.zip")
             try:
                 if resp.ok:
@@ -69,15 +69,15 @@ class RecordRepository:
                 zip_path.unlink(missing_ok=True)
 
     @staticmethod
-    async def set_loaded(id: core.typedef.Id):
-        uri = f"{core.CONFIG.URI.RECORD_API}/record/loaded/{id}"
+    async def set_loaded(id: core.types.Id):
+        uri = f"{core.Config.Uri.RECORD_API}/record/loaded/{id}"
         logging.info(uri)
-        async with core.CONFIG.HTTP.SESSION.put(uri):
+        async with core.Config.Http.SESSION.put(uri):
             pass
 
     @staticmethod
     async def unload():
-        uri = f"{core.CONFIG.URI.RECORD_API}/record/unload"
+        uri = f"{core.Config.Uri.RECORD_API}/record/unload"
         logging.info(uri)
-        async with core.CONFIG.HTTP.SESSION.put(uri):
+        async with core.Config.Http.SESSION.put(uri):
             pass

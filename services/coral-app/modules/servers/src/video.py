@@ -1,17 +1,19 @@
-import zmq
-import zmq.asyncio
 import logging
+import functools
+from typing import Union
+
 import cv2
 import numpy as np
-import functools
+import zmq
+import zmq.asyncio
+
 from modules import core, inference
-from typing import Union
 
 
 async def load_model(
     load_model_peer: zmq.asyncio.Socket, args: inference.detection.models.ModelArgs
-) -> Union[core.typedef.RunInference, None]:
-    json: core.typedef.LoadModelResult = await load_model_peer.recv_json()
+) -> Union[core.types.RunInference, None]:
+    json: core.types.LoadModelResult = await load_model_peer.recv_json()
     logging.info("[VIDEO] Received Interpreter")
     args["labels"] = core.coral.load_labels(json["labelPath"])
     interpreter = core.coral.load_interpreter(json["modelPath"])
@@ -34,17 +36,17 @@ async def load_model(
 async def update_settings(
     socket: zmq.asyncio.Socket, args: inference.detection.models.ModelArgs
 ):
-    settings: core.typedef.ModelSettings = await socket.recv_json()
+    settings: core.types.ModelSettings = await socket.recv_json()
     args["topK"] = settings["topK"]
     args["scoreThreshold"] = settings["threshold"]
     return socket.send(b"")
 
 
 async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Socket):
-    update_settings_addr = f"tcp://*:{core.CONFIG.PORTS.VIDEO_UPDATE_SETTINGS}"
-    update_settings_socket: zmq.asyncio.Socket = core.CONFIG.ZMQ.CONTEXT.socket(zmq.REP)
+    update_settings_addr = f"tcp://*:{core.Config.Ports.VIDEO_UPDATE_SETTINGS}"
+    update_settings_socket: zmq.asyncio.Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
     update_settings_socket.bind(update_settings_addr)
-    logging.info(f"[VIDEO] (Update Settings) Bind to '{update_settings_addr}'")
+    logging.info(f"[VIDEO SERVER] (Update Settings) Bind to ({update_settings_addr})")
 
     poller = zmq.asyncio.Poller()
     poller.register(reset_peer, zmq.POLLIN)
@@ -52,19 +54,20 @@ async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Soc
     poller.register(update_settings_socket, zmq.POLLIN)
 
     cap = cv2.VideoCapture(0)
-    cap_props: core.typedef.CapProps = {
+    cap_props: core.types.CapProps = {
         "frameWidth": int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
         "frameHeight": int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         "fps": int(cap.get(cv2.CAP_PROP_FPS)),
     }
-    process = core.stream.start_stream(cap_props)
+    stream = core.stream.start_stream(cap_props)
 
-    run_inference: Union[core.typedef.RunInference, None] = None
+    run_inference: Union[core.types.RunInference, None] = None
     args: inference.detection.models.ModelArgs = {
         "topK": 1,
         "scoreThreshold": 0.1,
         "labels": dict(),
     }
+    fps_counter = core.FpsCounter()
 
     # Signal video server ready
     await load_model_peer.send(b"")
@@ -93,7 +96,9 @@ async def start(reset_peer: zmq.asyncio.Socket, load_model_peer: zmq.asyncio.Soc
         if run_inference is not None:
             run_inference(image=image)
 
+        fps_counter.put_fps(image)
+
         try:
-            process.stdin.write(image.tobytes())
-        except:
-            process = next(core.stream.restart_stream(cap_props))
+            stream.stdin.write(image.tobytes())  # type: ignore
+        except Exception:
+            stream = next(core.stream.restart_stream(cap_props))

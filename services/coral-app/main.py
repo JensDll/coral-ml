@@ -38,51 +38,44 @@ async def main():
     load_model_handlers: core.types.LoadModelHandlers = {}
 
     # Register pipes for inner thread communication with the image server
-    img_load_model_pipe, img_load_model_peer = core.zutils.pipe()
     img_reset_pipe, img_reset_peer = core.zutils.pipe()
+    img_load_model_pipe, img_load_model_peer = core.zutils.pipe()
     load_model_handlers["Image Classification"] = load_model(img_load_model_pipe)
 
+    # Start the image server thread
+    image_server = servers.ImageServer(img_reset_peer, img_load_model_peer)
+    image_server_thread = threading.Thread(
+        target=asyncio.run,
+        args=[image_server.start()],
+        daemon=True,
+    )
+    image_server_thread.start()
+
     # Register pipes for inner thread communication with the video server
-    video_load_model_pipe, video_load_model_peer = core.zutils.pipe()
     video_reset_pipe, video_reset_peer = core.zutils.pipe()
+    video_load_model_pipe, video_load_model_peer = core.zutils.pipe()
     load_model_handlers["Object Detection"] = load_model(video_load_model_pipe)
 
-    reset_pipes = [img_reset_pipe, video_reset_pipe]
-
     # Start the video server thread
-    t_video = threading.Thread(
+    video_server = servers.VideoServer(video_reset_peer, video_load_model_peer)
+    video_server_thread = threading.Thread(
         target=asyncio.run,
-        args=[
-            servers.video.start(
-                load_model_peer=video_load_model_peer, reset_peer=video_reset_peer
-            )
-        ],
+        args=[video_server.start()],
         daemon=True,
     )
-    t_video.start()
+    video_server_thread.start()
 
-    # Start the image server thread
-    t_image = threading.Thread(
-        target=asyncio.run,
-        args=[
-            servers.image.start(
-                load_model_peer=img_load_model_peer, reset_peer=img_reset_peer
-            )
-        ],
-        daemon=True,
-    )
-    t_image.start()
+    reset_pipes = [img_reset_pipe, video_reset_pipe]
 
     # Wait for the ready signal from the servers
     await asyncio.gather(img_load_model_pipe.recv(), video_load_model_pipe.recv())
 
-    logging.info("[MAIN] All servers ready")
-    logging.info("[MAIN] Starting model manager")
+    logging.info("All servers ready")
+    logging.info("Starting model manager")
 
     # Start model manager server in main thread
-    await servers.model_manager.start(
-        reset_pipes=reset_pipes, load_model_handlers=load_model_handlers
-    )
+    model_manager_server = servers.ModelManagerServer(reset_pipes)
+    await model_manager_server.start(load_model_handlers)
 
     await core.Config.Http.SESSION.close()
 

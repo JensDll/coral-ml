@@ -7,6 +7,8 @@ from modules import core
 
 
 class Interpreter(tflite.Interpreter):
+    name: str
+
     def get_output_shape(self, i: int):
         return self.get_output_details()[i]["shape"]
 

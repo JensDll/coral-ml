@@ -1,6 +1,6 @@
 import time
 
-import cv2
+import cv2 as cv
 import numpy as np
 
 
@@ -9,15 +9,15 @@ class FpsCounter:
         self.fps_iter = FpsCounter.__fps_iter()
 
     def put_fps(self, img: np.ndarray):
-        cv2.putText(
+        cv.putText(
             img,
             f"{next(self.fps_iter):.2f}",
             (15, 25),
-            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontFace=cv.FONT_HERSHEY_SIMPLEX,
             fontScale=0.5,
             thickness=1,
             color=(255, 255, 255),
-            lineType=cv2.LINE_4,
+            lineType=cv.LINE_4,
         )
 
     @staticmethod

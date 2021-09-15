@@ -5,7 +5,6 @@ import time
 import ffmpeg
 
 from modules import core
-from modules.core import Config
 
 
 def start_stream(cap_props: core.types.CapProps):
@@ -23,7 +22,7 @@ def start_stream(cap_props: core.types.CapProps):
         s=f"640x480",
         format="mpegts",
         video_bitrate="800k",
-        loglevel=Config.FFmpeg.LOGLEVEL,
+        loglevel=core.Config.FFmpeg.LOGLEVEL,
     )
     stream = ffmpeg.run_async(stream, pipe_stdin=True)
     return stream

@@ -1,3 +1,3 @@
-import modules.servers.src.model_manager as model_manager
-import modules.servers.src.video as video
-import modules.servers.src.image as image
+from modules.servers.src.model_manager_server import ModelManagerServer
+from modules.servers.src.image_server import ImageServer
+from modules.servers.src.video_server import VideoServer

@@ -1,5 +1,5 @@
 import aiohttp
-import zmq.asyncio
+from zmq.asyncio import Context
 
 
 class Config:
@@ -20,4 +20,4 @@ class Config:
         SESSION: aiohttp.ClientSession
 
     class Zmq:
-        CONTEXT: zmq.asyncio.Context
+        CONTEXT: Context

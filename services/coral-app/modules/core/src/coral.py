@@ -3,8 +3,10 @@ import asyncio
 import re
 import logging
 import platform
-import tflite_runtime.interpreter as tflite
 from typing import Union
+
+import tflite_runtime.interpreter as tflite
+
 from modules import core, repositories
 
 
@@ -17,7 +19,7 @@ EDGETUP_LIB = {
 
 def load_labels(path: Union[str, pathlib.Path]):
     label_path = pathlib.Path(str(path))
-    labels: core.typedef.Labels = {}
+    labels: core.types.Labels = {}
 
     if not label_path.is_file():
         return labels
@@ -42,8 +44,8 @@ def load_labels(path: Union[str, pathlib.Path]):
     return labels
 
 
-async def load_model(id: core.typedef.Id):
-    result: core.typedef.LoadModelResult = {
+async def load_model(id: core.types.Id):
+    result: core.types.LoadModelResult = {
         "success": True,
         "modelPath": "",
         "labelPath": "",

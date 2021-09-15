@@ -9,7 +9,7 @@ import zmq.asyncio
 import aiohttp
 import dotenv
 
-if os.environ.get("MODE") == "PROD":
+if os.environ.get("MODE") != "PROD":
     dotenv.load_dotenv()
 
 from modules import core, servers
@@ -27,9 +27,7 @@ async def main():
     core.logging.setup_logging()
 
     parser = argparse.ArgumentParser()
-
     parser.add_argument("--loglevel", default="info", type=str)
-
     args = parser.parse_args()
 
     core.Config.Http.SESSION = aiohttp.ClientSession()

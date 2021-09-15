@@ -2,8 +2,8 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       APP_HOST: string
-      PORT_STREAM_IN: string
-      PORT_STREAM_OUT: string
+      STREAM_IN_PORT: string
+      STREAM_OUT_PORT: string
     }
   }
 }

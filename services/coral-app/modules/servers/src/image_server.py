@@ -62,17 +62,13 @@ class ImageServer:
                 img_buffer: bytes
                 img_format: bytes
                 img_buffer, img_format = await self.main_socket.recv_multipart()
-                if model.loaded:
-                    result = model.predict(
-                        (img_buffer, img_format.decode()), top_k, score_threshold
-                    )
-                    await core.zutils.send_normalized_json(
-                        self.main_socket, data=result
-                    )
-                else:
-                    await core.zutils.send_normalized_json(
-                        self.main_socket, errors=["No model is loaded for this task"]
-                    )
+
+                await model.predict(
+                    self.main_socket,
+                    (img_buffer, img_format.decode()),
+                    top_k=top_k,
+                    score_threshold=score_threshold,
+                )
 
             if self.update_settings_socket in items:
                 settings: core.types.ModelSettings = (
@@ -80,16 +76,9 @@ class ImageServer:
                 )
                 top_k = settings["topK"]
                 score_threshold = settings["threshold"]
-                if model.has_cache:
-                    result = model.predict(
-                        top_k=top_k,
-                        score_threshold=score_threshold,
-                    )
-                    await core.zutils.send_normalized_json(
-                        self.update_settings_socket, data=result
-                    )
-                else:
-                    await core.zutils.send_normalized_json(
-                        self.update_settings_socket,
-                        errors=["No model is loaded for this task"],
-                    )
+
+                await model.predict(
+                    self.update_settings_socket,
+                    top_k=top_k,
+                    score_threshold=score_threshold,
+                )

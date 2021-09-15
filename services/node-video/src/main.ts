@@ -7,7 +7,7 @@ if (process.env.MODE !== 'PROD') {
 }
 
 var wss = new WebSocketServer({
-  port: +process.env.PORT_STREAM_OUT,
+  port: +process.env.STREAM_OUT_PORT,
   host: process.env.APP_HOST,
   perMessageDeflate: false
 })
@@ -34,11 +34,11 @@ const server = createServer((req, resp) => {
 })
 
 server.headersTimeout = 0
-server.listen(+process.env.PORT_STREAM_IN, process.env.APP_HOST)
+server.listen(+process.env.STREAM_IN_PORT, process.env.APP_HOST)
 
 console.log(
-  `Listening for incoming MPEG-TS Stream on http://${process.env.APP_HOST}:${process.env.PORT_STREAM_IN}`
+  `Listening for incoming MPEG-TS Stream on http://${process.env.APP_HOST}:${process.env.STREAM_IN_PORT}`
 )
 console.log(
-  `Awaiting WebSocket connections on ws://${process.env.APP_HOST}:${process.env.PORT_STREAM_OUT}`
+  `Awaiting WebSocket connections on ws://${process.env.APP_HOST}:${process.env.STREAM_OUT_PORT}`
 )

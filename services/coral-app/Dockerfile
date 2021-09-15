@@ -35,6 +35,6 @@ ENV CORAL_PORT_VIDEO_SETTINGS=7041
 
 # External resources
 ENV RECORD_API_URI=http://proxy/record-api
-ENV NODE_API_URI=http://node-video:8080
+ENV NODE_API_URI=http://node-video:80
 
 ENTRYPOINT [ "python", "main.py" ]

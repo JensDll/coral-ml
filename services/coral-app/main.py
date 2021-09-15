@@ -1,11 +1,16 @@
-# python main.py --publish-uri http://localhost:5060 --api-uri http://localhost:5000/api --loglevel quiet
+# python main.py --loglevel quiet
 import argparse
 import asyncio
 import logging
 import threading
+import os
 
 import zmq.asyncio
 import aiohttp
+import dotenv
+
+if os.environ.get("MODE") == "PROD":
+    dotenv.load_dotenv()
 
 from modules import core, servers
 
@@ -24,15 +29,11 @@ async def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--loglevel", default="info", type=str)
-    parser.add_argument("--publish-uri", default="http://node-video:8080", type=str)
-    parser.add_argument("--api-uri", default="http://proxy/record-api", type=str)
 
     args = parser.parse_args()
 
     core.Config.Http.SESSION = aiohttp.ClientSession()
     core.Config.Zmq.CONTEXT = zmq.asyncio.Context()
-    core.Config.Uri.RECORD_API = args.api_uri
-    core.Config.Uri.PUBLISH_VIDEO = args.publish_uri
     core.Config.FFmpeg.LOGLEVEL = args.loglevel
 
     load_model_handlers: core.types.LoadModelHandlers = {}

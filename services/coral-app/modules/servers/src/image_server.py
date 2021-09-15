@@ -20,12 +20,12 @@ class ImageServer:
         address = f"tcp://*:{core.Config.Ports.IMAGE_CLASSIFICATION}"
         self.main_socket: Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.main_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Main) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
         address = f"tcp://*:{core.Config.Ports.IMAGE_UPDATE_SETTINGS}"
         self.update_settings_socket: Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.update_settings_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Settings) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
         self.poller = Poller()
         self.poller.register(self.reset_peer, zmq.POLLIN)
@@ -51,8 +51,8 @@ class ImageServer:
 
             if self.reset_peer in items:
                 await self.reset_peer.recv()
+                logging.info("Reset image server")
                 model.reset()
-                logging.info("[IMAGE SERVER] Reset")
                 await self.reset_peer.send(b"")
 
             if self.load_model_peer in items:

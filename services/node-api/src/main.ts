@@ -1,5 +1,5 @@
-import { createServer } from 'http'
 import zmq from 'zeromq'
+import { createServer } from 'http'
 import { Server } from 'socket.io'
 import {
   loadModel,
@@ -8,15 +8,10 @@ import {
   updateClassifySettings
 } from './endpoints'
 
-const MODL_MANAGER_PORT = 7000
-
-const CLASSIFY_PORT = 7100
-const UPDATE_CLASSIFY_ARGS_PORT = 7101
-
-const UPDATE_VIDEO_ARGS_PORT = 7200
-
-const LISTEN = +process.env.LISTEN
-const HOST = process.env.HOST
+if (process.env.MODE !== 'PROD') {
+  const dotenv = await import('dotenv')
+  dotenv.config()
+}
 
 const httpServer = createServer()
 const io = new Server(httpServer, {
@@ -27,6 +22,8 @@ const io = new Server(httpServer, {
   }
 })
 
+const baseAddress = `tcp://${process.env.CORAL_HOST}`
+
 io.on('connection', socket => {
   console.log(`A user connected (${socket.id})`)
 
@@ -35,7 +32,7 @@ io.on('connection', socket => {
     sendTimeout: 20000
   })
   modelManagerClient.connect(
-    `tcp://${process.env.CORAL_APP}:${MODL_MANAGER_PORT}`
+    `${baseAddress}:${process.env.CORAL_PORT_MODEL_MANAGER}`
   )
   socket.on('load model', loadModel(modelManagerClient))
 
@@ -43,20 +40,20 @@ io.on('connection', socket => {
     receiveTimeout: 20000,
     sendTimeout: 20000
   })
-  classifyClient.connect(`tcp://${process.env.CORAL_APP}:${CLASSIFY_PORT}`)
-  socket.on('classify', classify(classifyClient))
-
-  const updateVideo = new zmq.Request()
-  updateVideo.connect(
-    `tcp://${process.env.CORAL_APP}:${UPDATE_VIDEO_ARGS_PORT}`
+  classifyClient.connect(
+    `${baseAddress}:${process.env.CORAL_PORT_IMAGE_CLASSIFICATION}`
   )
-  socket.on('update video', updateVideoSettings(updateVideo))
+  socket.on('classify', classify(classifyClient))
 
   const updateClassify = new zmq.Request()
   updateClassify.connect(
-    `tcp://${process.env.CORAL_APP}:${UPDATE_CLASSIFY_ARGS_PORT}`
+    `${baseAddress}:${process.env.CORAL_PORT_IMAGE_SETTINGS}`
   )
   socket.on('update classify', updateClassifySettings(updateClassify))
+
+  const updateVideo = new zmq.Request()
+  updateVideo.connect(`${baseAddress}:${process.env.CORAL_PORT_VIDEO_SETTINGS}`)
+  socket.on('update video', updateVideoSettings(updateVideo))
 
   socket.on('disconnect', () => {
     classifyClient.close()
@@ -65,5 +62,7 @@ io.on('connection', socket => {
   })
 })
 
-httpServer.listen(LISTEN, HOST)
-console.log(`API listening on http://${HOST}:${LISTEN}`)
+httpServer.listen(+process.env.APP_LISTEN, process.env.APP_HOST)
+console.log(
+  `API listening on http://${process.env.APP_HOST}:${process.env.APP_LISTEN}`
+)

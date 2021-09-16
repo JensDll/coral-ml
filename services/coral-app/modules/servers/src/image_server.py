@@ -20,12 +20,12 @@ class ImageServer:
         address = f"tcp://*:{core.Config.Ports.IMAGE_CLASSIFICATION}"
         self.main_socket: Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.main_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Main) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
         address = f"tcp://*:{core.Config.Ports.IMAGE_UPDATE_SETTINGS}"
         self.update_settings_socket: Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.update_settings_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Settings) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
         self.poller = Poller()
         self.poller.register(self.reset_peer, zmq.POLLIN)
@@ -51,8 +51,8 @@ class ImageServer:
 
             if self.reset_peer in items:
                 await self.reset_peer.recv()
+                logging.info("Reset image server")
                 model.reset()
-                logging.info("[IMAGE SERVER] Reset")
                 await self.reset_peer.send(b"")
 
             if self.load_model_peer in items:
@@ -62,17 +62,13 @@ class ImageServer:
                 img_buffer: bytes
                 img_format: bytes
                 img_buffer, img_format = await self.main_socket.recv_multipart()
-                if model.loaded:
-                    result = model.predict(
-                        (img_buffer, img_format.decode()), top_k, score_threshold
-                    )
-                    await core.zutils.send_normalized_json(
-                        self.main_socket, data=result
-                    )
-                else:
-                    await core.zutils.send_normalized_json(
-                        self.main_socket, errors=["No model is loaded for this task"]
-                    )
+
+                await model.predict(
+                    self.main_socket,
+                    (img_buffer, img_format.decode()),
+                    top_k=top_k,
+                    score_threshold=score_threshold,
+                )
 
             if self.update_settings_socket in items:
                 settings: core.types.ModelSettings = (
@@ -80,16 +76,9 @@ class ImageServer:
                 )
                 top_k = settings["topK"]
                 score_threshold = settings["threshold"]
-                if model.has_cache:
-                    result = model.predict(
-                        top_k=top_k,
-                        score_threshold=score_threshold,
-                    )
-                    await core.zutils.send_normalized_json(
-                        self.update_settings_socket, data=result
-                    )
-                else:
-                    await core.zutils.send_normalized_json(
-                        self.update_settings_socket,
-                        errors=["No model is loaded for this task"],
-                    )
+
+                await model.predict(
+                    self.update_settings_socket,
+                    top_k=top_k,
+                    score_threshold=score_threshold,
+                )

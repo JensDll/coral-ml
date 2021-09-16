@@ -2,12 +2,24 @@ FROM node:16 as build
 WORKDIR /app
 COPY . ./
 RUN npm ci
-RUN npm run build && rm -r node_modules
-RUN npm ci --only=prod
+RUN npm run build
 
 FROM node:16-bullseye-slim
+
 WORKDIR /app
-COPY --from=build /app/dist/bundle.min.js /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist/bundle.min.js /app/package.json /app/package-lock.json ./
+RUN npm ci --only=prod
+
+ENV MODE=PROD
+
+ENV APP_HOST=node-api
+ENV APP_LISTEN=80
+
+ENV CORAL_HOST=coral-app
+ENV CORAL_PORT_MODEL_MANAGER=7000
+ENV CORAL_PORT_IMAGE_CLASSIFICATION=7020
+ENV CORAL_PORT_IMAGE_SETTINGS=7021
+ENV CORAL_PORT_VIDEO_SETTINGS=7041
+
 EXPOSE 80
 ENTRYPOINT [ "node", "bundle.min.js" ]

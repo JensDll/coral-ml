@@ -23,7 +23,7 @@ class VideoServer:
         address = f"tcp://*:{core.Config.Ports.VIDEO_UPDATE_SETTINGS}"
         self.update_settings_socket: Socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.update_settings_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Settings) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
         self.poller = Poller()
         self.poller.register(self.reset_peer, zmq.POLLIN)
@@ -58,7 +58,7 @@ class VideoServer:
 
             if self.reset_peer in items:
                 await self.reset_peer.recv()
-                logging.info("[VIDEO] Reset")
+                logging.info("Reset video server")
                 model.reset()
                 await self.reset_peer.send(b"")
 

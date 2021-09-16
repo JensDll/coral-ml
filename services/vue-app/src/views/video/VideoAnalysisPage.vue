@@ -25,7 +25,7 @@
   />
   <canvas
     ref="videoCanvas"
-    class="rounded-lg w-full mt-8 resize lg:w-auto"
+    class="w-full mt-8 resize lg:w-auto"
     v-show="!loading && !recordStore.loadingRecord"
   ></canvas>
 </template>

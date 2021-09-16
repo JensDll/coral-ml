@@ -19,7 +19,7 @@ class ModelManagerServer:
         address = f"tcp://*:{core.Config.Ports.MODEL_MANAGER}"
         self.main_socket = core.Config.Zmq.CONTEXT.socket(zmq.REP)
         self.main_socket.bind(address)
-        logging.info(f"[{self.__class__.__name__}] (Main) Bind to ({address})")
+        logging.info(f"Bind to ({address})")
 
     def send_reset_signals(self):
         for pipe in self.reset_pipes:
@@ -32,9 +32,7 @@ class ModelManagerServer:
             result = await core.coral.load_model(id)
             if result["success"]:
                 await self.send_reset_signals()
-                logging.info(
-                    f"[{self.__class__.__name__}] Sending model and label path"
-                )
+                logging.info("Sending model and label path")
                 json = await load_model_handlers[result["record"]["recordType"]](result)
                 if json["success"]:
                     await repositories.Record.set_loaded(id)
@@ -42,6 +40,6 @@ class ModelManagerServer:
                     await repositories.Record.unload()
                 self.main_socket.send_json(json)
             else:
-                core.zutils.send_normalized_json(
+                await core.zutils.send_normalized_json(
                     self.main_socket, errors=["An unknown error occurred"]
                 )

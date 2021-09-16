@@ -21,6 +21,7 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
     "@types/ws": "^7.4.7",

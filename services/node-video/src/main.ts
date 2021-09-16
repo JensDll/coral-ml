@@ -1,13 +1,14 @@
 import { createServer } from 'http'
 import WebSocket, { WebSocketServer } from 'ws'
 
-const HOST = process.env.HOST
-const STREAM_OUT_PORT = +process.env.STREAM_OUT_PORT
-const STREAM_IN_PORT = +process.env.STREAM_IN_PORT
+if (process.env.MODE !== 'PROD') {
+  const dotenv = await import('dotenv')
+  dotenv.config()
+}
 
 var wss = new WebSocketServer({
-  port: STREAM_OUT_PORT,
-  host: HOST,
+  port: +process.env.STREAM_OUT_PORT,
+  host: process.env.APP_HOST,
   perMessageDeflate: false
 })
 
@@ -26,16 +27,18 @@ function broadcastData(data: any) {
   })
 }
 
-const server = createServer((request, response) => {
-  request.on('data', data => {
+const server = createServer((req, resp) => {
+  req.on('data', data => {
     broadcastData(data)
   })
 })
 
 server.headersTimeout = 0
-server.listen(STREAM_IN_PORT, HOST)
+server.listen(+process.env.STREAM_IN_PORT, process.env.APP_HOST)
 
 console.log(
-  `Listening for incoming MPEG-TS Stream on http://${HOST}:${STREAM_IN_PORT}`
+  `Listening for incoming MPEG-TS Stream on http://${process.env.APP_HOST}:${process.env.STREAM_IN_PORT}`
 )
-console.log(`Awaiting WebSocket connections on ws://${HOST}:${STREAM_OUT_PORT}`)
+console.log(
+  `Awaiting WebSocket connections on ws://${process.env.APP_HOST}:${process.env.STREAM_OUT_PORT}`
+)

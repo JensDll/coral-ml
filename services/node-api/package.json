@@ -27,7 +27,7 @@
     "@types/ws": "^7.4.7",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12",
-    "prettier": "^2.4.0",
+    "prettier": "^2.4.1",
     "rollup": "^2.56.3",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.4.3"

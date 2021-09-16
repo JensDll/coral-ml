@@ -44,7 +44,7 @@ export class SocketService {
 
   loadModel(id: number) {
     return new Promise<LoadModelResult>((resolve, reject) => {
-      this.socket.emit('load model', id, (response: LoadModelResult) => {
+      this.socket.emit('model:load', id, (response: LoadModelResult) => {
         resolve(response)
       })
     })
@@ -55,7 +55,7 @@ export class SocketService {
 
     return new Promise<ClassificationResult>((resolve, reject) => {
       this.socket.emit(
-        'classify',
+        'image:classify',
         { image, format },
         (response: ClassificationResult) => {
           resolve(response)
@@ -75,7 +75,7 @@ export class SocketService {
   async updateClassify(request: UpdateModelRequest) {
     return new Promise<ClassificationResult>((resolve, reject) => {
       this.socket.emit(
-        'update classify',
+        'image:update:settings',
         request,
         (response: ClassificationResult) => {
           resolve(response)

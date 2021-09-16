@@ -1,17 +1,7 @@
-import zmq from 'zeromq'
+import './loadEnv'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import {
-  loadModel,
-  classify,
-  updateVideoSettings,
-  updateClassifySettings
-} from './endpoints'
-
-if (process.env.MODE !== 'PROD') {
-  const dotenv = await import('dotenv')
-  dotenv.config()
-}
+import { ModelRepository, ImageRepository, VideoRepository } from './api'
 
 const httpServer = createServer()
 const io = new Server(httpServer, {
@@ -22,43 +12,31 @@ const io = new Server(httpServer, {
   }
 })
 
-const baseAddress = `tcp://${process.env.CORAL_HOST}`
-
 io.on('connection', socket => {
   console.log(`A user connected (${socket.id})`)
 
-  const modelManagerClient = new zmq.Request({
-    receiveTimeout: 20000,
-    sendTimeout: 20000
-  })
-  modelManagerClient.connect(
-    `${baseAddress}:${process.env.CORAL_PORT_MODEL_MANAGER}`
-  )
-  socket.on('load model', loadModel(modelManagerClient))
+  const modelRepository = new ModelRepository()
+  const videoRepository = new VideoRepository()
+  const imageRepository = new ImageRepository()
 
-  const classifyClient = new zmq.Request({
-    receiveTimeout: 20000,
-    sendTimeout: 20000
-  })
-  classifyClient.connect(
-    `${baseAddress}:${process.env.CORAL_PORT_IMAGE_CLASSIFICATION}`
-  )
-  socket.on('classify', classify(classifyClient))
+  socket.on('model:load', modelRepository.loadModel.bind(modelRepository))
 
-  const updateClassify = new zmq.Request()
-  updateClassify.connect(
-    `${baseAddress}:${process.env.CORAL_PORT_IMAGE_SETTINGS}`
+  socket.on('image:classify', imageRepository.classify.bind(imageRepository))
+  socket.on(
+    'image:update:settings',
+    imageRepository.updateSettings.bind(imageRepository)
   )
-  socket.on('update classify', updateClassifySettings(updateClassify))
 
-  const updateVideo = new zmq.Request()
-  updateVideo.connect(`${baseAddress}:${process.env.CORAL_PORT_VIDEO_SETTINGS}`)
-  socket.on('update video', updateVideoSettings(updateVideo))
+  socket.on(
+    'video:update:settings',
+    videoRepository.updateSettings.bind(videoRepository)
+  )
 
   socket.on('disconnect', () => {
-    classifyClient.close()
-    classifyClient.close()
     console.log(`A user disconnected (${socket.id})`)
+    modelRepository.close()
+    videoRepository.close()
+    imageRepository.close()
   })
 })
 

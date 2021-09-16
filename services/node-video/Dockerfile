@@ -9,7 +9,7 @@ RUN npm run build
 FROM node:16-bullseye-slim
 
 WORKDIR /app
-COPY --from=build /app/dist/bundle.min.js /app/package.json /app/package-lock.json ./
+COPY --from=build /app/dist/bundle.js /app/package.json /app/package-lock.json ./
 RUN npm ci --only=prod
 
 ENV MODE=PROD
@@ -22,4 +22,4 @@ ENV PORT_STREAM_IN=8080
 EXPOSE 80
 ENV PORT_STREAM_OUT=80
 
-ENTRYPOINT [ "node", "bundle.min.js" ]
+ENTRYPOINT [ "node", "bundle.js" ]

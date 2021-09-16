@@ -1,6 +1,8 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      MODE: string
+
       APP_HOST: string
       APP_LISTEN: string
 
@@ -9,8 +11,6 @@ declare global {
       CORAL_PORT_IMAGE_CLASSIFICATION: string
       CORAL_PORT_IMAGE_SETTINGS: string
       CORAL_PORT_VIDEO_SETTINGS: string
-
-      MODE: string
     }
   }
 }

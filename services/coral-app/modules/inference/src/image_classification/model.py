@@ -13,7 +13,7 @@ ImgFormat = str
 
 
 class ImageClassificationModel(inference.BaseModel):
-    cached_img: Union[np.ndarray, None] = None
+    cached_img: Union[core.types.Image, None] = None
 
     async def predict(
         self,

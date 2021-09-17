@@ -1,6 +1,6 @@
 <template>
   <form class="lg:w-1/2" @submit.prevent="handleSubmit()">
-    <form-file-upload
+    <FormFileUpload
       label="Model and Label File For Classifcation"
       v-model="form.files.$value"
       :errors="form.files.$errors"
@@ -9,28 +9,27 @@
       <template #hint>
         <p class="text-gray-500 text-xs">TFLite + Optional Label File</p>
       </template>
-    </form-file-upload>
+    </FormFileUpload>
     <div class="mt-8">
-      <v-button class="font-semibold px-6 py-2 rounded" html-type="submit">
+      <BaseButton class="font-semibold px-6 py-2 rounded" html-type="submit">
         Upload
-      </v-button>
-      <v-button
+      </BaseButton>
+      <BaseButton
         class="font-semibold px-6 py-2 rounded ml-4"
         type="basic"
         @click="resetFields()"
       >
         Cancel
-      </v-button>
+      </BaseButton>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
 import FormFileUpload from '~/components/form/FormFileUpload.vue'
-  import VButton from '~/components/base/BaseButton.vue'
-import { useValidation } from 'vue3-form-validation'
-import type { Field } from 'vue3-form-validation'
-import type { PlainFormData } from '~/utils'
+import BaseButton from '~/components/base/BaseButton.vue'
+import { useValidation, Field } from 'vue3-form-validation'
+import { PlainFormData } from '~/utils'
 
 export type FormData = PlainFormData<typeof validateFields>
 

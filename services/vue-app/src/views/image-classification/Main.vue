@@ -1,16 +1,16 @@
 <template>
   <div class="flex flex-col items-start lg:flex-row lg:items-center">
-    <base-title title="Image Classification" />
-    <base-badge
+    <BaseTitle title="Image Classification" />
+    <BaseBadge
       class="my-3 lg:ml-4 lg:my-0"
       v-if="recordStore.loadingRecord"
       loading
     >
       Loading Model
-    </base-badge>
-    <base-badge class="my-3 lg:ml-4 lg:my-0" v-else-if="recordLoaded">
+    </BaseBadge>
+    <BaseBadge class="my-3 lg:ml-4 lg:my-0" v-else-if="recordLoaded">
       Loaded
-    </base-badge>
+    </BaseBadge>
   </div>
   <p
     v-if="recordLoaded && !recordStore.loadingRecord"
@@ -18,7 +18,7 @@
   >
     {{ recordStore.loadedModelFileName }}
   </p>
-  <classification-form class="mt-10" @submit="classify" :submitting="loading" />
+  <ClassificationForm class="mt-10" @submit="classify" :submitting="loading" />
   <div class="sticky mt-6 z-10 top-k">
     <form-top-k-controller
       v-model="settings.topK"
@@ -56,7 +56,7 @@
 import BaseTitle from '~/components/base/BaseTitle.vue'
 import BaseBadge from '~/components/base/BaseBadge.vue'
 import ClassificationForm from './components/ClassificationForm.vue'
-import FormTopKController from '~/components/form/FormTopKController.vue'
+import FormTopKController from '~/components/form/FormPlusMinusInput.vue'
 
 import { useLoading } from '~/composition'
 import { useRecordStore } from '~/store/recordStore'

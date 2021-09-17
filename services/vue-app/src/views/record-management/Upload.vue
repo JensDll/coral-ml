@@ -16,7 +16,6 @@ import RecordUploadForm from './components/RecordUploadForm.vue'
 import type { FormData } from './components/RecordUploadForm.vue'
 import { recordRepository, recordTypeRepository } from '~/api'
 import { useRouter, useRoute } from 'vue-router'
-import { useRecordStore } from '~/store/recordStore'
 
 const router = useRouter()
 const route = useRoute()

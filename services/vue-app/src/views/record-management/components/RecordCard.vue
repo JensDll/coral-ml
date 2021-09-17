@@ -2,12 +2,12 @@
   <div class="border p-6 rounded-md">
     <div class="title-grid">
       <h3 class="title">{{ modelName }}</h3>
-      <v-badge v-if="record.loaded" class="model-loaded">Loaded</v-badge>
-      <loading-icon v-if="loading" class="loading" />
+      <BaseBadge v-if="record.loaded" class="model-loaded">Loaded</BaseBadge>
+      <LoadingIcon v-if="loading" class="loading" />
     </div>
     <div class="flex items-center justify-between">
       <div>
-        <v-button
+        <BaseButton
           class="px-6 py-1 rounded font-semibold"
           type="secondary"
           @click="handleLoad()"
@@ -15,18 +15,9 @@
           :disabled="loading"
         >
           Load
-        </v-button>
-        <!-- <v-button
-          class="px-3 py-1 rounded font-semibold ml-4"
-          type="danger"
-          reverse
-          :disabled="loading"
-          @click="handleDelete()"
-        >
-          Delete
-        </v-button> -->
+        </BaseButton>
       </div>
-      <download-icon
+      <DownloadIcon
         @click="handleDownload()"
         class="w-6 h-6 hover:text-blue-700 cursor-pointer"
         :class="{
@@ -38,12 +29,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import type { PropType } from 'vue'
-import { recordRepository, socketService } from '~/api'
-import type { ApiRecord } from '~/api'
-import VButton from '~/components/base/BaseButton.vue'
-import VBadge from '~/components/base/BaseBadge.vue'
+import { computed, ref, PropType } from 'vue'
+import { recordRepository, modelRepository, ApiRecord } from '~/api'
+import BaseButton from '~/components/base/BaseButton.vue'
+import BaseBadge from '~/components/base/BaseBadge.vue'
 import { DownloadIcon } from '@heroicons/vue/outline'
 import { useRouter } from 'vue-router'
 import LoadingIcon from '~/components/icons/LoadingIcon.vue'
@@ -72,7 +61,7 @@ async function handleLoad() {
   loading.value = true
   recordStore.loadingRecord = true
   router.push({ name: window.onLoadLinks[props.record.recordType] })
-  const response = await socketService.loadModel(props.record.id)
+  const response = await modelRepository.loadModel(props.record.id)
   console.log(response)
   if (response.success) {
     await recordRepository.loadLoaded()

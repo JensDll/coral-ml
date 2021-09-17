@@ -5,7 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . ./
 RUN npm run build -- --mode ${mode}
-# final image
+# Final image
 FROM nginx:1.21
 ENV PROXY_URI=iot2050-debian
 COPY --from=build /app/dist /usr/share/nginx/html

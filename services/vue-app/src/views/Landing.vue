@@ -7,12 +7,12 @@
       Powered by SIMATIC Industrial PC and Coral Edge TPU
     </p>
     <div class="flex flex-col sm:flex-row">
-      <base-button
+      <BaseButton
         class="px-6 py-4 font-semibold rounded-xl"
         @click="router.push({ name: 'home' })"
       >
         Getting Started
-      </base-button>
+      </BaseButton>
     </div>
   </section>
 </template>

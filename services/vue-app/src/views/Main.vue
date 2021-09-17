@@ -1,8 +1,8 @@
 <template>
   <div class="grid-container lg:px-6">
-    <the-header />
-    <the-nav />
-    <the-main />
+    <TheHeader />
+    <TheNav />
+    <TheMain />
   </div>
 </template>
 

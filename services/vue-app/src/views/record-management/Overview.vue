@@ -30,7 +30,7 @@ import BaseSkeleton from '~/components/base/BaseSkeleton.vue'
 import { recordRepository } from '~/api'
 import { useRecordStore } from '~/store/recordStore'
 import { useRoute } from 'vue-router'
-import { useLoading } from '~/composable'
+import { useLoading } from '~/composition'
 
 const recordStore = useRecordStore()
 const route = useRoute()

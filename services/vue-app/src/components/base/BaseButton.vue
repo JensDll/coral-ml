@@ -17,38 +17,36 @@
   </button>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, PropType } from 'vue'
 
-export default defineComponent({
-  emits: ['click'],
-  props: {
-    loading: {
-      type: Boolean
-    },
-    disabled: {
-      type: Boolean
-    },
-    htmlType: {
-      type: String as PropType<'button' | 'submit' | 'reset'>,
-      default: 'button'
-    },
-    type: {
-      type: String as PropType<'basic' | 'primary' | 'secondary' | 'danger'>,
-      default: 'primary'
-    },
-    reverse: {
-      type: Boolean
-    }
+const props = defineProps({
+  loading: {
+    type: Boolean
   },
-  methods: {
-    onClick() {
-      if (!this.disabled || !this.loading) {
-        this.$emit('click')
-      }
-    }
+  disabled: {
+    type: Boolean
+  },
+  htmlType: {
+    type: String as PropType<'button' | 'submit' | 'reset'>,
+    default: 'button'
+  },
+  type: {
+    type: String as PropType<'basic' | 'primary' | 'secondary' | 'danger'>,
+    default: 'primary'
+  },
+  reverse: {
+    type: Boolean
   }
 })
+
+const emit = defineEmits(['click'])
+
+const onClick = () => {
+  if (!props.disabled || !props.loading) {
+    emit('click')
+  }
+}
 </script>
 
 <style lang="postcss" scoped>

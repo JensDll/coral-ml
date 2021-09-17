@@ -1,16 +1,16 @@
 <template>
   <div class="flex flex-col items-start lg:flex-row lg:items-center">
-    <base-title title="Video Analysis" />
-    <base-badge
+    <BaseTitle title="Video Analysis" />
+    <BaseBadge
       class="my-3 lg:ml-4 lg:my-0"
       v-if="recordStore.loadingRecord"
       loading
     >
       Loading Model
-    </base-badge>
-    <base-badge class="my-3 lg:ml-4 lg:my-0" v-else-if="recordLoaded">
+    </BaseBadge>
+    <BaseBadge class="my-3 lg:ml-4 lg:my-0" v-else-if="recordLoaded">
       Loaded
-    </base-badge>
+    </BaseBadge>
   </div>
   <p
     v-if="recordLoaded && !recordStore.loadingRecord"
@@ -18,10 +18,10 @@
   >
     {{ recordStore.loadedModelFileName }}
   </p>
-  <form-top-k-controller
+  <FormPlusMinusInput
     v-if="recordLoaded"
     class="mt-8"
-    v-model="formData.topK"
+    v-model="settings.topK"
   />
   <canvas
     ref="videoCanvas"
@@ -33,35 +33,36 @@
 <script setup lang="ts">
 import BaseTitle from '~/components/base/BaseTitle.vue'
 import BaseBadge from '~/components/base/BaseBadge.vue'
-import FormTopKController from '~/components/form/FormTopKController.vue'
+import FormPlusMinusInput from '~/components/form/FormPlusMinusInput.vue'
 
-import { socketService } from '~/api'
+import { videoRepository, VideoSettings } from '~/api'
 import { useRecordStore } from '~/store/recordStore'
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-
-import type { UpdateModelRequest } from '~/api'
-import type { Ref } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  Ref
+} from 'vue'
 
 const recordStore = useRecordStore()
 const videoCanvas = ref() as Ref<HTMLCanvasElement>
 const loading = ref(true)
-const formData = reactive<UpdateModelRequest>({
+const settings = reactive<VideoSettings>({
   topK: 1,
-  threshold: 0.1
+  scoreThreshold: 0.1
 })
 
 const recordLoaded = computed(() => {
   return recordStore.loadedType === 'video'
 })
 
-socketService.updateVideo(formData)
+videoRepository.updateSettings(settings)
 
-watch(formData, formData => {
-  const settings: UpdateModelRequest = {
-    topK: typeof formData.topK !== 'number' ? 0 : formData.topK,
-    threshold: typeof formData.threshold !== 'number' ? 0 : formData.threshold
-  }
-  socketService.updateVideo(settings)
+watch(settings, settings => {
+  videoRepository.updateSettings(settings)
 })
 
 let player: any

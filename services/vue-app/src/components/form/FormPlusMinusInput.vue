@@ -4,7 +4,7 @@
       Show Top Results
     </label>
     <div class="flex items-center">
-      <plus-circle-icon
+      <PlusCircleIcon
         v-long-press="increaseTopK"
         class="
           w-8
@@ -24,7 +24,7 @@
         v-model="topK"
         class="input-number-reset w-16 px-2 py-1 mx-2"
       />
-      <minus-circle-icon
+      <MinusCircleIcon
         class="
           w-8
           h-8

@@ -12,8 +12,6 @@ import { useNavStore } from './store'
 const navStore = useNavStore()
 let prevInnerWidth = 0
 
-const a: number = ''
-
 window.addEventListener('resize', () => {
   if (prevInnerWidth <= 1024 && window.innerWidth >= 1024) {
     navStore.navHidden = false

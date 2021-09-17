@@ -18,3 +18,9 @@ export type PaginationRequest = {
 export type RecordType = 'Image Classification' | 'Object Detection'
 
 export type Id = number | string
+
+export type MessageEnvelope<T = any> = {
+  success: boolean
+  errors: string[]
+  data: T
+}

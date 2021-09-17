@@ -1,70 +1,33 @@
-import { h } from 'vue'
-import {
-  createRouter,
-  createWebHistory,
-  RouteRecordRaw,
-  RouterView
-} from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { recordRepository } from '~/api'
+import {
+  imageClassificationRoutes,
+  videoAnalysisRoutes,
+  recordManagementRoutes
+} from './routes'
 
-import LandingPage from '../views/LandingPage.vue'
-import MainPage from '../views/MainPage.vue'
-import HomePage from '../views/HomePage.vue'
-
-import RecordUploadPage from '~/views/record/UploadPage.vue'
-import RecordOverviewPage from '~/views/record/OverviewPage.vue'
-
-import ImageClassificationPage from '~/views/classification/ImageClassificationPage.vue'
-import VideoAnalysisPage from '~/views/video/VideoAnalysisPage.vue'
-
-import RecordMain from '../views/record/MainPage.vue'
+import Landing from '../views/Landing.vue'
+import Main from '../views/Main.vue'
+import Home from '../views/Home.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'landing-page',
-    component: LandingPage
+    name: 'landing',
+    component: Landing
   },
   {
     path: '/explore-ai',
-    component: MainPage,
+    component: Main,
     children: [
       {
         path: '',
         name: 'home',
-        component: HomePage
+        component: Home
       },
-      {
-        path: 'record',
-        component: { render: () => h(RouterView) },
-        children: [
-          {
-            path: '',
-            name: 'record',
-            component: RecordMain
-          },
-          {
-            path: 'upload/:recordTypeId',
-            name: 'record-upload',
-            component: RecordUploadPage
-          },
-          {
-            path: 'overview/:recordTypeId',
-            name: 'record-overview',
-            component: RecordOverviewPage
-          }
-        ]
-      },
-      {
-        path: 'image-classification',
-        name: 'image-classification',
-        component: ImageClassificationPage
-      },
-      {
-        path: 'video-analysis',
-        name: 'video-analysis',
-        component: VideoAnalysisPage
-      }
+      ...recordManagementRoutes,
+      ...imageClassificationRoutes,
+      ...videoAnalysisRoutes
     ]
   }
 ]

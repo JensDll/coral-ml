@@ -117,7 +117,7 @@ const useFetch =
     }
 
     if (Object.keys(params).length > 0) {
-      fetchOptions.uri += `?${useUri.toUrlParams(params)}`
+      fetchOptions.uri += `?${useUri().toUrlParams(params)}`
     }
 
     const state = reactive<State<TData>>({

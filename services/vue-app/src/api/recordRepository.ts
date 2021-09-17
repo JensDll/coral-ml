@@ -1,6 +1,6 @@
 import { useRecordStore } from '~/store/recordStore'
-import { useDownload, useFetch } from '../../composable'
-import { PaginationEnvelope, Id, PaginationRequest, RecordType } from './common'
+import { useDownload, useFetch } from '../composition'
+import { PaginationEnvelope, Id, PaginationRequest, RecordType } from './types'
 
 export type ApiRecord = {
   id: number
@@ -10,7 +10,7 @@ export type ApiRecord = {
   recordType: RecordType
 }
 
-export const recordRepository = {
+export class RecordRepository {
   async loadWithRecordTypeId(
     recordTypeId: Id,
     pagination: PaginationRequest = { pageNumber: 1, pageSize: 200 }
@@ -31,7 +31,8 @@ export const recordRepository = {
         total: data.total
       })
     }
-  },
+  }
+
   async loadLoaded() {
     const { data, responseOk } = await useFetch<ApiRecord>('/record/loaded')
       .get()
@@ -43,10 +44,12 @@ export const recordRepository = {
         loadedRecord: data
       })
     }
-  },
+  }
+
   getById<T extends boolean>(immediate: T, id: Id) {
     return useFetch<ApiRecord>(`/record/${id}`).get().json(immediate)
-  },
+  }
+
   async download(id: Id) {
     const { data } = await useFetch<Blob>(`/record/download/${id}`)
       .get()
@@ -55,7 +58,8 @@ export const recordRepository = {
     if (data) {
       useDownload(data, 'model.zip')
     }
-  },
+  }
+
   upload<T extends boolean>(
     immediate: T,
     recordTypeId: Id,
@@ -68,10 +72,12 @@ export const recordRepository = {
     formData.append('label', label)
 
     return useFetch<void>('/record').post({ body: formData }).text(immediate)
-  },
+  }
+
   setLoaded<T extends boolean>(immediate: T, id: Id) {
     return useFetch<void>(`/record/${id}`).put().text(immediate)
-  },
+  }
+
   delete<T extends boolean>(immediate: T, id: Id) {
     return useFetch<void>(`/record/${id}`).delete().text(immediate)
   }

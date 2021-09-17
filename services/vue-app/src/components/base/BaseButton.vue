@@ -21,7 +21,6 @@
 import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
-  name: 'vbutton',
   emits: ['click'],
   props: {
     loading: {

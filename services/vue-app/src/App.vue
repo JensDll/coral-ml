@@ -1,16 +1,18 @@
 <template>
   <div class="lg:container lg:mx-auto min-h-screen m:px-6">
     <router-view></router-view>
-    <nav-toggle-mobile class="z-50 fixed bottom-4 right-4" />
+    <NavToggle class="z-50 fixed bottom-4 right-4" />
   </div>
 </template>
 
 <script setup lang="ts">
-import NavToggleMobile from './components/mobile/NavToggleMobile.vue'
+import NavToggle from './components/mobile/NavToggle.vue'
 import { useNavStore } from './store'
 
 const navStore = useNavStore()
 let prevInnerWidth = 0
+
+const a: number = ''
 
 window.addEventListener('resize', () => {
   if (prevInnerWidth <= 1024 && window.innerWidth >= 1024) {

@@ -19,5 +19,7 @@ export class VideoRepository implements Repository {
     this.settingsClient.close()
   }
 
-  async updateSettings(settings: Settings, reply: ReplyCallback) {}
+  async updateSettings(settings: Settings, reply: ReplyCallback) {
+    console.log(settings)
+  }
 }

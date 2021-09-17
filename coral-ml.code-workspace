@@ -26,6 +26,8 @@
     }
   ],
   "settings": {
-    "volar.tsPlugin": true
+    "volar.tsPlugin": true,
+    "editor.bracketPairColorization.enabled": true,
+    "typescript.tsdk": "node_modules/typescript/lib"
   }
 }

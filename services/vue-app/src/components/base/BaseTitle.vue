@@ -14,7 +14,6 @@ import { ArrowLeftIcon } from '@heroicons/vue/outline'
 import { defineComponent } from '@vue/runtime-core'
 
 export default defineComponent({
-  name: 'vtitle',
   emits: ['back'],
   components: {
     ArrowLeftIcon

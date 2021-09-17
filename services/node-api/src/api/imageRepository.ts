@@ -1,7 +1,6 @@
 import { Request } from 'zeromq'
 import { ReplyCallback, Repository } from './types'
 import { URI } from './uri'
-import { makeMessageEnvelope } from '~/common/factory'
 
 type ClassifyRequest = {
   image: Buffer

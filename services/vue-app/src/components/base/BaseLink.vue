@@ -8,7 +8,6 @@
 import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
-  name: 'vlink',
   props: {
     type: {
       type: String as PropType<'basic' | 'primary' | 'danger'>,

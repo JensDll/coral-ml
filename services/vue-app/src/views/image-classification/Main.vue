@@ -21,10 +21,9 @@
   <classification-form class="mt-10" @submit="classify" :submitting="loading" />
   <div class="sticky mt-6 z-10 top-k">
     <form-top-k-controller
-      v-model="formData.topK"
+      v-model="settings.topK"
       class="relative bg-white py-6 bg-opacity-90"
     />
-    <!-- <div class="absolute h-24 w-full bg-gradient-to-b from-white-90"></div> -->
   </div>
   <div v-if="result" class="mt-10">
     <pre v-if="!result.success">{{ result.errors }}</pre>
@@ -59,9 +58,9 @@ import BaseBadge from '~/components/base/BaseBadge.vue'
 import ClassificationForm from './components/ClassificationForm.vue'
 import FormTopKController from '~/components/form/FormTopKController.vue'
 
-import { useLoading } from '~/composable'
+import { useLoading } from '~/composition'
 import { useRecordStore } from '~/store/recordStore'
-import { socketService, UpdateModelRequest } from '~/api'
+import { imageRepository, ImageSettings } from '~/api'
 import { computed, reactive, watch } from 'vue'
 
 const recordStore = useRecordStore()
@@ -70,22 +69,18 @@ const recordLoaded = computed(() => {
 })
 
 const [[loading, result, classify]] = useLoading(
-  socketService.classify.bind(socketService)
+  imageRepository.classify.bind(imageRepository)
 )
 
-const formData = reactive<UpdateModelRequest>({
+const settings = reactive<ImageSettings>({
   topK: 5,
-  threshold: 0.1
+  scoreThreshold: 0.1
 })
 
-socketService.updateClassify(formData)
+imageRepository.updateSettings(settings)
 
-watch(formData, async formData => {
-  const settings: UpdateModelRequest = {
-    topK: typeof formData.topK !== 'number' ? 0 : formData.topK,
-    threshold: typeof formData.threshold !== 'number' ? 0 : formData.threshold
-  }
-  const classificationResult = await socketService.updateClassify(settings)
+watch(settings, async settings => {
+  const classificationResult = await imageRepository.updateSettings(settings)
   result.value = classificationResult
 })
 </script>

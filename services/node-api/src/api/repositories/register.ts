@@ -15,7 +15,7 @@ export function registerRepositories(
     }
   }
 
-  socket.on('close', () => {
+  socket.on('disconnect', () => {
     console.log(`A user disconnected (${socket.id})`)
     onCloseCallbacks.forEach(close => close())
   })

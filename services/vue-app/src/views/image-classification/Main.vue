@@ -19,7 +19,7 @@
     {{ recordStore.loadedModelFileName }}
   </p>
   <ClassificationForm class="mt-10" @submit="classify" :submitting="loading" />
-  <div class="sticky mt-6 z-10 top-k">
+  <div class="sticky mt-6 z-10 top-k" v-if="recordLoaded">
     <form-top-k-controller
       v-model="settings.topK"
       class="relative bg-white py-6 bg-opacity-90"

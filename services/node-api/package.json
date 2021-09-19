@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "nodemon dist/watch.js",
+    "dev": "nodemon dist/bundle.js",
     "watch": "rollup --config rollup.config.js --watch",
     "build": "rollup --config rollup.config.js --build"
   },
@@ -21,12 +21,13 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
+    "@rollup/plugin-alias": "^3.1.5",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
     "@types/ws": "^7.4.7",
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.12",
-    "prettier": "^2.4.0",
+    "prettier": "^2.4.1",
     "rollup": "^2.56.3",
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.4.3"

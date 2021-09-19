@@ -10,6 +10,4 @@ window.onLoadLinks = {
   'Object Detection': 'video-analysis'
 }
 
-const app = createApp(App).use(router).use(createPinia()).use(longPress)
-
-app.mount('#app')
+createApp(App).use(router).use(createPinia()).use(longPress).mount('#app')

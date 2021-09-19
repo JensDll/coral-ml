@@ -3,12 +3,17 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
+    "useDefineForClassFields": true,
     "strict": true,
     "jsx": "preserve",
     "sourceMap": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "test.js"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

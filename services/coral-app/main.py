@@ -7,9 +7,10 @@ import os
 
 import zmq.asyncio
 import aiohttp
-import dotenv
 
 if os.environ.get("MODE") != "PROD":
+    import dotenv
+
     dotenv.load_dotenv()
 
 from modules import core, servers

@@ -13,15 +13,13 @@
   </svg>
 </template>
 
-<script lang="ts">
-export default {
-  props: {
-    spin: {
-      type: Boolean,
-      default: true
-    }
+<script lang="ts" setup>
+defineProps({
+  spin: {
+    type: Boolean,
+    default: true
   }
-}
+})
 </script>
 
 <style scoped>

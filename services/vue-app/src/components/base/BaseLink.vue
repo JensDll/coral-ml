@@ -4,16 +4,13 @@
   </a>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue'
+<script lang="ts" setup>
+import { PropType } from 'vue'
 
-export default defineComponent({
-  name: 'vlink',
-  props: {
-    type: {
-      type: String as PropType<'basic' | 'primary' | 'danger'>,
-      default: 'basic'
-    }
+defineProps({
+  type: {
+    type: String as PropType<'basic' | 'primary' | 'danger'>,
+    default: 'basic'
   }
 })
 </script>

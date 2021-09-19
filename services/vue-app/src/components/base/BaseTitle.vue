@@ -9,26 +9,20 @@
   </h1>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { ArrowLeftIcon } from '@heroicons/vue/outline'
-import { defineComponent } from '@vue/runtime-core'
 
-export default defineComponent({
-  name: 'vtitle',
-  emits: ['back'],
-  components: {
-    ArrowLeftIcon
+defineProps({
+  title: {
+    type: String,
+    required: true
   },
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    back: {
-      type: Boolean
-    }
+  back: {
+    type: Boolean
   }
 })
+
+defineEmits(['back'])
 </script>
 
 <style lang="postcss" scoped></style>

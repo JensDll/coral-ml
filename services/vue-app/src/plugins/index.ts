@@ -1,1 +1,1 @@
-export { longPress } from './directive-long-press'
+export { longPress } from './directiveLongPress'

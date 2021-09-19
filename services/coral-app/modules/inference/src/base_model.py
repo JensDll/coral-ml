@@ -18,7 +18,7 @@ class BaseModel:
         self.interpreter.name = json["record"]["modelFileName"]
         self.loaded = True
         logging.info("Sending Response ...")
-        await core.zutils.send_normalized_json(peer)
+        await core.zutils.send_message_envelope(peer)
 
     def predict(self):
         pass

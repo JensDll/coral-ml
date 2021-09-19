@@ -30,7 +30,7 @@ const navStore = useNavStore()
 const router = useRouter()
 
 const notLandingPage = computed(
-  () => router.currentRoute.value.name !== 'landing-page'
+  () => router.currentRoute.value.name !== 'landing'
 )
 </script>
 

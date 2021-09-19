@@ -6,25 +6,25 @@ export type {
   Id
 } from './types'
 
-import { RecordRepository } from './recordRepository'
-import { RecordTypeRepository } from './recordTypeRepository'
+import { RecordRepository } from './repositories/recordRepository'
+import { RecordTypeRepository } from './repositories/recordTypeRepository'
 
-export type { ApiRecord } from './recordRepository'
-export type { ApiRecordType } from './recordTypeRepository'
+export type { ApiRecord } from './repositories/recordRepository'
+export type { ApiRecordType } from './repositories/recordTypeRepository'
 
 export const recordRepository = new RecordRepository()
 export const recordTypeRepository = new RecordTypeRepository()
 
 import { io } from 'socket.io-client'
-import { ModelRepository } from './modelRepository'
-import { ImageRepository } from './imageRepository'
-import { VideoRepository } from './videoRepository'
+import { ModelRepository } from './repositories/modelRepository'
+import { ImageRepository } from './repositories/imageRepository'
+import { VideoRepository } from './repositories/videoRepository'
 
-export type {} from './modelRepository'
-export type { ImageSettings } from './imageRepository'
-export type { VideoSettings } from './videoRepository'
+export type {} from './repositories/modelRepository'
+export type { ImageSettings } from './repositories/imageRepository'
+export type { VideoSettings } from './repositories/videoRepository'
 
-const socket = io(import.meta.env.VITE_NODE_API, {
+const socket = io(import.meta.env.VITE_URI_NODE_API, {
   transports: ['websocket'],
   path: import.meta.env.MODE !== 'development' ? '/node-api/' : undefined
 })

@@ -1,6 +1,6 @@
 import { useFetch } from '~/composition'
 import { useRecordTypeStore } from '~/store/recordTypeStore'
-import { EnumerableEnvelope, RecordType } from './types'
+import { EnumerableEnvelope, RecordType } from '../types'
 
 export type ApiRecordType = {
   id: number

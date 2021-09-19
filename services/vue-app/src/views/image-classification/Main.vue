@@ -68,9 +68,7 @@ const recordLoaded = computed(() => {
   return recordStore.loadedType === 'image'
 })
 
-const [[loading, result, classify]] = useLoading(
-  imageRepository.classify.bind(imageRepository)
-)
+const [[loading, result, classify]] = useLoading(imageRepository.classify)
 
 const settings = reactive<ImageSettings>({
   topK: 5,

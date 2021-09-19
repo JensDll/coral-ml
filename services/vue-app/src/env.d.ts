@@ -8,7 +8,7 @@ declare module '*.vue' {
 }
 
 interface ImportMetaEnv {
-  VITE_RECORD_API: string
-  VITE_NODE_API: string
-  VITE_NODE_VIDEO: string
+  VITE_URI_RECORD_API: string
+  VITE_URI_NODE_API: string
+  VITE_URI_NODE_VIDEO: string
 }

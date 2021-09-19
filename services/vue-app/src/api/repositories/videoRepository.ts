@@ -12,11 +12,7 @@ export class VideoRepository {
     this.socket = socket
   }
 
-  updateSettings(settings: VideoSettings): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.socket.emit('video:update:settings', settings, () => {
-        resolve()
-      })
-    })
+  updateSettings(settings: VideoSettings) {
+    this.socket.emit('video:update:settings', settings)
   }
 }

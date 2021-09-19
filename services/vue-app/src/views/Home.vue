@@ -25,8 +25,8 @@
 import BaseTitle from '~/components/base/BaseTitle.vue'
 import BaseButton from '~/components/base/BaseButton.vue'
 import { useRouter } from 'vue-router'
-
+const x: number = ''
 const router = useRouter()
 </script>
 
-<style lang="postcss"></style>
+<style lang="scss"></style>

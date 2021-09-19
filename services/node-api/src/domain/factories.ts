@@ -1,4 +1,4 @@
-import { MessageEnvelope } from '~/api'
+import { MessageEnvelope } from './types'
 
 export const makeMessageEnvelope = <T>(
   data: T,

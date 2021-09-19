@@ -1,6 +1,6 @@
 import { useRecordStore } from '~/store/recordStore'
-import { useDownload, useFetch } from '../composition'
-import { PaginationEnvelope, Id, PaginationRequest, RecordType } from './types'
+import { useDownload, useFetch } from '~/composition'
+import { PaginationEnvelope, Id, PaginationRequest, RecordType } from '../types'
 
 export type ApiRecord = {
   id: number

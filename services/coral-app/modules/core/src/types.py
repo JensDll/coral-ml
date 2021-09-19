@@ -43,7 +43,7 @@ class CapProps(TypedDict):
 
 class ModelSettings(TypedDict):
     topK: int
-    threshold: int
+    scoreThreshold: int
 
 
 class ClassificationResult(TypedDict):

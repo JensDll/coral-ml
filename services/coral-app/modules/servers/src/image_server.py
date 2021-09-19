@@ -1,4 +1,5 @@
 import logging
+import time
 
 import zmq
 from zmq.asyncio import Socket, Poller
@@ -75,8 +76,7 @@ class ImageServer:
                     await self.update_settings_socket.recv_json()
                 )
                 top_k = settings["topK"]
-                score_threshold = settings["threshold"]
-
+                score_threshold = settings["scoreThreshold"]
                 await model.predict(
                     self.update_settings_socket,
                     top_k=top_k,

@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client'
-import { MessageEnvelope } from './types'
+import { MessageEnvelope } from '../types'
 
 export class ModelRepository {
   socket: Socket

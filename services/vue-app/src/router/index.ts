@@ -5,7 +5,6 @@ import {
   videoAnalysisRoutes,
   recordManagementRoutes
 } from './routes'
-
 import Landing from '../views/Landing.vue'
 import Main from '../views/Main.vue'
 import Home from '../views/Home.vue'

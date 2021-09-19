@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client'
 import { useImage } from '~/composition'
-import { MessageEnvelope } from './types'
+import { MessageEnvelope } from '../types'
 
 export type ClassificationResult = {
   probabilities: number[]

@@ -26,7 +26,6 @@
     }
   ],
   "settings": {
-    "volar.tsPlugin": true,
     "volar.preferredTagNameCase": "pascal",
     "editor.bracketPairColorization.enabled": true,
     "typescript.tsdk": "node_modules/typescript/lib"

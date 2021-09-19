@@ -2,15 +2,15 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "jest"
   },
   "dependencies": {
     "@heroicons/vue": "^1.0.4",
     "@tailwindcss/forms": "^0.3.3",
-    "@vitejs/plugin-vue": "^1.6.2",
-    "@vue/compiler-sfc": "^3.2.11",
+    "@vitejs/plugin-vue": "^1.8.1",
+    "@vue/compiler-sfc": "^3.2.12",
     "autoprefixer": "^10.3.4",
     "pinia": "^2.0.0-beta.5",
     "postcss": "^8.3.6",
@@ -19,7 +19,7 @@
     "socket.io-client": "^4.2.0",
     "tailwindcss": "^2.2.15",
     "typescript": "^4.4.3",
-    "vite": "^2.5.8",
+    "vite": "^2.5.10",
     "vue": "^3.2.6",
     "vue-router": "^4.0.10",
     "vue-tsc": "^0.3.0",

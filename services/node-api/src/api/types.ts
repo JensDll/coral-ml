@@ -1,9 +1,7 @@
-export type MessageEnvelope<T = any> = {
-  success: boolean
-  errors: string[]
-  data?: T
-}
-export type ReplyCallback<T = any> = (data: MessageEnvelope<T>) => void
-export interface Repository {
-  close(): void
+import { IOListener } from '~/domain'
+
+export type OnClose = () => void
+
+export type Repository<TEvent extends string> = {
+  [key: string]: () => [`${TEvent}:${string}`, OnClose, IOListener<any, any>]
 }

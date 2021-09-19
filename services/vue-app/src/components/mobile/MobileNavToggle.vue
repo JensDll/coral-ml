@@ -25,12 +25,13 @@ import { XIcon } from '@heroicons/vue/solid'
 import { computed } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
 import { useNavStore } from '~/store'
+
 const navStore = useNavStore()
 const router = useRouter()
 
-const notLandingPage = computed(() => {
-  return router.currentRoute.value.name !== 'landing-page'
-})
+const notLandingPage = computed(
+  () => router.currentRoute.value.name !== 'landing-page'
+)
 </script>
 
 <style lang="postcss" scoped></style>

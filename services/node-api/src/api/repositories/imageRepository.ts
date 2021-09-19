@@ -1,5 +1,5 @@
 import zmq from 'zeromq'
-import { IOListener, CONFIG, queueLast } from '~/domain'
+import { IOListener, CONFIG, queueLast, MessageEnvelope } from '~/domain'
 import { Repository } from '../types'
 
 type ClassifyRequest = {
@@ -49,10 +49,15 @@ export const imageRepository: Repository<'image'> = {
       client.close()
     }
 
-    const listener: IOListener<Settings, void> = async (settings, respond) => {
+    const listener: IOListener<Settings, ClassifyResponse> = async (
+      settings,
+      respond
+    ) => {
       const buffers = await send(settings)
       if (buffers.length) {
-        const response = JSON.parse(buffers[0].toString())
+        const response: MessageEnvelope<ClassifyResponse> = JSON.parse(
+          buffers[0].toString()
+        )
         respond(response)
       }
     }

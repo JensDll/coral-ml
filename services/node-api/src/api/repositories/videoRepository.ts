@@ -17,8 +17,8 @@ export const videoRepository: Repository<'video'> = {
       client.close()
     }
 
-    const listener: IOListener<Settings, void> = async (settings, respond) => {
-      await send(settings)
+    const listener: IOListener<Settings, never> = settings => {
+      send(settings)
     }
 
     return ['video:update:settings', close, listener]

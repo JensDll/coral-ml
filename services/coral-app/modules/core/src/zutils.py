@@ -22,12 +22,12 @@ def encode_bool(bool: bool):
     return bool.to_bytes(1, "big")
 
 
-def send_normalized_json(
+def send_message_envelope(
     socket: Socket,
     data: Any = [],
     errors: list[str] = [],
 ):
-    json: core.types.NormalizedJson = {
+    json: core.types.MessageEnvelope = {
         "success": False,
         "data": data,
         "errors": errors,

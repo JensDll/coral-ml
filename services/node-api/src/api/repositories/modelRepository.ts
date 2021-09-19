@@ -11,7 +11,7 @@ export const modelRepository: Repository<'model'> = {
       client.close()
     }
 
-    const listener: IOListener<string, void> = async (id, respond) => {
+    const listener: IOListener<string, any> = async (id, respond) => {
       try {
         console.log(`Loading model with id ${id}`)
         await client.send(id)

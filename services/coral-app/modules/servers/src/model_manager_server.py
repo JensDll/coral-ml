@@ -40,6 +40,6 @@ class ModelManagerServer:
                     await repositories.Record.unload()
                 self.main_socket.send_json(json)
             else:
-                await core.zutils.send_normalized_json(
+                await core.zutils.send_message_envelope(
                     self.main_socket, errors=["An unknown error occurred"]
                 )

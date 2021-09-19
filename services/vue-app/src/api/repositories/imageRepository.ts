@@ -21,6 +21,7 @@ export class ImageRepository {
 
   classify(image: File): Promise<MessageEnvelope<ClassificationResult>> {
     const format = useImage(image).getFormat()
+
     return new Promise((resolve, reject) => {
       this.socket.emit(
         'image:classify',

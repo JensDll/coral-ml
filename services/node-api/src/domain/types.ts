@@ -10,5 +10,5 @@ export type ResponseCallback<TResponse = any> = (
 
 export type IOListener<TRequest, TResponse> = (
   request: TRequest,
-  respond: ResponseCallback<TResponse>
+  respond: TResponse extends never ? never : ResponseCallback<TResponse>
 ) => void

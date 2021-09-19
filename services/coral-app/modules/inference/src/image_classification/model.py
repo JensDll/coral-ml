@@ -23,7 +23,7 @@ class ImageClassificationModel(inference.BaseModel):
         score_threshold: float = 0.1,
     ) -> None:
         if not self.loaded:
-            await core.zutils.send_normalized_json(
+            await core.zutils.send_message_envelope(
                 socket,
                 errors=["No model is loaded for this task"],
             )
@@ -36,7 +36,7 @@ class ImageClassificationModel(inference.BaseModel):
             resized = np.expand_dims(resized, axis=0)
             self.cached_img = resized
         elif self.cached_img is None:
-            await core.zutils.send_normalized_json(
+            await core.zutils.send_message_envelope(
                 socket,
                 errors=["No model is loaded for this task"],
             )
@@ -51,7 +51,7 @@ class ImageClassificationModel(inference.BaseModel):
             "inferenceTime": inference_time,
         }
 
-        await core.zutils.send_normalized_json(socket, data=result)
+        await core.zutils.send_message_envelope(socket, data=result)
 
     def reset(self):
         super().reset()

@@ -10,7 +10,7 @@ InputSize = Tuple[int, int]
 Image = np.ndarray
 
 
-class NormalizedJson(TypedDict):
+class MessageEnvelope(TypedDict):
     success: bool
     errors: list[str]
     data: Any
@@ -31,7 +31,7 @@ class LoadModelResult(TypedDict):
 
 
 LoadModelHandlers = dict[
-    RecordType, Callable[[LoadModelResult], Coroutine[Any, Any, NormalizedJson]]
+    RecordType, Callable[[LoadModelResult], Coroutine[Any, Any, MessageEnvelope]]
 ]
 
 

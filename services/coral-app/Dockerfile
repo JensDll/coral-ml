@@ -1,4 +1,4 @@
-FROM python:3.9.7-bullseye
+FROM python:3.10.0-bullseye
 
 # Add Google repository and install required packages
 RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | \

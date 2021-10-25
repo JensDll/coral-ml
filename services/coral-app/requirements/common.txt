@@ -5,4 +5,4 @@ imageio==2.9.0
 opencv-contrib-python==4.5.3.56
 pyzmq==22.3.0
 asyncio==3.4.3
-numpy==1.21.2
+numpy==1.21.3

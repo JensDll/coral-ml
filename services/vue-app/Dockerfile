@@ -1,4 +1,4 @@
-FROM node:16 as build
+FROM node:17 as build
 ARG mode=production
 WORKDIR /app
 COPY package.json package-lock.json ./
